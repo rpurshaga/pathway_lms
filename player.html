@@ -24,218 +24,115 @@
   .player {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
-  /* ══ BASE KEYCAP — Uiverse structure ══ */
-  .keycap {
+  /* ══ BASE KEY ══ */
+  .key {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 2px;
-    width: 62px;
-    height: 62px;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    cursor: pointer;
+    gap: 4px;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
     border: none;
     outline: none;
     padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
+    user-select: none;
+    background: linear-gradient(180deg, #f4f2ef, #eae8e4);
+    box-shadow:
+      -3px -3px 6px rgba(255,255,255,0.8),
+      0 0 0 1px rgba(0,0,0,0.04),
+      0 2px 0 0 #dddbd7,
+      0 4px 0 0 #d4d2ce,
+      0 6px 0 0 #cccac6,
+      3px 8px 10px rgba(0,0,0,0.1);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
 
-  .keycap::before {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 4px;
-    bottom: 14px;
-    right: 12px;
-    border-radius: 10px;
-    transition: all 0.1s ease-in-out;
+  .key:active, .key.pressed {
+    transform: translateY(3px);
+    box-shadow:
+      -2px -2px 4px rgba(255,255,255,0.6),
+      0 0 0 1px rgba(0,0,0,0.03),
+      0 1px 0 0 #dddbd7,
+      0 2px 0 0 #d4d2ce,
+      2px 3px 5px rgba(0,0,0,0.07);
   }
 
-  .keycap svg {
-    width: 18px;
-    height: 18px;
+  .key svg {
+    width: 20px;
+    height: 20px;
     flex-shrink: 0;
     position: relative;
     z-index: 1;
-    transition: transform 0.1s ease-in-out;
   }
 
-  .keycap .legend {
+  .key .leg {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 7px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+    color: #888;
     position: relative;
     z-index: 1;
-    transition: transform 0.1s ease-in-out;
   }
 
-  .keycap:active, .keycap.pressed { transform: translateY(2px); }
-  .keycap:active::before, .keycap.pressed::before { top: 5px; left: 5px; bottom: 11px; right: 11px; }
-  .keycap:active svg, .keycap.pressed svg,
-  .keycap:active .legend, .keycap.pressed .legend { transform: translateY(1px); }
+  /* ══ Icon colors ══ */
+  .ico-gray svg { fill: #666; }
+  .ico-teal svg { fill: #2a9d8f; }
+  .ico-teal .leg { color: #2a9d8f; }
+  .ico-yellow svg { fill: #b8a840; }
+  .ico-yellow .leg { color: #a89838; }
+  .ico-teal .icon-play { margin-left: 2px; }
 
-  /* ══ NEUTRAL — matte cream ══ */
-  .keycap.neutral {
-    background: linear-gradient(180deg, #d8d4cc, #d0ccc4);
-    box-shadow:
-      inset -8px 0 8px rgba(0,0,0,0.06),
-      inset 0 -8px 8px rgba(0,0,0,0.1),
-      0 0 0 2px rgba(0,0,0,0.15),
-      0 2px 0 0 #c0bcb4,
-      0 4px 0 0 #b4b0a8,
-      0 6px 0 0 #aaa69e,
-      0 10px 14px -2px rgba(0,0,0,0.25),
-      4px 8px 10px -2px rgba(0,0,0,0.15);
-  }
-  .keycap.neutral::before {
-    background: linear-gradient(90deg, #d4d0c8, #dcd8d0);
-    box-shadow: -6px -6px 8px rgba(255,255,255,0.08), 6px 4px 8px rgba(0,0,0,0.04);
-    border-left: 1px solid rgba(0,0,0,0.02); border-bottom: 1px solid rgba(0,0,0,0.02); border-top: 1px solid rgba(0,0,0,0.03);
-  }
-  .keycap.neutral:active, .keycap.neutral.pressed {
-    box-shadow:
-      inset -4px 0 4px rgba(0,0,0,0.04),
-      inset 0 -4px 4px rgba(0,0,0,0.07),
-      0 0 0 2px rgba(0,0,0,0.12),
-      0 1px 0 0 #c0bcb4,
-      0 2px 0 0 #b4b0a8,
-      2px 4px 6px rgba(0,0,0,0.12);
-  }
-  .keycap.neutral:active::before, .keycap.neutral.pressed::before {
-    box-shadow: -3px -3px 4px rgba(255,255,255,0.06), 3px 2px 4px rgba(0,0,0,0.03);
-  }
-  .keycap.neutral svg { fill: #48453e; }
-  .keycap.neutral .legend { color: #605c54; }
-
-  /* ══ PATHWAY TEAL ══ */
-  .keycap.pathway {
-    background: linear-gradient(180deg, #228a7d, #1e7e72);
-    box-shadow:
-      inset -8px 0 8px rgba(0,0,0,0.08),
-      inset 0 -8px 8px rgba(0,0,0,0.14),
-      0 0 0 2px rgba(0,0,0,0.25),
-      0 2px 0 0 #1a7268,
-      0 4px 0 0 #14645a,
-      0 6px 0 0 #0e5850,
-      0 10px 14px -2px rgba(0,0,0,0.3),
-      4px 8px 10px -2px rgba(0,0,0,0.18);
-  }
-  .keycap.pathway::before {
-    background: linear-gradient(90deg, #208678, #28a090);
-    box-shadow: -6px -6px 8px rgba(255,255,255,0.05), 6px 4px 8px rgba(0,0,0,0.05);
-    border-left: 1px solid rgba(0,0,0,0.04); border-bottom: 1px solid rgba(0,0,0,0.04); border-top: 1px solid rgba(0,0,0,0.06);
-  }
-  .keycap.pathway:active, .keycap.pathway.pressed {
-    box-shadow:
-      inset -4px 0 4px rgba(0,0,0,0.06),
-      inset 0 -4px 4px rgba(0,0,0,0.1),
-      0 0 0 2px rgba(0,0,0,0.2),
-      0 1px 0 0 #1a7268,
-      0 2px 0 0 #14645a,
-      2px 4px 6px rgba(0,0,0,0.14);
-  }
-  .keycap.pathway:active::before, .keycap.pathway.pressed::before {
-    box-shadow: -3px -3px 4px rgba(255,255,255,0.04), 3px 2px 4px rgba(0,0,0,0.04);
-  }
-  .keycap.pathway svg { fill: #d4ece8; }
-  .keycap.pathway .legend { color: #a4d4cc; }
-  .keycap.pathway .icon-play { margin-left: 2px; }
-
-  /* ══ YELLOW ══ */
-  .keycap.yellow {
-    background: linear-gradient(180deg, #ddd48c, #d4cc82);
-    box-shadow:
-      inset -8px 0 8px rgba(0,0,0,0.06),
-      inset 0 -8px 8px rgba(0,0,0,0.1),
-      0 0 0 2px rgba(0,0,0,0.15),
-      0 2px 0 0 #c8c074,
-      0 4px 0 0 #b8b268,
-      0 6px 0 0 #aaa45e,
-      0 10px 14px -2px rgba(0,0,0,0.25),
-      4px 8px 10px -2px rgba(0,0,0,0.15);
-  }
-  .keycap.yellow::before {
-    background: linear-gradient(90deg, #dad08a, #e2da98);
-    box-shadow: -6px -6px 8px rgba(255,255,255,0.07), 6px 4px 8px rgba(0,0,0,0.04);
-    border-left: 1px solid rgba(0,0,0,0.02); border-bottom: 1px solid rgba(0,0,0,0.02); border-top: 1px solid rgba(0,0,0,0.03);
-  }
-  .keycap.yellow:active, .keycap.yellow.pressed {
-    box-shadow:
-      inset -4px 0 4px rgba(0,0,0,0.04),
-      inset 0 -4px 4px rgba(0,0,0,0.07),
-      0 0 0 2px rgba(0,0,0,0.12),
-      0 1px 0 0 #c8c074,
-      0 2px 0 0 #b8b268,
-      2px 4px 6px rgba(0,0,0,0.12);
-  }
-  .keycap.yellow:active::before, .keycap.yellow.pressed::before {
-    box-shadow: -3px -3px 4px rgba(255,255,255,0.05), 3px 2px 4px rgba(0,0,0,0.03);
-  }
-  .keycap.yellow svg { fill: #5c5428; }
-  .keycap.yellow .legend { color: #7a7040; }
-
-  /* ══ LCD — dark, not clickable ══ */
-  .keycap.lcd {
-    background: linear-gradient(180deg, #2a2a28, #222220);
-    box-shadow:
-      inset -8px 0 8px rgba(0,0,0,0.1),
-      inset 0 -8px 8px rgba(0,0,0,0.2),
-      0 0 0 2px rgba(0,0,0,0.4),
-      0 2px 0 0 #1a1a18,
-      0 4px 0 0 #141412,
-      0 6px 0 0 #0e0e0c,
-      0 10px 14px -2px rgba(0,0,0,0.3),
-      4px 8px 10px -2px rgba(0,0,0,0.2);
+  /* ══ LCD — dark key ══ */
+  .key-lcd {
+    background: linear-gradient(180deg, #3c3c3a, #323230);
     cursor: default;
-  }
-  .keycap.lcd::before {
-    background: linear-gradient(90deg, #242422, #3a3a36);
-    box-shadow: -6px -6px 8px rgba(255,255,255,0.04), 6px 4px 8px rgba(0,0,0,0.06);
-    border-left: 1px solid rgba(0,0,0,0.1); border-bottom: 1px solid rgba(0,0,0,0.1); border-top: 1px solid rgba(0,0,0,0.15);
+    box-shadow:
+      -3px -3px 6px rgba(255,255,255,0.35),
+      0 0 0 1px rgba(0,0,0,0.1),
+      0 2px 0 0 #2a2a28,
+      0 4px 0 0 #242422,
+      0 6px 0 0 #1e1e1c,
+      3px 8px 10px rgba(0,0,0,0.15);
   }
 
   .lcd-screen {
-    position: relative;
-    z-index: 1;
-    width: 42px;
+    width: 44px;
     height: 20px;
     background: #1a2a18;
-    border-radius: 3px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow:
-      inset 0 1px 3px rgba(0,0,0,0.6),
-      inset 0 0 6px rgba(0,0,0,0.3),
-      0 0.5px 0 rgba(255,255,255,0.06);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
     overflow: hidden;
+    position: relative;
   }
 
   .lcd-screen::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.1) 1px, rgba(0,0,0,0.1) 2px);
+    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px);
     pointer-events: none;
-    border-radius: 3px;
+    border-radius: 4px;
   }
 
   .lcd-time {
     font-family: 'VT323', monospace;
     font-size: 15px;
     color: #5cb848;
-    text-shadow: 0 0 4px rgba(92,184,72,0.5), 0 0 8px rgba(92,184,72,0.2);
+    text-shadow: 0 0 4px rgba(92,184,72,0.4);
     letter-spacing: 1px;
     line-height: 1;
   }
@@ -246,9 +143,7 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #555;
-    position: relative;
-    z-index: 1;
+    color: #666;
     margin-top: 1px;
   }
 </style>
@@ -257,32 +152,32 @@
 
 <div class="player">
   <!-- Back 15s -->
-  <button class="keycap neutral" id="btnBack" title="Back 15 seconds" aria-label="Back 15 seconds">
+  <button class="key ico-gray" id="btnBack" title="Back 15 seconds" aria-label="Back 15 seconds">
     <svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
-    <span class="legend">Back</span>
+    <span class="leg">Back</span>
   </button>
 
   <!-- Play / Pause -->
-  <button class="keycap pathway" id="btnPlay" title="Play" aria-label="Play">
+  <button class="key ico-teal" id="btnPlay" title="Play" aria-label="Play">
     <svg viewBox="0 0 24 24" class="icon-play" id="iconPlay"><polygon points="8,5 19,12 8,19"/></svg>
     <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-    <span class="legend" id="playLabel">Play</span>
+    <span class="leg" id="playLabel">Play</span>
   </button>
 
   <!-- Forward 15s -->
-  <button class="keycap neutral" id="btnFwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">
+  <button class="key ico-gray" id="btnFwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">
     <svg viewBox="0 0 24 24"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
-    <span class="legend">Forward</span>
+    <span class="leg">Forward</span>
   </button>
 
   <!-- Speed -->
-  <button class="keycap yellow" id="btnSpeed" title="Playback speed" aria-label="Playback speed">
+  <button class="key ico-yellow" id="btnSpeed" title="Playback speed" aria-label="Playback speed">
     <svg viewBox="0 0 24 24"><path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/><path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/></svg>
-    <span class="legend" id="speedLabel">1×</span>
+    <span class="leg" id="speedLabel">1×</span>
   </button>
 
-  <!-- LCD Time — not a button -->
-  <div class="keycap lcd" title="Time remaining">
+  <!-- LCD Time -->
+  <div class="key key-lcd" title="Time remaining">
     <div class="lcd-screen">
       <span class="lcd-time" id="lcdTime">--:--</span>
     </div>
@@ -334,8 +229,7 @@
     document.getElementById('btnPlay').title = p ? 'Pause' : 'Play';
   }
 
-  // iOS touch press animation — only on buttons
-  document.querySelectorAll('button.keycap').forEach(function(btn) {
+  document.querySelectorAll('button.key').forEach(function(btn) {
     btn.addEventListener('touchstart', function() { btn.classList.add('pressed'); }, { passive: true });
     btn.addEventListener('touchend', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
     btn.addEventListener('touchcancel', function() { btn.classList.remove('pressed'); });
