@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Complete — Pathway</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  @property --shine-angle {
+    syntax: '<angle>'; inherits: false; initial-value: 0deg;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-start: #f0f4ff;
+    --bg-end:   #f0f4ff;
+    --card-bg:  rgba(255,255,255,0.72);
+    --shadow:   rgba(99,102,241,0.12);
+    --text:     #1e1b4b;
+    --muted:    #6366f1;
+    --purple:   #7c3aed;
+    --pink:     #ec4899;
+    --teal:     #0d9488;
+    --gold:     #f59e0b;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+    background: var(--bg-start);
+  }
+
+  /* ── DIMMING OVERLAY ── */
+  #dimOverlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 10, 40, 0);
+    pointer-events: none;
+    z-index: 50;
+    transition: background 2.5s ease;
+  }
+  #dimOverlay.dimmed {
+    background: rgba(15, 10, 40, 0.72);
+  }
+
+  /* ── CONFETTI CANVAS ── */
+  #confettiCanvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 60;
+  }
+
+  /* ── SCENE ── */
+  .scene {
+    width: 100%; height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SCALE ROOT ── */
+  #scaleRoot {
+    width: 420px;
+    transform-origin: top center;
+    transform: scale(var(--scale, 1));
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 28px;
+    padding: 32px 28px 28px;
+    box-shadow:
+      0 8px 40px rgba(99,102,241,.13),
+      0 2px 8px rgba(0,0,0,.06),
+      inset 0 1px 0 rgba(255,255,255,.9);
+    border: 1.5px solid rgba(255,255,255,.8);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Shimmer sweep on card */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -60%; left: -60%;
+    width: 60%; height: 220%;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
+    transform: skewX(-20deg);
+    animation: card-shimmer 4s ease-in-out infinite 1s;
+    pointer-events: none;
+  }
+  @keyframes card-shimmer {
+    0%   { left: -60%; }
+    40%  { left: 140%; }
+    100% { left: 140%; }
+  }
+
+  /* ── HEADLINE ── */
+  .congrats-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: popIn .5s cubic-bezier(.34,1.56,.64,1) forwards .2s;
+  }
+
+  .headline {
+    font-size: 2rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: popIn .6s cubic-bezier(.34,1.56,.64,1) forwards .35s;
+  }
+
+  .headline .grad {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subline {
+    font-size: .88rem;
+    color: #818cf8;
+    margin-bottom: 22px;
+    font-weight: 600;
+    opacity: 0;
+    animation: popIn .5s ease forwards .5s;
+  }
+
+  /* ── CELEBRATE BUTTON ── */
+  @keyframes shine-spin { to { --shine-angle: 360deg; } }
+
+  .celebrate-btn {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: white;
+    background: linear-gradient(135deg, #f97316, #ec4899, #7c3aed);
+    background-size: 200% 200%;
+    box-shadow: 0 6px 32px rgba(236,72,153,.45), 0 2px 8px rgba(0,0,0,.15);
+    animation: gradient-shift 3s ease infinite, popIn .7s cubic-bezier(.34,1.56,.64,1) forwards .65s;
+    opacity: 0;
+    transition: transform .15s ease, box-shadow .15s ease;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  @keyframes gradient-shift {
+    0%,100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+
+  .celebrate-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 100px;
+    background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.45) 50%, transparent 65%);
+    transform: skewX(-20deg) translateX(-100%);
+    transition: transform 0s;
+  }
+
+  .celebrate-btn:hover::before {
+    transform: skewX(-20deg) translateX(200%);
+    transition: transform .5s ease;
+  }
+
+  .celebrate-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 40px rgba(236,72,153,.55), 0 4px 12px rgba(0,0,0,.15);
+  }
+
+  .celebrate-btn:active {
+    transform: scale(.96);
+  }
+
+  .celebrate-btn.fired {
+    animation: btn-fire .4s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+
+  @keyframes btn-fire {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(.92); }
+    65%  { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+
+  .btn-sub {
+    font-size: .72rem;
+    color: #a5b4fc;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    opacity: 0;
+    animation: popIn .4s ease forwards .8s;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: popIn .4s ease forwards .9s;
+  }
+  .divider span { flex:1; height:1px; background:rgba(99,102,241,.15); }
+  .divider p { font-size:.75rem; color:#a5b4fc; font-weight:700; white-space:nowrap; }
+
+  /* ── SOCIAL BUTTONS ── */
+  .social-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 18px;
+  }
+
+  .social-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 18px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255,255,255,.7);
+    background: rgba(255,255,255,.55);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text);
+    box-shadow: 0 2px 12px rgba(99,102,241,.08), inset 0 1px 0 rgba(255,255,255,.9);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  .social-btn:nth-child(1) { animation: slideRight .5s cubic-bezier(.34,1.56,.64,1) forwards 1s; }
+  .social-btn:nth-child(2) { animation: slideRight .5s cubic-bezier(.34,1.56,.64,1) forwards 1.1s; }
+  .social-btn:nth-child(3) { animation: slideRight .5s cubic-bezier(.34,1.56,.64,1) forwards 1.2s; }
+
+  .social-btn:hover {
+    transform: translateX(4px) scale(1.01);
+    box-shadow: 0 4px 20px rgba(99,102,241,.15), inset 0 1px 0 rgba(255,255,255,.9);
+    background: rgba(255,255,255,.8);
+  }
+
+  .social-btn:active { transform: scale(.97); }
+
+  /* Ripple on social btn click */
+  .social-btn .s-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(124,58,237,.18);
+    transform: scale(0);
+    pointer-events: none;
+    animation: s-ripple-anim .5s ease forwards;
+  }
+  @keyframes s-ripple-anim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  .social-btn .s-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .social-btn.instagram .s-icon { background: linear-gradient(135deg,#f9a825,#e91e63,#7c3aed); }
+  .social-btn.facebook  .s-icon { background: #1877f2; }
+  .social-btn.youtube   .s-icon { background: #ff0000; }
+
+  .social-btn .s-label { flex: 1; text-align: left; }
+  .social-btn .s-arrow {
+    font-size: .85rem;
+    color: #a5b4fc;
+    transition: transform .2s ease;
+  }
+  .social-btn:hover .s-arrow { transform: translateX(3px); }
+
+  /* ── ACTION TILES ── */
+  .action-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+  }
+
+  .action-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(255,255,255,.7);
+    background: rgba(255,255,255,.5);
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(99,102,241,.07), inset 0 1px 0 rgba(255,255,255,.9);
+    transition: transform .2s ease, box-shadow .2s ease;
+    opacity: 0;
+    text-align: center;
+    line-height: 1.3;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .action-tile:nth-child(1) { animation: popIn .5s cubic-bezier(.34,1.56,.64,1) forwards 1.3s; }
+  .action-tile:nth-child(2) { animation: popIn .5s cubic-bezier(.34,1.56,.64,1) forwards 1.4s; }
+  .action-tile:nth-child(3) { animation: popIn .5s cubic-bezier(.34,1.56,.64,1) forwards 1.5s; }
+
+  .action-tile:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 6px 20px rgba(99,102,241,.15);
+  }
+  .action-tile:active { transform: scale(.94); }
+
+  .action-tile .t-icon { font-size: 1.4rem; }
+  .action-tile .t-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(124,58,237,.15);
+    transform: scale(0);
+    pointer-events: none;
+    animation: s-ripple-anim .5s ease forwards;
+  }
+
+  /* ── KEYFRAMES ── */
+  @keyframes popIn {
+    0%   { opacity:0; transform: scale(.7); }
+    100% { opacity:1; transform: scale(1); }
+  }
+  @keyframes slideRight {
+    0%   { opacity:0; transform: translateX(-20px); }
+    100% { opacity:1; transform: translateX(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Dimming overlay -->
+<div id="dimOverlay"></div>
+
+<!-- Confetti canvas -->
+<canvas id="confettiCanvas"></canvas>
+
+<div class="scene">
+  <div id="scaleRoot">
+    <div class="card">
+
+      <p class="congrats-label">✦ Pathway Ministry Institute</p>
+      <h1 class="headline">You <span class="grad">Finished</span><br>the Course!</h1>
+      <p class="subline">NextGen Ministry Certificate · Module Complete</p>
+
+      <!-- Celebrate button -->
+      <button class="celebrate-btn" id="celebrateBtn">🎉 Celebrate!</button>
+      <p class="btn-sub">(click to celebrate)</p>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span></span>
+        <p>connect with pathway</p>
+        <span></span>
+      </div>
+
+      <!-- Social buttons -->
+      <div class="social-list">
+        <a href="https://instagram.com" target="_blank" class="social-btn instagram">
+          <div class="s-icon">📸</div>
+          <span class="s-label">Instagram</span>
+          <span class="s-arrow">→</span>
+        </a>
+        <a href="https://facebook.com" target="_blank" class="social-btn facebook">
+          <div class="s-icon">👍</div>
+          <span class="s-label">Facebook</span>
+          <span class="s-arrow">→</span>
+        </a>
+        <a href="https://youtube.com" target="_blank" class="social-btn youtube">
+          <div class="s-icon">▶️</div>
+          <span class="s-label">YouTube</span>
+          <span class="s-arrow">→</span>
+        </a>
+      </div>
+
+      <!-- Action tiles -->
+      <div class="action-row">
+        <a href="#" class="action-tile">
+          <span class="t-icon">📚</span>
+          <span>Course<br>Catalog</span>
+        </a>
+        <a href="#" class="action-tile">
+          <span class="t-icon">📄</span>
+          <span>Request<br>Transcript</span>
+        </a>
+        <a href="#" class="action-tile">
+          <span class="t-icon">🙏</span>
+          <span>Prayer<br>Requests</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AUTO SCALE ──────────────────────────────────────────────
+function fitToViewport() {
+  const root = document.getElementById('scaleRoot');
+  root.style.setProperty('--scale', 1);
+  requestAnimationFrame(() => {
+    const vh = window.innerHeight;
+    const vw = window.innerWidth;
+    const h  = root.scrollHeight;
+    const w  = 420;
+    const scale = Math.min(vw / w, vh / h, 1);
+    root.style.setProperty('--scale', scale);
+    const scaledH = h * scale;
+    root.style.marginTop = Math.max(0, (vh - scaledH) / 2) + 'px';
+  });
+}
+window.addEventListener('load', () => { fitToViewport(); setTimeout(fitToViewport, 1600); });
+window.addEventListener('resize', fitToViewport);
+
+// ── CONFETTI ────────────────────────────────────────────────
+const canvas = document.getElementById('confettiCanvas');
+const ctx    = canvas.getContext('2d');
+let pieces   = [];
+let animId   = null;
+
+canvas.width  = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+const COLORS = [
+  '#7c3aed','#ec4899','#f59e0b','#10b981',
+  '#3b82f6','#f97316','#e11d48','#06b6d4'
+];
+
+function spawnConfetti(x, y, count = 80) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 4 + Math.random() * 10;
+    pieces.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 6,
+      w: 6 + Math.random() * 8,
+      h: 4 + Math.random() * 5,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rot: Math.random() * 360,
+      rotV: (Math.random() - .5) * 8,
+      gravity: .35 + Math.random() * .2,
+      life: 1,
+      decay: .012 + Math.random() * .01,
+      shape: Math.random() > .5 ? 'rect' : 'circle',
+    });
+  }
+}
+
+function drawConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pieces = pieces.filter(p => p.life > 0);
+  for (const p of pieces) {
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += p.gravity;
+    p.vx *= .99;
+    p.rot += p.rotV;
+    p.life -= p.decay;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI / 180);
+    ctx.fillStyle = p.color;
+    if (p.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    }
+    ctx.restore();
+  }
+  if (pieces.length > 0) {
+    animId = requestAnimationFrame(drawConfetti);
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+// ── CELEBRATE BUTTON ────────────────────────────────────────
+const celebrateBtn = document.getElementById('celebrateBtn');
+const dimOverlay   = document.getElementById('dimOverlay');
+let hasCelebrated  = false;
+
+celebrateBtn.addEventListener('click', () => {
+  // Button bounce
+  celebrateBtn.classList.remove('fired');
+  void celebrateBtn.offsetWidth;
+  celebrateBtn.classList.add('fired');
+
+  // Confetti burst from button position
+  const rect = celebrateBtn.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top  + rect.height / 2;
+
+  if (animId) cancelAnimationFrame(animId);
+  pieces = [];
+  spawnConfetti(cx, cy, 120);
+  drawConfetti();
+
+  // Dim background on first click
+  if (!hasCelebrated) {
+    hasCelebrated = true;
+    setTimeout(() => {
+      dimOverlay.classList.add('dimmed');
+    }, 400);
+    celebrateBtn.textContent = '🎊 Again!';
+  } else {
+    // Extra burst on repeat clicks
+    spawnConfetti(cx - 100, cy, 40);
+    spawnConfetti(cx + 100, cy, 40);
+  }
+});
+
+// ── SOCIAL BUTTON RIPPLE ─────────────────────────────────────
+document.querySelectorAll('.social-btn, .action-tile').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const r = document.createElement('div');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.5;
+    r.className = this.classList.contains('social-btn') ? 's-ripple' : 't-ripple';
+    r.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${e.clientX - rect.left - size/2}px;
+      top:${e.clientY - rect.top - size/2}px;
+    `;
+    this.appendChild(r);
+    setTimeout(() => r.remove(), 500);
+  });
+});
+</script>
+</body>
+</html>
