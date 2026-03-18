@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway Audio Player</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a3a5c 0%, #1e6e8e 40%, #2a8a7a 100%);
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+
+  .player-unit {
+    width: 460px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(40px) saturate(1.4);
+    -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    border-radius: 24px;
+    padding: 28px 28px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .player-unit::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, 
+      rgba(56, 128, 180, 0.12) 0%, 
+      rgba(80, 160, 200, 0.08) 30%,
+      rgba(100, 180, 220, 0.05) 60%,
+      rgba(60, 140, 190, 0.1) 100%);
+    border-radius: 24px;
+    z-index: -1;
+  }
+
+  .player-unit::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+    border-radius: 24px 24px 0 0;
+    pointer-events: none;
+  }
+
+  .track-info {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .track-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.2px;
+    margin-bottom: 4px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .track-subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.2px;
+  }
+
+  .progress-section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+    box-shadow:
+      inset 0 1px 2px rgba(0, 0, 0, 0.15),
+      0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #5bb8f0, #8dd4f8);
+    border-radius: 3px;
+    width: 0%;
+    position: relative;
+    transition: width 0.15s linear;
+    box-shadow: 0 0 8px rgba(91, 184, 240, 0.3);
+  }
+
+  .progress-knob {
+    position: absolute;
+    right: -7px;
+    top: -5px;
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.25),
+      0 0 0 2px rgba(91, 184, 240, 0.3),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.15s;
+    transform: scale(0.7);
+  }
+
+  .progress-track:hover .progress-knob,
+  .progress-track.dragging .progress-knob {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .progress-track.dragging .progress-knob {
+    transform: scale(1.1);
+  }
+
+  .time-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .time-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.5px;
+  }
+
+  .transport-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .neu-btn {
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    transition: all 0.15s ease;
+  }
+
+  .neu-btn.sm {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      4px 4px 12px rgba(0, 0, 0, 0.15),
+      -2px -2px 8px rgba(255, 255, 255, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .neu-btn.sm:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      5px 5px 14px rgba(0, 0, 0, 0.18),
+      -2px -2px 8px rgba(255, 255, 255, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .neu-btn.sm:active {
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+      inset 3px 3px 8px rgba(0, 0, 0, 0.15),
+      inset -2px -2px 6px rgba(255, 255, 255, 0.03);
+    transform: scale(0.96);
+  }
+
+  .neu-btn.sm svg {
+    width: 18px;
+    height: 18px;
+    fill: rgba(255, 255, 255, 0.6);
+    transition: fill 0.15s;
+  }
+
+  .neu-btn.sm:hover svg { fill: rgba(255, 255, 255, 0.85); }
+
+  .neu-btn.play {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(145deg, rgba(91,184,240,0.25), rgba(60,140,200,0.2));
+    border: 1px solid rgba(91, 184, 240, 0.25);
+    box-shadow:
+      0 4px 20px rgba(91, 184, 240, 0.2),
+      0 2px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    margin: 0 8px;
+  }
+
+  .neu-btn.play:hover {
+    background: linear-gradient(145deg, rgba(91,184,240,0.35), rgba(60,140,200,0.28));
+    box-shadow:
+      0 6px 28px rgba(91, 184, 240, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .neu-btn.play:active {
+    background: linear-gradient(145deg, rgba(60,140,200,0.2), rgba(91,184,240,0.15));
+    box-shadow: inset 0 3px 10px rgba(0,0,0,0.15), 0 2px 12px rgba(91,184,240,0.15);
+    transform: scale(0.96);
+  }
+
+  .neu-btn.play svg {
+    width: 26px;
+    height: 26px;
+    fill: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+  }
+
+  .neu-btn.play:hover svg { fill: #fff; }
+
+  .volume-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .volume-row svg {
+    width: 15px;
+    height: 15px;
+    fill: rgba(255, 255, 255, 0.35);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: fill 0.15s;
+  }
+
+  .volume-row svg:hover { fill: rgba(255, 255, 255, 0.6); }
+
+  .volume-track {
+    width: 100px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+  }
+
+  .volume-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.35), rgba(255,255,255,0.55));
+    border-radius: 2px;
+    width: 75%;
+    transition: width 0.1s;
+  }
+
+  .volume-knob {
+    position: absolute;
+    top: -4px;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    cursor: grab;
+    left: calc(75% - 6px);
+    transition: transform 0.1s;
+  }
+
+  .volume-knob:hover { transform: scale(1.2); }
+
+  .speed-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 3px 10px;
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s;
+    margin-left: 6px;
+  }
+
+  .speed-pill:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+  .speed-pill:active { transform: scale(0.95); }
+
+  @media (max-width: 480px) {
+    .player-unit { width: 100%; min-width: 300px; padding: 22px 20px 20px; border-radius: 20px; }
+    .neu-btn.play { width: 56px; height: 56px; }
+    .neu-btn.sm { width: 40px; height: 40px; }
+    .track-title { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="player-unit">
+  <div class="track-info">
+    <div class="track-title" id="trackTitle">Lesson Audio</div>
+    <div class="track-subtitle" id="trackSubtitle">Pathway Institute</div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-track" id="progressTrack">
+      <div class="progress-fill" id="progressFill">
+        <div class="progress-knob" id="progressKnob"></div>
+      </div>
+    </div>
+    <div class="time-row">
+      <span class="time-label" id="timeCurrent">0:00</span>
+      <span class="time-label" id="timeTotal">0:00</span>
+    </div>
+  </div>
+
+  <div class="transport-row">
+    <button class="neu-btn sm" id="btnRewind" title="Rewind 10s" aria-label="Rewind 10 seconds">
+      <svg viewBox="0 0 24 24"><path d="M12.5 3C7.81 3 4.01 6.54 3.57 11H1l3.5 4 3.5-4H5.59c.43-3.36 3.33-6 6.91-6 3.87 0 7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C7.89 20.1 10.07 21 12.5 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-.5 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+    </button>
+    <button class="neu-btn sm" id="btnPrev" title="Back 30s" aria-label="Back 30 seconds">
+      <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+    </button>
+    <button class="neu-btn play" id="btnPlay" title="Play" aria-label="Play">
+      <svg viewBox="0 0 24 24" id="iconPlay"><polygon points="9,5 20,12 9,19"/></svg>
+      <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <button class="neu-btn sm" id="btnNext" title="Forward 30s" aria-label="Forward 30 seconds">
+      <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+    </button>
+    <button class="neu-btn sm" id="btnStop" title="Stop" aria-label="Stop">
+      <svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
+    </button>
+  </div>
+
+  <div class="volume-row">
+    <svg viewBox="0 0 24 24" id="volIcon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+    <div class="volume-track" id="volumeTrack">
+      <div class="volume-fill" id="volumeFill"></div>
+      <div class="volume-knob" id="volumeKnob"></div>
+    </div>
+    <button class="speed-pill" id="btnSpeed">1×</button>
+  </div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+(function() {
+  const audio = document.getElementById('audio');
+  const btnPlay = document.getElementById('btnPlay');
+  const btnStop = document.getElementById('btnStop');
+  const btnRewind = document.getElementById('btnRewind');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const btnSpeed = document.getElementById('btnSpeed');
+  const iconPlay = document.getElementById('iconPlay');
+  const iconPause = document.getElementById('iconPause');
+  const progressTrack = document.getElementById('progressTrack');
+  const progressFill = document.getElementById('progressFill');
+  const timeCurrent = document.getElementById('timeCurrent');
+  const timeTotal = document.getElementById('timeTotal');
+  const volumeTrack = document.getElementById('volumeTrack');
+  const volumeFill = document.getElementById('volumeFill');
+  const volumeKnob = document.getElementById('volumeKnob');
+  const trackTitle = document.getElementById('trackTitle');
+  const trackSubtitle = document.getElementById('trackSubtitle');
+
+  const params = new URLSearchParams(window.location.search);
+  const src = params.get('src');
+  if (src) audio.src = src;
+  if (params.get('title')) trackTitle.textContent = params.get('title');
+  if (params.get('subtitle')) trackSubtitle.textContent = params.get('subtitle');
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.audioSrc) audio.src = e.data.audioSrc;
+    if (e.data && e.data.title) trackTitle.textContent = e.data.title;
+    if (e.data && e.data.subtitle) trackSubtitle.textContent = e.data.subtitle;
+  });
+
+  const speeds = [0.75, 1, 1.25, 1.5, 2];
+  let speedIdx = 1;
+  let seekDragging = false;
+
+  function fmt(s) {
+    if (isNaN(s) || !isFinite(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function setPlaying(p) {
+    iconPlay.style.display = p ? 'none' : 'block';
+    iconPause.style.display = p ? 'block' : 'none';
+    btnPlay.title = p ? 'Pause' : 'Play';
+    btnPlay.setAttribute('aria-label', p ? 'Pause' : 'Play');
+  }
+
+  audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = fmt(audio.duration); });
+  audio.addEventListener('timeupdate', () => {
+    if (seekDragging) return;
+    timeCurrent.textContent = fmt(audio.currentTime);
+    if (audio.duration) progressFill.style.width = (audio.currentTime / audio.duration * 100) + '%';
+  });
+  audio.addEventListener('ended', () => setPlaying(false));
+
+  btnPlay.addEventListener('click', () => {
+    if (audio.paused) { audio.play(); setPlaying(true); }
+    else { audio.pause(); setPlaying(false); }
+  });
+  btnStop.addEventListener('click', () => { audio.pause(); audio.currentTime = 0; setPlaying(false); });
+  btnRewind.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
+  btnPrev.addEventListener('click', () => { audio.currentTime = Math.max(0, audio.currentTime - 30); });
+  btnNext.addEventListener('click', () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 30); });
+
+  btnSpeed.addEventListener('click', () => {
+    speedIdx = (speedIdx + 1) % speeds.length;
+    audio.playbackRate = speeds[speedIdx];
+    btnSpeed.textContent = speeds[speedIdx] + '×';
+  });
+
+  function seekTo(clientX) {
+    const rect = progressTrack.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    if (audio.duration) {
+      audio.currentTime = pct * audio.duration;
+      progressFill.style.width = (pct * 100) + '%';
+      timeCurrent.textContent = fmt(audio.currentTime);
+    }
+  }
+
+  progressTrack.addEventListener('click', (e) => seekTo(e.clientX));
+  progressTrack.addEventListener('mousedown', (e) => { seekDragging = true; progressTrack.classList.add('dragging'); seekTo(e.clientX); });
+  progressTrack.addEventListener('touchstart', (e) => { seekDragging = true; progressTrack.classList.add('dragging'); seekTo(e.touches[0].clientX); }, { passive: true });
+  document.addEventListener('mousemove', (e) => { if (seekDragging) seekTo(e.clientX); });
+  document.addEventListener('touchmove', (e) => { if (seekDragging) seekTo(e.touches[0].clientX); }, { passive: true });
+  document.addEventListener('mouseup', () => { seekDragging = false; progressTrack.classList.remove('dragging'); });
+  document.addEventListener('touchend', () => { seekDragging = false; progressTrack.classList.remove('dragging'); });
+
+  function setVolume(pct) {
+    pct = Math.max(0, Math.min(1, pct));
+    audio.volume = pct;
+    volumeFill.style.width = (pct * 100) + '%';
+    volumeKnob.style.left = 'calc(' + (pct * 100) + '% - 6px)';
+  }
+
+  volumeTrack.addEventListener('click', (e) => {
+    const rect = volumeTrack.getBoundingClientRect();
+    setVolume((e.clientX - rect.left) / rect.width);
+  });
+
+  let volDrag = false;
+  volumeKnob.addEventListener('mousedown', (e) => { volDrag = true; e.preventDefault(); });
+  volumeKnob.addEventListener('touchstart', () => { volDrag = true; }, { passive: true });
+  document.addEventListener('mousemove', (e) => { if (!volDrag) return; const r = volumeTrack.getBoundingClientRect(); setVolume((e.clientX - r.left) / r.width); });
+  document.addEventListener('touchmove', (e) => { if (!volDrag) return; const r = volumeTrack.getBoundingClientRect(); setVolume((e.touches[0].clientX - r.left) / r.width); }, { passive: true });
+  document.addEventListener('mouseup', () => { volDrag = false; });
+  document.addEventListener('touchend', () => { volDrag = false; });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') { e.preventDefault(); btnPlay.click(); }
+    if (e.code === 'ArrowLeft') audio.currentTime = Math.max(0, audio.currentTime - 5);
+    if (e.code === 'ArrowRight') audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+    if (e.code === 'ArrowUp') { e.preventDefault(); setVolume(Math.min(1, audio.volume + 0.05)); }
+    if (e.code === 'ArrowDown') { e.preventDefault(); setVolume(Math.max(0, audio.volume - 0.05)); }
+  });
+
+  setVolume(0.75);
+})();
+</script>
+</body>
+</html>
