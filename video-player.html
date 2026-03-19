@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway Video Player</title>
+<link href="https://vjs.zencdn.net/8.23.4/video-js.css" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: transparent;
+    font-family: 'Open Sans', sans-serif;
+  }
+  body {
+    padding: 12px;
+  }
+  /* ══ Player wrapper ══ */
+  .pw-wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 20px;
+    background: linear-gradient(90deg, rgba(128,128,128,0.04) 0%, rgba(128,128,128,0.1) 100%);
+    border: 1px solid rgba(128,128,128,0.15);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+  /* ══ Header ══ */
+  .pw-header {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .pw-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: inherit;
+    margin: 0;
+  }
+  .pw-subtitle {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+  /* ══ Video shell ══ */
+  .pw-video-shell {
+    overflow: hidden;
+    border-radius: 14px;
+    background: #0a0a0a;
+  }
+  .video-js.pw-video {
+    width: 100%;
+    height: auto;
+    min-height: 240px;
+  }
+  /* ══ Info panel ══ */
+  .pw-panel {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(128,128,128,0.06);
+    border: 1px solid rgba(128,128,128,0.1);
+  }
+  .pw-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .pw-status {
+    font-size: 13px;
+    color: inherit;
+    font-weight: 600;
+  }
+  .pw-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: rgba(21,154,145,0.12);
+    color: #2a9d8f;
+    border: 1px solid rgba(21,154,145,0.18);
+  }
+  .pw-badge.complete {
+    background: rgba(48,176,110,0.12);
+    color: #1a6d45;
+    border-color: rgba(48,176,110,0.22);
+  }
+  /* ══ Progress bar ══ */
+  .pw-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  .pw-progress-track {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(128,128,128,0.12);
+    overflow: hidden;
+    position: relative;
+  }
+  .pw-progress-bar {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #2a9d8f, #38c4ba);
+    transition: width 0.2s ease;
+  }
+  /* ══ Buttons ══ */
+  .pw-actions {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pw-btn {
+    appearance: none;
+    border: 0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Open Sans', sans-serif;
+    cursor: pointer;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+  }
+  .pw-btn:hover { transform: translateY(-1px); }
+  .pw-btn-primary {
+    background: linear-gradient(180deg, #2a9d8f, #1e8578);
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(30,133,120,0.2);
+  }
+  .pw-btn-secondary {
+    background: rgba(128,128,128,0.1);
+    color: inherit;
+  }
+  .pw-btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .pw-note {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #888;
+    line-height: 1.5;
+  }
+  .pw-skip-warning {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(220,80,60,0.1);
+    border: 1px solid rgba(220,80,60,0.2);
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeInOut 3s ease forwards;
+  }
+  @keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+  }
+  #pwCompleteBtn { display: none; }
+  /* ══ Dark mode ══ */
+  @media (prefers-color-scheme: dark) {
+    .pw-wrap {
+      background: linear-gradient(90deg, rgba(128,128,128,0.06) 0%, rgba(128,128,128,0.12) 100%);
+      border-color: rgba(128,128,128,0.2);
+    }
+    .pw-panel {
+      background: rgba(128,128,128,0.08);
+      border-color: rgba(128,128,128,0.12);
+    }
+    .pw-badge { color: #3cc4b4; }
+    .pw-badge.complete { color: #4ade80; }
+  }
+  @media (max-width: 640px) {
+    body { padding: 8px; }
+    .pw-wrap { padding: 14px; border-radius: 16px; }
+    .pw-title { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+<div class="pw-wrap">
+  <div class="pw-header">
+    <h1 class="pw-title" id="pwTitle">Lesson Video</h1>
+    <div class="pw-subtitle">Pathway Learning Player</div>
+  </div>
+  <div class="pw-video-shell">
+    <video
+      id="pw-video"
+      class="video-js pw-video vjs-big-play-centered"
+      controls
+      preload="auto"
+      playsinline
+      data-setup="{}"
+    >
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+  <div class="pw-panel">
+    <div class="pw-meta">
+      <div id="pwStatus" class="pw-status">Ready to begin</div>
+      <div id="pwBadge" class="pw-badge">In Progress</div>
+    </div>
+    <div>
+      <div class="pw-progress-labels">
+        <span id="pwPercent">0% watched</span>
+        <span id="pwTime">0:00 / 0:00</span>
+      </div>
+      <div class="pw-progress-track">
+        <div id="pwBar" class="pw-progress-bar"></div>
+      </div>
+    </div>
+    <div id="pwSkipWarn" class="pw-skip-warning">You can only skip to parts you've already watched</div>
+    <div class="pw-actions">
+      <button id="pwResumeBtn" class="pw-btn pw-btn-secondary" type="button">Resume</button>
+      <button id="pwRestartBtn" class="pw-btn pw-btn-secondary" type="button">Restart</button>
+      <button id="pwCompleteBtn" class="pw-btn pw-btn-primary" type="button">Mark Complete</button>
+    </div>
+    <div class="pw-note" id="pwNote"></div>
+  </div>
+</div>
+<script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
+<script>
+(function() {
+  // ── Parse URL params ──
+  var params = new URLSearchParams(window.location.search);
+  var videoSrc = '';
+  // Base64 encoded URL (prevents TalentLMS app hijack)
+  if (params.get('b')) {
+    try { videoSrc = atob(params.get('b')); } catch(e) {}
+  } else if (params.get('src')) {
+    videoSrc = params.get('src');
+  }
+  var lessonTitle = params.get('title') || 'Lesson Video';
+  var lessonId = params.get('id') || 'default';
+  var REQUIRED_PERCENT = parseInt(params.get('req') || '90', 10);
+  document.getElementById('pwTitle').textContent = lessonTitle;
+  // ── Storage keys ──
+  var PROGRESS_KEY = 'pw-vid-' + lessonId;
+  var COMPLETE_KEY = 'pw-vid-done-' + lessonId;
+  // ── Elements ──
+  var statusEl = document.getElementById('pwStatus');
+  var badgeEl = document.getElementById('pwBadge');
+  var percentEl = document.getElementById('pwPercent');
+  var timeEl = document.getElementById('pwTime');
+  var barEl = document.getElementById('pwBar');
+  var skipWarnEl = document.getElementById('pwSkipWarn');
+  var resumeBtn = document.getElementById('pwResumeBtn');
+  var restartBtn = document.getElementById('pwRestartBtn');
+  var completeBtn = document.getElementById('pwCompleteBtn');
+  // ── Track furthest watched position (anti-skip) ──
+  var maxWatched = 0;
+  var skipWarnTimer = null;
+  // ── Storage helpers ──
+  function loadProgress() {
+    try {
+      var raw = localStorage.getItem(PROGRESS_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+  }
+  function saveProgress(data) {
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+  function isDone() {
+    try { return localStorage.getItem(COMPLETE_KEY) === 'true'; } catch(e) { return false; }
+  }
+  function setDone(v) {
+    try { localStorage.setItem(COMPLETE_KEY, v ? 'true' : 'false'); } catch(e) {}
+  }
+  function fmt(s) {
+    if (!isFinite(s) || s < 0) return '0:00';
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = Math.floor(s % 60);
+    if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+    return m + ':' + String(sec).padStart(2,'0');
+  }
+  // ── UI update ──
+  function updateUI(current, duration) {
+    var pct = duration > 0 ? Math.min((current / duration) * 100, 100) : 0;
+    var rounded = Math.floor(pct);
+    barEl.style.width = pct + '%';
+    percentEl.textContent = rounded + '% watched';
+    timeEl.textContent = fmt(current) + ' / ' + fmt(duration);
+    if (isDone() || pct >= REQUIRED_PERCENT) {
+      badgeEl.textContent = 'Completed';
+      badgeEl.className = 'pw-badge complete';
+      statusEl.textContent = 'Lesson completed';
+      completeBtn.style.display = 'inline-block';
+      completeBtn.disabled = false;
+    } else if (current > 0) {
+      badgeEl.textContent = 'In Progress';
+      badgeEl.className = 'pw-badge';
+      statusEl.textContent = 'Watch to ' + REQUIRED_PERCENT + '% to complete';
+    } else {
+      badgeEl.textContent = 'In Progress';
+      badgeEl.className = 'pw-badge';
+      statusEl.textContent = 'Ready to begin';
+    }
+  }
+  function showSkipWarning() {
+    skipWarnEl.style.display = 'block';
+    skipWarnEl.style.animation = 'none';
+    skipWarnEl.offsetHeight; // trigger reflow
+    skipWarnEl.style.animation = 'fadeInOut 3s ease forwards';
+    clearTimeout(skipWarnTimer);
+    skipWarnTimer = setTimeout(function() {
+      skipWarnEl.style.display = 'none';
+    }, 3200);
+  }
+  function markComplete() {
+    setDone(true);
+    badgeEl.textContent = 'Completed';
+    badgeEl.className = 'pw-badge complete';
+    statusEl.textContent = 'Lesson completed';
+    completeBtn.style.display = 'inline-block';
+    completeBtn.disabled = false;
+  }
+  // ── Load saved progress ──
+  var saved = loadProgress();
+  if (saved && typeof saved.maxWatched === 'number') {
+    maxWatched = saved.maxWatched;
+  }
+  // ── Init Video.js ──
+  var player = videojs('pw-video', {
+    responsive: true,
+    fluid: true,
+    autoplay: false,
+    preload: 'auto',
+    controlBar: {
+      pictureInPictureToggle: false
+    }
+  });
+  // ── Set source dynamically (no <source> tag in DOM to avoid app hijack) ──
+  if (videoSrc) {
+    player.src({ type: 'video/mp4', src: videoSrc });
+  }
+  // ── Anti-skip: prevent seeking beyond maxWatched ──
+  var isSeeking = false;
+  player.on('seeking', function() {
+    var current = player.currentTime() || 0;
+    var duration = player.duration() || 0;
+    // Allow seeking backward or to already-watched parts
+    if (current <= maxWatched + 2) {
+      // OK — within watched range (2s grace)
+      return;
+    }
+    // Block forward skip
+    if (!isDone()) {
+      isSeeking = true;
+      player.currentTime(maxWatched);
+      showSkipWarning();
+    }
+  });
+  player.on('seeked', function() {
+    isSeeking = false;
+  });
+  // ── Track progress ──
+  player.on('timeupdate', function() {
+    if (isSeeking) return;
+    var current = player.currentTime() || 0;
+    var duration = player.duration() || 0;
+    // Update max watched position
+    if (current > maxWatched) {
+      maxWatched = current;
+    }
+    var pct = duration > 0 ? (current / duration) * 100 : 0;
+    saveProgress({
+      time: current,
+      maxWatched: maxWatched,
+      duration: duration,
+      percent: pct,
+      updatedAt: new Date().toISOString()
+    });
+    updateUI(current, duration);
+    if (pct >= REQUIRED_PERCENT && !isDone()) {
+      completeBtn.style.display = 'inline-block';
+      completeBtn.disabled = false;
+    }
+  });
+  // ── Player events ──
+  player.on('loadedmetadata', function() {
+    var duration = player.duration() || 0;
+    if (saved && typeof saved.time === 'number' && saved.time > 0 && !isDone()) {
+      var safeTime = Math.min(saved.time, Math.max(duration - 2, 0));
+      player.currentTime(safeTime);
+      statusEl.textContent = 'Resumed from saved position';
+    }
+    updateUI(player.currentTime() || 0, duration);
+  });
+  player.on('play', function() {
+    statusEl.textContent = 'Now playing';
+  });
+  player.on('pause', function() {
+    if (!isDone()) {
+      statusEl.textContent = 'Paused — progress saved';
+    }
+  });
+  player.on('ended', function() {
+    var duration = player.duration() || 0;
+    maxWatched = duration;
+    saveProgress({
+      time: duration,
+      maxWatched: duration,
+      duration: duration,
+      percent: 100,
+      updatedAt: new Date().toISOString()
+    });
+    markComplete();
+    updateUI(duration, duration);
+  });
+  // ── Button handlers ──
+  resumeBtn.addEventListener('click', function() {
+    var data = loadProgress();
+    if (data && typeof data.time === 'number') {
+      player.currentTime(data.time);
+    }
+    player.play();
+  });
+  restartBtn.addEventListener('click', function() {
+    player.currentTime(0);
+    // Don't reset maxWatched — they already earned that progress
+    saveProgress({
+      time: 0,
+      maxWatched: maxWatched,
+      duration: player.duration() || 0,
+      percent: 0,
+      updatedAt: new Date().toISOString()
+    });
+    updateUI(0, player.duration() || 0);
+    player.play();
+  });
+  completeBtn.addEventListener('click', function() {
+    markComplete();
+  });
+})();
+</script>
+</body>
+</html>
