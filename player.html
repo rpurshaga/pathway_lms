@@ -146,6 +146,45 @@
     color: #888;
     margin-top: 1px;
   }
+
+  /* ══ DARK MODE ══ */
+  @media (prefers-color-scheme: dark) {
+    .key {
+      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
+      box-shadow:
+        -3px -3px 6px rgba(255,255,255,0.06),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 2px 0 0 #252525,
+        0 4px 0 0 #202020,
+        0 6px 0 0 #1a1a1a,
+        3px 8px 10px rgba(0,0,0,0.3);
+    }
+    .key:active, .key.pressed {
+      box-shadow:
+        -2px -2px 4px rgba(255,255,255,0.04),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 1px 0 0 #252525,
+        0 2px 0 0 #202020,
+        2px 3px 5px rgba(0,0,0,0.2);
+    }
+    .key .leg { color: #999; }
+    .ico-gray svg { fill: #aaa; }
+    .ico-teal svg { fill: #3cc4b4; }
+    .ico-teal .leg { color: #3cc4b4; }
+    .ico-yellow svg { fill: #c4b44a; }
+    .ico-yellow .leg { color: #b8a842; }
+    .key-lcd {
+      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
+      box-shadow:
+        -3px -3px 6px rgba(255,255,255,0.06),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 2px 0 0 #252525,
+        0 4px 0 0 #202020,
+        0 6px 0 0 #1a1a1a,
+        3px 8px 10px rgba(0,0,0,0.3);
+    }
+    .lcd-label { color: #777; }
+  }
 </style>
 </head>
 <body>
