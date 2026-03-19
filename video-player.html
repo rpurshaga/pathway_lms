@@ -9,7 +9,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: #e8e6e2;
+    background: transparent;
     font-family: 'Open Sans', sans-serif;
   }
   body {
@@ -243,7 +243,7 @@
   }
   /* ══ Dark mode ══ */
   @media (prefers-color-scheme: dark) {
-    html, body { background: #2a2a28; }
+    html, body { background: transparent; }
     .pw-title { color: #ddd; }
     .pw-subtitle { color: #777; }
     .pw-info-card, .pw-notes-card {
@@ -336,6 +336,12 @@
     <span id="pwNotesSaved" class="pw-notes-saved">Saved</span>
   </div>
   <textarea id="pwNotesArea" class="pw-notes-area" placeholder="Take notes while watching..."></textarea>
+  <div style="text-align:center; margin-top:10px;">
+    <button id="pwCopyNotes" type="button" style="appearance:none; border:0; border-radius:10px; padding:8px 16px; font-size:11px; font-weight:700; font-family:'Open Sans',sans-serif; cursor:pointer; background:#e8e6e2; color:#888; box-shadow:2px 2px 6px rgba(0,0,0,0.08), -2px -2px 5px rgba(255,255,255,0.5); transition:transform 0.1s ease, box-shadow 0.1s ease, color 0.2s ease;">
+      <svg viewBox="0 0 24 24" width="12" height="12" style="fill:currentColor; vertical-align:-1px; margin-right:4px;"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
+      Copy Notes
+    </button>
+  </div>
 </div>
 <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
 <script>
@@ -376,7 +382,7 @@
     return m+':'+String(sec).padStart(2,'0');
   }
   function updateUI(cur, dur) {
-    var pct = dur > 0 ? Math.min((cur/dur)*100, 100) : 0;
+    var pct = dur > 0 ? Math.min((sur/dur)*100, 100) : 0;
     barEl.style.width = pct+'%';
     percentEl.textContent = Math.floor(pct)+'% watched';
     timeEl.textContent = fmt(cur)+' / '+fmt(dur);
@@ -414,6 +420,31 @@
       setTimeout(function() { notesSaved.classList.remove('show'); }, 1500);
     }, 500);
   });
+  // Copy notes to clipboard
+  var copyBtn = document.getElementById('pwCopyNotes');
+  copyBtn.addEventListener('click', function() {
+    var text = notesArea.value;
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        copyBtn.style.color = '#2a9d8f';
+        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" style="fill:currentColor;vertical-align:-1px;margin-right:4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Copied!';
+        setTimeout(function() {
+          copyBtn.style.color = '#888';
+          copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" style="fill:currentColor;vertical-align:-1px;margin-right:4px;"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>Copy Notes';
+        }, 2000);
+      });
+    } else {
+      notesArea.select();
+      document.execCommand('copy');
+      copyBtn.style.color = '#2a9d8f';
+      copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" style="fill:currentColor;vertical-align:-1px;margin-right:4px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Copied!';
+      setTimeout(function() {
+        copyBtn.style.color = '#888';
+        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" style="fill:currentColor;vertical-align:-1px;margin-right:4px;"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>Copy Notes';
+      }, 2000);
+    }
+  });
   // ── Video ──
   var saved = loadProgress();
   if (saved && typeof saved.maxWatched === 'number') maxWatched = saved.maxWatched;
@@ -423,20 +454,114 @@
   });
   if (videoSrc) player.src({ type: 'video/mp4', src: videoSrc });
   var isSeeking = false;
+  var lastValidTime = 0;
+  // ── AGGRESSIVE ANTI-SKIP ──
+  // 1. Intercept seeking event
   player.on('seeking', function() {
+    if (isDone()) return;
     var cur = player.currentTime() || 0;
-    if (cur <= maxWatched + 2) return;
-    if (!isDone()) { isSeeking = true; player.currentTime(maxWatched); showSkipWarning(); }
+    if (cur > maxWatched + 2) {
+      isSeeking = true;
+      player.currentTime(maxWatched);
+      showSkipWarning();
+    }
   });
   player.on('seeked', function() { isSeeking = false; });
+  // 2. Continuous enforcement — check every timeupdate if position jumped
   player.on('timeupdate', function() {
     if (isSeeking) return;
-    var cur = player.currentTime() || 0, dur = player.duration() || 0;
+    var cur = player.currentTime() || 0;
+    var dur = player.duration() || 0;
+    // Detect a big forward jump (more than 3 seconds ahead of last known position)
+    if (!isDone() && cur > lastValidTime + 3 && cur > maxWatched + 2) {
+      player.currentTime(maxWatched);
+      showSkipWarning();
+      return;
+    }
+    // Update tracking
     if (cur > maxWatched) maxWatched = cur;
+    lastValidTime = cur;
     var pct = dur > 0 ? (cur/dur)*100 : 0;
     saveProgress({ time:cur, maxWatched:maxWatched, duration:dur, percent:pct, updatedAt:new Date().toISOString() });
     updateUI(cur, dur);
     if (pct >= REQUIRED_PERCENT && !isDone()) { completeBtn.style.display = 'inline-block'; completeBtn.disabled = false; }
+  });
+  // 3. Block progress bar — click, drag, and touch
+  player.ready(function() {
+    var progressControl = player.controlBar.progressControl;
+    if (!progressControl || !progressControl.seekBar) return;
+    var seekBar = progressControl.seekBar;
+    // Helper: calculate seek target from mouse/touch position
+    function getSeekTarget(event) {
+      var dur = player.duration() || 0;
+      if (dur <= 0) return 0;
+      var rect = seekBar.el().getBoundingClientRect();
+      var clientX = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 0) || (event.changedTouches && event.changedTouches[0] ? event.changedTouches[0].clientX : 0);
+      var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      return pct * dur;
+    }
+    // Block: override handleMouseMove (drag)
+    var origMove = seekBar.handleMouseMove;
+    seekBar.handleMouseMove = function(event) {
+      if (isDone()) { origMove.call(this, event); return; }
+      var target = getSeekTarget(event);
+      if (target <= maxWatched + 2) {
+        origMove.call(this, event);
+      } else {
+        showSkipWarning();
+      }
+    };
+    // Block: override handleMouseDown (initial click)
+    var origDown = seekBar.handleMouseDown;
+    seekBar.handleMouseDown = function(event) {
+      if (isDone()) { origDown.call(this, event); return; }
+      var target = getSeekTarget(event);
+      if (target <= maxWatched + 2) {
+        origDown.call(this, event);
+      } else {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        showSkipWarning();
+      }
+    };
+    // Block: raw click/touch on the progress bar element
+    var barEl = seekBar.el();
+    barEl.addEventListener('click', function(e) {
+      if (isDone()) return;
+      var target = getSeekTarget(e);
+      if (target > maxWatched + 2) {
+        e.stopPropagation();
+        e.preventDefault();
+        showSkipWarning();
+      }
+    }, true);
+    barEl.addEventListener('touchstart', function(e) {
+      if (isDone()) return;
+      var target = getSeekTarget(e);
+      if (target > maxWatched + 2) {
+        e.stopPropagation();
+        e.preventDefault();
+        showSkipWarning();
+      }
+    }, true);
+    // 4. Visual: show a "max seekable" marker on the progress bar
+    var maxMarker = document.createElement('div');
+    maxMarker.style.cssText = 'position:absolute;top:0;bottom:0;right:0;background:rgba(0,0,0,0.3);pointer-events:none;z-index:2;border-radius:0 999px 999px 0;transition:left 0.3s ease;';
+    seekBar.el().style.position = 'relative';
+    seekBar.el().appendChild(maxMarker);
+    // Update marker position
+    function updateMaxMarker() {
+      var dur = player.duration() || 0;
+      if (dur <= 0 || isDone()) {
+        maxMarker.style.display = 'none';
+        return;
+      }
+      maxMarker.style.display = 'block';
+      var pct = Math.min((maxWatched / dur) * 100, 100);
+      maxMarker.style.left = pct + '%';
+    }
+    player.on('timeupdate', updateMaxMarker);
+    player.on('loadedmetadata', updateMaxMarker);
   });
   player.on('loadedmetadata', function() {
     var dur = player.duration() || 0;
