@@ -6,14 +6,11 @@
 <title>Pathway Video Player</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=VT323&family=Open+Sans:wght@400;600;700&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html, body {
     background: transparent;
     font-family: 'IBM Plex Sans', sans-serif;
   }
-
   body {
     display: flex;
     flex-direction: column;
@@ -21,12 +18,10 @@
     padding: 16px 12px;
     gap: 14px;
   }
-
   /* ══ Title ══ */
   .pw-title-bar { text-align: center; width: 100%; max-width: 860px; }
   .pw-title { font-size: 17px; font-weight: 700; color: #333; margin: 0; }
   .pw-subtitle { font-size: 10px; color: #999; margin-top: 2px; }
-
   /* ══ Video card — floating with deep shadow ══ */
   .pw-video-card {
     width: 100%; max-width: 860px;
@@ -35,20 +30,16 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 6px 16px rgba(0,0,0,0.14);
     position: relative;
   }
-
   .pw-video-card video {
     display: block; width: 100%; height: auto;
     background: #000;
   }
-
   /* Hide native controls */
   .pw-video-card video::-webkit-media-controls { display: none !important; }
-
   /* Fullscreen click overlay — click video to toggle play */
   .pw-video-overlay {
     position: absolute; inset: 0; cursor: pointer; z-index: 1;
   }
-
   /* Fullscreen button (top-right) */
   .pw-fs-btn {
     position: absolute; top: 10px; right: 10px; z-index: 2;
@@ -59,27 +50,24 @@
   }
   .pw-video-card:hover .pw-fs-btn { opacity: 1; }
   .pw-fs-btn svg { width: 16px; height: 16px; fill: #fff; }
-
   /* ══ Controls card — neumorphic floating ══ */
   .pw-controls-card {
     width: 100%; max-width: 860px;
     padding: 16px 18px 14px;
     border-radius: 18px;
-    background: #ebe9e5;
+    background: 
+#ebe9e5;
     box-shadow: 5px 5px 14px rgba(0,0,0,0.08), -5px -5px 14px rgba(255,255,255,0.6);
   }
-
   .pw-controls {
     display: flex; align-items: center; justify-content: center;
     gap: 8px;
   }
-
   /* ══ Progress bar (inside controls card) ══ */
   .pw-scrub-wrap {
     padding: 0 4px;
     margin-top: 14px;
   }
-
   .pw-scrub-track {
     width: 100%; height: 6px;
     border-radius: 3px;
@@ -87,14 +75,14 @@
     position: relative; cursor: pointer;
     box-shadow: inset 1px 1px 3px rgba(0,0,0,0.1);
   }
-
   .pw-scrub-fill {
     height: 100%; border-radius: 3px;
-    background: linear-gradient(90deg, #2a9d8f, #38c4ba);
+    background: linear-gradient(90deg, 
+#2a9d8f, 
+#38c4ba);
     width: 0%; position: relative;
     transition: width 0.1s linear;
   }
-
   .pw-scrub-blocked {
     position: absolute; top: 0; bottom: 0; right: 0;
     background: rgba(0,0,0,0.15);
@@ -102,7 +90,6 @@
     pointer-events: none; z-index: 1;
     transition: left 0.3s ease;
   }
-
   .pw-scrub-knob {
     position: absolute; top: -5px;
     width: 16px; height: 16px;
@@ -114,71 +101,80 @@
     transition: transform 0.05s ease;
   }
   .pw-scrub-knob:active { cursor: grabbing; transform: translateX(-50%) scale(1.2); }
-
   .pw-scrub-times {
     display: flex; justify-content: space-between;
     font-size: 10px; color: #999; margin-top: 4px;
     font-family: 'IBM Plex Sans', sans-serif;
   }
-
   /* ══ Keycap button — same as audio player ══ */
   .key {
     position: relative; display: inline-flex; align-items: center; justify-content: center;
     flex-direction: column; gap: 3px; width: 58px; height: 58px; border-radius: 14px;
     border: none; outline: none; padding: 0; cursor: pointer;
     -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;
-    background: linear-gradient(180deg, #f4f2ef, #eae8e4);
+    background: linear-gradient(180deg, 
+#f4f2ef, 
+#eae8e4);
     box-shadow: -3px -3px 6px rgba(255,255,255,0.8), 0 0 0 1px rgba(0,0,0,0.04),
-      0 2px 0 0 #dddbd7, 0 4px 0 0 #d4d2ce, 0 6px 0 0 #cccac6, 3px 8px 10px rgba(0,0,0,0.1);
+      0 2px 0 0 
+#dddbd7, 0 4px 0 0 
+#d4d2ce, 0 6px 0 0 
+#cccac6, 3px 8px 10px rgba(0,0,0,0.1);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
   .key:active, .key.pressed {
     transform: translateY(3px);
     box-shadow: -2px -2px 4px rgba(255,255,255,0.6), 0 0 0 1px rgba(0,0,0,0.03),
-      0 1px 0 0 #dddbd7, 0 2px 0 0 #d4d2ce, 2px 3px 5px rgba(0,0,0,0.07);
+      0 1px 0 0 
+#dddbd7, 0 2px 0 0 
+#d4d2ce, 2px 3px 5px rgba(0,0,0,0.07);
   }
   .key svg { width: 18px; height: 18px; flex-shrink: 0; position: relative; z-index: 1; }
   .key .leg {
     font-family: 'IBM Plex Sans', sans-serif; font-size: 6.5px; font-weight: 700;
     letter-spacing: 0.06em; text-transform: uppercase; color: #888; position: relative; z-index: 1;
   }
-
   .ico-gray svg { fill: #666; }
-  .ico-teal svg { fill: #2a9d8f; }
-  .ico-teal .leg { color: #2a9d8f; }
-  .ico-yellow svg { fill: #8a7a20; }
-  .ico-yellow .leg { color: #7a6c1a; }
+  .ico-teal svg { fill: 
+#2a9d8f; }
+  .ico-teal .leg { color: 
+#2a9d8f; }
+  .ico-yellow svg { fill: 
+#8a7a20; }
+  .ico-yellow .leg { color: 
+#7a6c1a; }
   .ico-teal .icon-play { margin-left: 2px; }
-
   /* ══ Skip warning ══ */
   .pw-skip-warn {
     display: none; text-align: center; font-size: 12px; font-weight: 600;
-    color: #c0392b; padding: 6px 12px; animation: fadeIO 3s ease forwards;
+    color: 
+#c0392b; padding: 6px 12px; animation: fadeIO 3s ease forwards;
     position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
     background: rgba(255,255,255,0.95); border-radius: 12px; z-index: 100;
     box-shadow: 0 4px 16px rgba(0,0,0,0.12);
   }
   @keyframes fadeIO { 0%{opacity:0} 10%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
-
   /* ══ Notes card ══ */
   .pw-notes {
     width: 100%; max-width: 860px; padding: 16px 18px; border-radius: 18px;
-    background: #ebe9e5;
+    background: 
+#ebe9e5;
     box-shadow: 5px 5px 14px rgba(0,0,0,0.08), -5px -5px 14px rgba(255,255,255,0.6);
   }
   .pw-notes-head {
     display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
   }
-  .pw-notes-head svg { width: 16px; height: 16px; fill: #2a9d8f; }
+  .pw-notes-head svg { width: 16px; height: 16px; fill: 
+#2a9d8f; }
   .pw-notes-head span { font-size: 13px; font-weight: 700; color: #555; }
   .pw-notes-saved {
     margin-left: auto; font-size: 10px; color: #aaa; opacity: 0; transition: opacity 0.3s;
   }
   .pw-notes-saved.show { opacity: 1; }
-
   .pw-notes textarea {
     width: 100%; min-height: 100px; padding: 12px; border: none; border-radius: 12px;
-    background: #ebe9e5; font-family: 'Open Sans', sans-serif; font-size: 14px;
+    background: 
+#ebe9e5; font-family: 'Open Sans', sans-serif; font-size: 14px;
     line-height: 1.6; color: #444; resize: vertical; outline: none;
     box-shadow: inset 2px 2px 5px rgba(0,0,0,0.07), inset -2px -2px 5px rgba(255,255,255,0.5);
   }
@@ -186,51 +182,65 @@
   .pw-notes textarea:focus {
     box-shadow: inset 2px 2px 5px rgba(0,0,0,0.09), inset -2px -2px 5px rgba(255,255,255,0.4), 0 0 0 2px rgba(42,157,143,0.2);
   }
-
   .pw-copy-btn {
     display: block; margin: 8px auto 0; appearance: none; border: 0; border-radius: 10px;
     padding: 7px 14px; font-size: 11px; font-weight: 700; font-family: 'IBM Plex Sans', sans-serif;
-    cursor: pointer; color: #888; background: #ebe9e5;
+    cursor: pointer; color: #888; background: 
+#ebe9e5;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.07), -2px -2px 4px rgba(255,255,255,0.5);
     transition: transform 0.1s ease, color 0.2s ease;
   }
   .pw-copy-btn:active { transform: translateY(1px); }
-
   /* ══ DARK MODE ══ */
   @media (prefers-color-scheme: dark) {
     .pw-title { color: #ddd; }
     .pw-video-card { box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 6px 16px rgba(0,0,0,0.3); }
     .pw-controls-card {
-      background: #2e2e2c;
+      background: 
+#2e2e2c;
       box-shadow: 5px 5px 14px rgba(0,0,0,0.25), -5px -5px 14px rgba(255,255,255,0.03);
     }
-    .pw-scrub-track { background: #3a3a38; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3); }
+    .pw-scrub-track { background: 
+#3a3a38; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.3); }
     .pw-scrub-blocked { background: rgba(0,0,0,0.3); }
     .pw-scrub-knob { background: #ccc; }
     .pw-scrub-times { color: #777; }
     .pw-skip-warn { background: rgba(40,40,38,0.95); }
     .key {
-      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
+      background: linear-gradient(180deg, 
+#3a3a3a, 
+#2e2e2e);
       box-shadow: -3px -3px 6px rgba(255,255,255,0.06), 0 0 0 1px rgba(255,255,255,0.06),
-        0 2px 0 0 #252525, 0 4px 0 0 #202020, 0 6px 0 0 #1a1a1a, 3px 8px 10px rgba(0,0,0,0.3);
+        0 2px 0 0 
+#252525, 0 4px 0 0 
+#202020, 0 6px 0 0 
+#1a1a1a, 3px 8px 10px rgba(0,0,0,0.3);
     }
     .key:active, .key.pressed {
       box-shadow: -2px -2px 4px rgba(255,255,255,0.04), 0 0 0 1px rgba(255,255,255,0.04),
-        0 1px 0 0 #252525, 0 2px 0 0 #202020, 2px 3px 5px rgba(0,0,0,0.2);
+        0 1px 0 0 
+#252525, 0 2px 0 0 
+#202020, 2px 3px 5px rgba(0,0,0,0.2);
     }
     .key .leg { color: #999; }
     .ico-gray svg { fill: #aaa; }
-    .ico-teal svg { fill: #3cc4b4; }
-    .ico-teal .leg { color: #3cc4b4; }
-    .ico-yellow svg { fill: #c4b44a; }
-    .ico-yellow .leg { color: #b8a842; }
+    .ico-teal svg { fill: 
+#3cc4b4; }
+    .ico-teal .leg { color: 
+#3cc4b4; }
+    .ico-yellow svg { fill: 
+#c4b44a; }
+    .ico-yellow .leg { color: 
+#b8a842; }
     .pw-notes {
-      background: #2e2e2c;
+      background: 
+#2e2e2c;
       box-shadow: 5px 5px 14px rgba(0,0,0,0.25), -5px -5px 14px rgba(255,255,255,0.03);
     }
     .pw-notes-head span { color: #bbb; }
     .pw-notes textarea {
-      background: #2e2e2c; color: #ccc;
+      background: 
+#2e2e2c; color: #ccc;
       box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.02);
     }
     .pw-notes textarea::placeholder { color: #666; }
@@ -238,11 +248,11 @@
       box-shadow: inset 2px 2px 5px rgba(0,0,0,0.25), inset -2px -2px 5px rgba(255,255,255,0.02), 0 0 0 2px rgba(42,157,143,0.3);
     }
     .pw-copy-btn {
-      background: #2e2e2c; color: #888;
+      background: 
+#2e2e2c; color: #888;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.2), -2px -2px 4px rgba(255,255,255,0.03);
     }
   }
-
   @media (max-width: 640px) {
     body { padding: 12px 8px; gap: 10px; }
     .pw-video-card { border-radius: 16px; }
@@ -253,13 +263,11 @@
 </style>
 </head>
 <body>
-
 <!-- Title -->
 <div class="pw-title-bar">
   <h1 class="pw-title" id="pwTitle">Lesson Video</h1>
   <div class="pw-subtitle">Pathway Learning Player</div>
 </div>
-
 <!-- Video -->
 <div class="pw-video-card" id="pwVideoCard">
   <video id="pwVideo" playsinline preload="auto"></video>
@@ -268,7 +276,6 @@
     <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
   </button>
 </div>
-
 <!-- Controls card -->
 <div class="pw-controls-card">
   <div class="pw-controls">
@@ -276,24 +283,20 @@
       <svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
       <span class="leg">Back</span>
     </button>
-
     <button class="key ico-teal" id="btnPlay" title="Play">
       <svg viewBox="0 0 24 24" class="icon-play" id="iconPlay"><polygon points="8,5 19,12 8,19"/></svg>
       <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       <span class="leg" id="playLabel">Play</span>
     </button>
-
     <button class="key ico-gray" id="btnFwd" title="Forward 15s">
       <svg viewBox="0 0 24 24"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
       <span class="leg">Forward</span>
     </button>
-
     <button class="key ico-yellow" id="btnSpeed" title="Speed">
       <svg viewBox="0 0 24 24"><path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/><path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/></svg>
       <span class="leg" id="speedLabel">1×</span>
     </button>
   </div>
-
   <div class="pw-scrub-wrap">
     <div class="pw-scrub-track" id="pwTrack">
       <div class="pw-scrub-fill" id="pwFill"></div>
@@ -306,10 +309,8 @@
     </div>
   </div>
 </div>
-
 <!-- Skip warning (floating toast) -->
 <div id="pwSkipWarn" class="pw-skip-warn">You can only skip to parts you've already watched</div>
-
 <!-- Notes -->
 <div class="pw-notes">
   <div class="pw-notes-head">
@@ -323,24 +324,19 @@
     Copy Notes
   </button>
 </div>
-
 <script>
 (function() {
   var params = new URLSearchParams(window.location.search);
   var videoSrc = '';
   if (params.get('b')) { try { videoSrc = atob(params.get('b')); } catch(e) {} }
   else if (params.get('src')) { videoSrc = params.get('src'); }
-
   var lessonTitle = params.get('title') || 'Lesson Video';
   var lessonId = params.get('id') || 'default';
   var REQ = parseInt(params.get('req') || '90', 10);
-
   document.getElementById('pwTitle').textContent = lessonTitle;
-
   var PK = 'pw-vid-' + lessonId;
   var CK = 'pw-vid-done-' + lessonId;
   var NK = 'pw-notes-' + lessonId;
-
   var video = document.getElementById('pwVideo');
   var fillEl = document.getElementById('pwFill');
   var blockedEl = document.getElementById('pwBlocked');
@@ -351,25 +347,21 @@
   var skipWarnEl = document.getElementById('pwSkipWarn');
   var notesArea = document.getElementById('pwNotes');
   var notesSavedEl = document.getElementById('pwNotesSaved');
-
   var maxWatched = 0;
   var speeds = [1, 1.25, 1.5, 1.75, 2];
   var speedIdx = 0;
   var skipTimer = null;
   var notesTimer = null;
-
   // Storage
   function load() { try { var r = localStorage.getItem(PK); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
   function save(d) { try { localStorage.setItem(PK, JSON.stringify(d)); } catch(e) {} }
   function done() { try { return localStorage.getItem(CK) === 'true'; } catch(e) { return false; } }
   function setDone(v) { try { localStorage.setItem(CK, v ? 'true' : 'false'); } catch(e) {} }
-
   function fmt(s) {
     if (!isFinite(s) || s < 0) return '0:00';
     var m = Math.floor(s / 60), sec = Math.floor(s % 60);
     return m + ':' + (sec < 10 ? '0' : '') + sec;
   }
-
   function showSkip() {
     skipWarnEl.style.display = 'block';
     skipWarnEl.style.animation = 'none'; skipWarnEl.offsetHeight;
@@ -377,45 +369,37 @@
     clearTimeout(skipTimer);
     skipTimer = setTimeout(function() { skipWarnEl.style.display = 'none'; }, 3200);
   }
-
   function updateBar() {
     var dur = video.duration || 0;
     var cur = video.currentTime || 0;
     var pct = dur > 0 ? (cur / dur) * 100 : 0;
     var maxPct = dur > 0 ? Math.min((maxWatched / dur) * 100, 100) : 0;
-
     fillEl.style.width = pct + '%';
     knobEl.style.left = pct + '%';
     timeCurEl.textContent = fmt(cur);
     timeTotalEl.textContent = fmt(dur);
-
     if (done()) {
       blockedEl.style.display = 'none';
     } else {
       blockedEl.style.display = 'block';
       blockedEl.style.left = maxPct + '%';
     }
-
     if (done() || pct >= REQ) {
       if (!done()) setDone(true);
     }
   }
-
   function setPlaying(p) {
     document.getElementById('iconPlay').style.display = p ? 'none' : 'block';
     document.getElementById('iconPause').style.display = p ? 'block' : 'none';
     document.getElementById('playLabel').textContent = p ? 'Pause' : 'Play';
   }
-
   // Set source dynamically
   if (videoSrc) video.src = videoSrc;
-
   // Load saved
   var saved = load();
   if (saved) {
     if (typeof saved.maxWatched === 'number') maxWatched = saved.maxWatched;
   }
-
   // Auto-resume on metadata load
   video.addEventListener('loadedmetadata', function() {
     timeTotalEl.textContent = fmt(video.duration);
@@ -424,7 +408,6 @@
     }
     updateBar();
   });
-
   // Timeupdate
   var lastValid = 0;
   video.addEventListener('timeupdate', function() {
@@ -442,7 +425,6 @@
     save({ time: cur, maxWatched: maxWatched, duration: dur, percent: pct, updatedAt: new Date().toISOString() });
     updateBar();
   });
-
   video.addEventListener('play', function() { setPlaying(true); });
   video.addEventListener('pause', function() { setPlaying(false); });
   video.addEventListener('ended', function() {
@@ -452,28 +434,23 @@
     save({ time: video.duration, maxWatched: video.duration, duration: video.duration, percent: 100, updatedAt: new Date().toISOString() });
     updateBar();
   });
-
   // Click video overlay to toggle play
   document.getElementById('pwOverlay').addEventListener('click', function() {
     if (video.paused) video.play(); else video.pause();
   });
-
   // Fullscreen
   document.getElementById('pwFsBtn').addEventListener('click', function() {
     var card = document.getElementById('pwVideoCard');
     if (card.requestFullscreen) card.requestFullscreen();
     else if (card.webkitRequestFullscreen) card.webkitRequestFullscreen();
   });
-
   // ── Keycap buttons ──
   document.getElementById('btnPlay').addEventListener('click', function() {
     if (video.paused) video.play(); else video.pause();
   });
-
   document.getElementById('btnBack').addEventListener('click', function() {
     video.currentTime = Math.max(0, video.currentTime - 15);
   });
-
   document.getElementById('btnFwd').addEventListener('click', function() {
     var target = video.currentTime + 15;
     if (!done() && target > maxWatched + 2) {
@@ -482,16 +459,13 @@
     }
     video.currentTime = Math.min(video.duration || 0, target);
   });
-
   document.getElementById('btnSpeed').addEventListener('click', function() {
     speedIdx = (speedIdx + 1) % speeds.length;
     video.playbackRate = speeds[speedIdx];
     document.getElementById('speedLabel').textContent = speeds[speedIdx] + '\u00d7';
   });
-
   // ── Scrub bar drag ──
   var dragging = false;
-
   function seekTo(x) {
     var rect = trackEl.getBoundingClientRect();
     var pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
@@ -503,27 +477,22 @@
     video.currentTime = target;
     updateBar();
   }
-
   trackEl.addEventListener('mousedown', function(e) { dragging = true; seekTo(e.clientX); });
   knobEl.addEventListener('mousedown', function(e) { dragging = true; e.preventDefault(); });
   document.addEventListener('mousemove', function(e) { if (dragging) seekTo(e.clientX); });
   document.addEventListener('mouseup', function() { dragging = false; });
-
   trackEl.addEventListener('touchstart', function(e) { dragging = true; seekTo(e.touches[0].clientX); }, { passive: true });
   knobEl.addEventListener('touchstart', function(e) { dragging = true; e.preventDefault(); });
   document.addEventListener('touchmove', function(e) { if (dragging) seekTo(e.touches[0].clientX); });
   document.addEventListener('touchend', function() { dragging = false; });
-
   // ── iOS touch animation on keycaps ──
   document.querySelectorAll('button.key').forEach(function(btn) {
     btn.addEventListener('touchstart', function() { btn.classList.add('pressed'); }, { passive: true });
     btn.addEventListener('touchend', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
     btn.addEventListener('touchcancel', function() { btn.classList.remove('pressed'); });
   });
-
   // ── Notes ──
   try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
-
   notesArea.addEventListener('input', function() {
     clearTimeout(notesTimer);
     notesTimer = setTimeout(function() {
@@ -532,7 +501,6 @@
       setTimeout(function() { notesSavedEl.classList.remove('show'); }, 1500);
     }, 500);
   });
-
   document.getElementById('pwCopy').addEventListener('click', function() {
     var btn = document.getElementById('pwCopy');
     var text = notesArea.value;
@@ -541,12 +509,14 @@
     var orig = btn.innerHTML;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(function() {
-        btn.style.color = '#2a9d8f'; btn.innerHTML = ok;
+        btn.style.color = '
+#2a9d8f'; btn.innerHTML = ok;
         setTimeout(function() { btn.style.color = ''; btn.innerHTML = orig; }, 2000);
       });
     } else {
       notesArea.select(); document.execCommand('copy');
-      btn.style.color = '#2a9d8f'; btn.innerHTML = ok;
+      btn.style.color = '
+#2a9d8f'; btn.innerHTML = ok;
       setTimeout(function() { btn.style.color = ''; btn.innerHTML = orig; }, 2000);
     }
   });
