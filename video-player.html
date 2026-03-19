@@ -9,89 +9,109 @@
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: transparent;
+    background: #e8e6e2;
     font-family: 'Open Sans', sans-serif;
   }
   body {
-    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    gap: 20px;
   }
-  /* ══ Player wrapper ══ */
-  .pw-wrap {
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 20px;
-    background: linear-gradient(90deg, rgba(128,128,128,0.04) 0%, rgba(128,128,128,0.1) 100%);
-    border: 1px solid rgba(128,128,128,0.15);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-  }
-  /* ══ Header ══ */
-  .pw-header {
-    text-align: center;
-    margin-bottom: 14px;
-  }
-  .pw-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: inherit;
-    margin: 0;
-  }
-  .pw-subtitle {
-    font-size: 12px;
-    color: #888;
-    margin-top: 4px;
-  }
-  /* ══ Video shell ══ */
-  .pw-video-shell {
+  /* ══ Floating video card ══ */
+  .pw-video-card {
+    width: 100%;
+    max-width: 860px;
+    border-radius: 24px;
     overflow: hidden;
-    border-radius: 14px;
-    background: #0a0a0a;
+    background: #111;
+    box-shadow:
+      0 20px 50px rgba(0,0,0,0.25),
+      0 8px 20px rgba(0,0,0,0.15),
+      0 2px 6px rgba(0,0,0,0.1);
   }
   .video-js.pw-video {
     width: 100%;
     height: auto;
     min-height: 240px;
   }
-  /* ══ Info panel ══ */
-  .pw-panel {
-    margin-top: 14px;
-    padding: 14px;
-    border-radius: 14px;
-    background: rgba(128,128,128,0.06);
-    border: 1px solid rgba(128,128,128,0.1);
+  /* Video.js Pathway teal overrides */
+  .pw-video .vjs-play-progress,
+  .pw-video .vjs-volume-level {
+    background: #2a9d8f !important;
+  }
+  .pw-video .vjs-load-progress { background: rgba(42,157,143,0.2) !important; }
+  .pw-video .vjs-load-progress div { background: rgba(42,157,143,0.3) !important; }
+  .pw-video .vjs-big-play-button {
+    background: rgba(42,157,143,0.9) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 68px !important;
+    height: 68px !important;
+    line-height: 68px !important;
+    margin-top: -34px !important;
+    margin-left: -34px !important;
+    box-shadow: 0 6px 24px rgba(42,157,143,0.35);
+    transition: transform 0.15s ease;
+  }
+  .pw-video .vjs-big-play-button:hover {
+    background: rgba(42,157,143,1) !important;
+    transform: scale(1.1);
+  }
+  .pw-video .vjs-big-play-button .vjs-icon-placeholder:before {
+    font-size: 34px;
+  }
+  /* ══ Title bar ══ */
+  .pw-title-bar {
+    width: 100%;
+    max-width: 860px;
+    text-align: center;
+  }
+  .pw-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+  }
+  .pw-subtitle {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+  }
+  /* ══ Info panel — separate floating card ══ */
+  .pw-info-card {
+    width: 100%;
+    max-width: 860px;
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: #e8e6e2;
+    box-shadow:
+      6px 6px 16px rgba(0,0,0,0.1),
+      -6px -6px 16px rgba(255,255,255,0.65);
   }
   .pw-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
   }
-  .pw-status {
-    font-size: 13px;
-    color: inherit;
-    font-weight: 600;
-  }
+  .pw-status { font-size: 13px; color: #555; font-weight: 600; }
   .pw-badge {
     display: inline-block;
-    padding: 5px 10px;
+    padding: 5px 12px;
     border-radius: 999px;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.02em;
-    background: rgba(21,154,145,0.12);
+    background: rgba(42,157,143,0.12);
     color: #2a9d8f;
-    border: 1px solid rgba(21,154,145,0.18);
   }
   .pw-badge.complete {
     background: rgba(48,176,110,0.12);
     color: #1a6d45;
-    border-color: rgba(48,176,110,0.22);
   }
-  /* ══ Progress bar ══ */
   .pw-progress-labels {
     display: flex;
     justify-content: space-between;
@@ -101,11 +121,11 @@
   }
   .pw-progress-track {
     width: 100%;
-    height: 10px;
+    height: 8px;
     border-radius: 999px;
-    background: rgba(128,128,128,0.12);
+    background: #e8e6e2;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.5);
     overflow: hidden;
-    position: relative;
   }
   .pw-progress-bar {
     width: 0%;
@@ -114,7 +134,21 @@
     background: linear-gradient(90deg, #2a9d8f, #38c4ba);
     transition: width 0.2s ease;
   }
-  /* ══ Buttons ══ */
+  .pw-skip-warning {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(220,80,60,0.1);
+    color: #c0392b;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeInOut 3s ease forwards;
+  }
+  @keyframes fadeInOut {
+    0% { opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; }
+  }
   .pw-actions {
     margin-top: 12px;
     display: flex;
@@ -124,136 +158,199 @@
   .pw-btn {
     appearance: none;
     border: 0;
-    border-radius: 12px;
-    padding: 10px 14px;
+    border-radius: 14px;
+    padding: 10px 16px;
     font-size: 13px;
     font-weight: 700;
     font-family: 'Open Sans', sans-serif;
     cursor: pointer;
-    transition: transform 0.1s ease, opacity 0.1s ease;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
-  .pw-btn:hover { transform: translateY(-1px); }
+  .pw-btn:active { transform: translateY(1px); }
   .pw-btn-primary {
-    background: linear-gradient(180deg, #2a9d8f, #1e8578);
+    background: linear-gradient(180deg, #2a9d8f, #228b7e);
     color: #fff;
-    box-shadow: 0 6px 12px rgba(30,133,120,0.2);
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.12), -2px -2px 6px rgba(255,255,255,0.5);
+  }
+  .pw-btn-primary:active {
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.15), inset -2px -2px 4px rgba(255,255,255,0.3);
   }
   .pw-btn-secondary {
-    background: rgba(128,128,128,0.1);
-    color: inherit;
+    background: #e8e6e2;
+    color: #555;
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.1), -2px -2px 6px rgba(255,255,255,0.6);
   }
-  .pw-btn[disabled] {
-    opacity: 0.4;
-    cursor: not-allowed;
-    transform: none;
+  .pw-btn-secondary:active {
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.4);
   }
-  .pw-note {
-    margin-top: 10px;
-    font-size: 11px;
-    color: #888;
-    line-height: 1.5;
-  }
-  .pw-skip-warning {
-    display: none;
-    margin-top: 8px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: rgba(220,80,60,0.1);
-    border: 1px solid rgba(220,80,60,0.2);
-    color: #c0392b;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    animation: fadeInOut 3s ease forwards;
-  }
-  @keyframes fadeInOut {
-    0% { opacity: 0; }
-    10% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { opacity: 0; display: none; }
-  }
+  .pw-btn[disabled] { opacity: 0.4; cursor: not-allowed; transform: none; }
   #pwCompleteBtn { display: none; }
+  /* ══ Notes card — separate floating ══ */
+  .pw-notes-card {
+    width: 100%;
+    max-width: 860px;
+    padding: 18px 20px;
+    border-radius: 20px;
+    background: #e8e6e2;
+    box-shadow:
+      6px 6px 16px rgba(0,0,0,0.1),
+      -6px -6px 16px rgba(255,255,255,0.65);
+  }
+  .pw-notes-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .pw-notes-icon {
+    width: 20px;
+    height: 20px;
+    fill: #2a9d8f;
+  }
+  .pw-notes-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #444;
+  }
+  .pw-notes-saved {
+    margin-left: auto;
+    font-size: 11px;
+    color: #aaa;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .pw-notes-saved.show { opacity: 1; }
+  .pw-notes-area {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: #e8e6e2;
+    box-shadow: inset 3px 3px 6px rgba(0,0,0,0.08), inset -3px -3px 6px rgba(255,255,255,0.5);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+    resize: vertical;
+    outline: none;
+  }
+  .pw-notes-area::placeholder {
+    color: #bbb;
+  }
+  .pw-notes-area:focus {
+    box-shadow: inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.4), 0 0 0 2px rgba(42,157,143,0.2);
+  }
   /* ══ Dark mode ══ */
   @media (prefers-color-scheme: dark) {
-    .pw-wrap {
-      background: linear-gradient(90deg, rgba(128,128,128,0.06) 0%, rgba(128,128,128,0.12) 100%);
-      border-color: rgba(128,128,128,0.2);
+    html, body { background: #2a2a28; }
+    .pw-title { color: #ddd; }
+    .pw-subtitle { color: #777; }
+    .pw-info-card, .pw-notes-card {
+      background: #2a2a28;
+      box-shadow: 6px 6px 16px rgba(0,0,0,0.3), -6px -6px 16px rgba(255,255,255,0.03);
     }
-    .pw-panel {
-      background: rgba(128,128,128,0.08);
-      border-color: rgba(128,128,128,0.12);
-    }
+    .pw-status { color: #aaa; }
     .pw-badge { color: #3cc4b4; }
     .pw-badge.complete { color: #4ade80; }
+    .pw-progress-track {
+      background: #2a2a28;
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.25), inset -2px -2px 4px rgba(255,255,255,0.03);
+    }
+    .pw-btn-secondary {
+      background: #2a2a28;
+      color: #aaa;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.25), -2px -2px 6px rgba(255,255,255,0.03);
+    }
+    .pw-btn-secondary:active {
+      box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(255,255,255,0.02);
+    }
+    .pw-notes-title { color: #bbb; }
+    .pw-notes-area {
+      background: #2a2a28;
+      color: #ccc;
+      box-shadow: inset 3px 3px 6px rgba(0,0,0,0.2), inset -3px -3px 6px rgba(255,255,255,0.02);
+    }
+    .pw-notes-area::placeholder { color: #666; }
+    .pw-notes-area:focus {
+      box-shadow: inset 3px 3px 6px rgba(0,0,0,0.25), inset -3px -3px 6px rgba(255,255,255,0.02), 0 0 0 2px rgba(42,157,143,0.3);
+    }
+    .pw-video-card {
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 8px 20px rgba(0,0,0,0.3), 0 2px 6px rgba(0,0,0,0.2);
+    }
   }
   @media (max-width: 640px) {
-    body { padding: 8px; }
-    .pw-wrap { padding: 14px; border-radius: 16px; }
-    .pw-title { font-size: 17px; }
+    body { padding: 16px 10px; gap: 14px; }
+    .pw-video-card { border-radius: 18px; }
+    .pw-title { font-size: 16px; }
+    .pw-info-card, .pw-notes-card { padding: 14px 16px; border-radius: 16px; }
   }
 </style>
 </head>
 <body>
-<div class="pw-wrap">
-  <div class="pw-header">
-    <h1 class="pw-title" id="pwTitle">Lesson Video</h1>
-    <div class="pw-subtitle">Pathway Learning Player</div>
+<!-- Title -->
+<div class="pw-title-bar">
+  <h1 class="pw-title" id="pwTitle">Lesson Video</h1>
+  <div class="pw-subtitle">Pathway Learning Player</div>
+</div>
+<!-- Floating video -->
+<div class="pw-video-card">
+  <video
+    id="pw-video"
+    class="video-js pw-video vjs-big-play-centered"
+    controls
+    preload="auto"
+    playsinline
+    data-setup="{}"
+  >
+    Your browser does not support HTML5 video.
+  </video>
+</div>
+<!-- Info panel -->
+<div class="pw-info-card">
+  <div class="pw-meta">
+    <div id="pwStatus" class="pw-status">Ready to begin</div>
+    <div id="pwBadge" class="pw-badge">In Progress</div>
   </div>
-  <div class="pw-video-shell">
-    <video
-      id="pw-video"
-      class="video-js pw-video vjs-big-play-centered"
-      controls
-      preload="auto"
-      playsinline
-      data-setup="{}"
-    >
-      Your browser does not support HTML5 video.
-    </video>
+  <div>
+    <div class="pw-progress-labels">
+      <span id="pwPercent">0% watched</span>
+      <span id="pwTime">0:00 / 0:00</span>
+    </div>
+    <div class="pw-progress-track">
+      <div id="pwBar" class="pw-progress-bar"></div>
+    </div>
   </div>
-  <div class="pw-panel">
-    <div class="pw-meta">
-      <div id="pwStatus" class="pw-status">Ready to begin</div>
-      <div id="pwBadge" class="pw-badge">In Progress</div>
-    </div>
-    <div>
-      <div class="pw-progress-labels">
-        <span id="pwPercent">0% watched</span>
-        <span id="pwTime">0:00 / 0:00</span>
-      </div>
-      <div class="pw-progress-track">
-        <div id="pwBar" class="pw-progress-bar"></div>
-      </div>
-    </div>
-    <div id="pwSkipWarn" class="pw-skip-warning">You can only skip to parts you've already watched</div>
-    <div class="pw-actions">
-      <button id="pwResumeBtn" class="pw-btn pw-btn-secondary" type="button">Resume</button>
-      <button id="pwRestartBtn" class="pw-btn pw-btn-secondary" type="button">Restart</button>
-      <button id="pwCompleteBtn" class="pw-btn pw-btn-primary" type="button">Mark Complete</button>
-    </div>
-    <div class="pw-note" id="pwNote"></div>
+  <div id="pwSkipWarn" class="pw-skip-warning">You can only skip to parts you've already watched</div>
+  <div class="pw-actions">
+    <button id="pwResumeBtn" class="pw-btn pw-btn-secondary" type="button">Resume</button>
+    <button id="pwRestartBtn" class="pw-btn pw-btn-secondary" type="button">Restart</button>
+    <button id="pwCompleteBtn" class="pw-btn pw-btn-primary" type="button">Mark Complete</button>
   </div>
+</div>
+<!-- Notes -->
+<div class="pw-notes-card">
+  <div class="pw-notes-header">
+    <svg class="pw-notes-icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+    <span class="pw-notes-title">My Notes</span>
+    <span id="pwNotesSaved" class="pw-notes-saved">Saved</span>
+  </div>
+  <textarea id="pwNotesArea" class="pw-notes-area" placeholder="Take notes while watching..."></textarea>
 </div>
 <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
 <script>
 (function() {
-  // ── Parse URL params ──
   var params = new URLSearchParams(window.location.search);
   var videoSrc = '';
-  // Base64 encoded URL (prevents TalentLMS app hijack)
-  if (params.get('b')) {
-    try { videoSrc = atob(params.get('b')); } catch(e) {}
-  } else if (params.get('src')) {
-    videoSrc = params.get('src');
-  }
+  if (params.get('b')) { try { videoSrc = atob(params.get('b')); } catch(e) {} }
+  else if (params.get('src')) { videoSrc = params.get('src'); }
   var lessonTitle = params.get('title') || 'Lesson Video';
   var lessonId = params.get('id') || 'default';
   var REQUIRED_PERCENT = parseInt(params.get('req') || '90', 10);
   document.getElementById('pwTitle').textContent = lessonTitle;
-  // ── Storage keys ──
   var PROGRESS_KEY = 'pw-vid-' + lessonId;
   var COMPLETE_KEY = 'pw-vid-done-' + lessonId;
-  // ── Elements ──
+  var NOTES_KEY = 'pw-notes-' + lessonId;
   var statusEl = document.getElementById('pwStatus');
   var badgeEl = document.getElementById('pwBadge');
   var percentEl = document.getElementById('pwPercent');
@@ -263,191 +360,108 @@
   var resumeBtn = document.getElementById('pwResumeBtn');
   var restartBtn = document.getElementById('pwRestartBtn');
   var completeBtn = document.getElementById('pwCompleteBtn');
-  // ── Track furthest watched position (anti-skip) ──
+  var notesArea = document.getElementById('pwNotesArea');
+  var notesSaved = document.getElementById('pwNotesSaved');
   var maxWatched = 0;
   var skipWarnTimer = null;
-  // ── Storage helpers ──
-  function loadProgress() {
-    try {
-      var raw = localStorage.getItem(PROGRESS_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) { return null; }
-  }
-  function saveProgress(data) {
-    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(data)); } catch(e) {}
-  }
-  function isDone() {
-    try { return localStorage.getItem(COMPLETE_KEY) === 'true'; } catch(e) { return false; }
-  }
-  function setDone(v) {
-    try { localStorage.setItem(COMPLETE_KEY, v ? 'true' : 'false'); } catch(e) {}
-  }
+  var notesSaveTimer = null;
+  function loadProgress() { try { var r = localStorage.getItem(PROGRESS_KEY); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
+  function saveProgress(d) { try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(d)); } catch(e) {} }
+  function isDone() { try { return localStorage.getItem(COMPLETE_KEY) === 'true'; } catch(e) { return false; } }
+  function setDone(v) { try { localStorage.setItem(COMPLETE_KEY, v ? 'true' : 'false'); } catch(e) {} }
   function fmt(s) {
     if (!isFinite(s) || s < 0) return '0:00';
-    var h = Math.floor(s / 3600);
-    var m = Math.floor((s % 3600) / 60);
-    var sec = Math.floor(s % 60);
-    if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
-    return m + ':' + String(sec).padStart(2,'0');
+    var h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = Math.floor(s%60);
+    if (h > 0) return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+    return m+':'+String(sec).padStart(2,'0');
   }
-  // ── UI update ──
-  function updateUI(current, duration) {
-    var pct = duration > 0 ? Math.min((current / duration) * 100, 100) : 0;
-    var rounded = Math.floor(pct);
-    barEl.style.width = pct + '%';
-    percentEl.textContent = rounded + '% watched';
-    timeEl.textContent = fmt(current) + ' / ' + fmt(duration);
+  function updateUI(cur, dur) {
+    var pct = dur > 0 ? Math.min((cur/dur)*100, 100) : 0;
+    barEl.style.width = pct+'%';
+    percentEl.textContent = Math.floor(pct)+'% watched';
+    timeEl.textContent = fmt(cur)+' / '+fmt(dur);
     if (isDone() || pct >= REQUIRED_PERCENT) {
-      badgeEl.textContent = 'Completed';
-      badgeEl.className = 'pw-badge complete';
+      badgeEl.textContent = 'Completed'; badgeEl.className = 'pw-badge complete';
       statusEl.textContent = 'Lesson completed';
-      completeBtn.style.display = 'inline-block';
-      completeBtn.disabled = false;
-    } else if (current > 0) {
-      badgeEl.textContent = 'In Progress';
-      badgeEl.className = 'pw-badge';
-      statusEl.textContent = 'Watch to ' + REQUIRED_PERCENT + '% to complete';
+      completeBtn.style.display = 'inline-block'; completeBtn.disabled = false;
+    } else if (cur > 0) {
+      badgeEl.textContent = 'In Progress'; badgeEl.className = 'pw-badge';
+      statusEl.textContent = 'Watch to '+REQUIRED_PERCENT+'% to complete';
     } else {
-      badgeEl.textContent = 'In Progress';
-      badgeEl.className = 'pw-badge';
+      badgeEl.textContent = 'In Progress'; badgeEl.className = 'pw-badge';
       statusEl.textContent = 'Ready to begin';
     }
   }
   function showSkipWarning() {
     skipWarnEl.style.display = 'block';
-    skipWarnEl.style.animation = 'none';
-    skipWarnEl.offsetHeight; // trigger reflow
+    skipWarnEl.style.animation = 'none'; skipWarnEl.offsetHeight;
     skipWarnEl.style.animation = 'fadeInOut 3s ease forwards';
     clearTimeout(skipWarnTimer);
-    skipWarnTimer = setTimeout(function() {
-      skipWarnEl.style.display = 'none';
-    }, 3200);
+    skipWarnTimer = setTimeout(function() { skipWarnEl.style.display = 'none'; }, 3200);
   }
   function markComplete() {
-    setDone(true);
-    badgeEl.textContent = 'Completed';
-    badgeEl.className = 'pw-badge complete';
+    setDone(true); badgeEl.textContent = 'Completed'; badgeEl.className = 'pw-badge complete';
     statusEl.textContent = 'Lesson completed';
-    completeBtn.style.display = 'inline-block';
-    completeBtn.disabled = false;
+    completeBtn.style.display = 'inline-block'; completeBtn.disabled = false;
   }
-  // ── Load saved progress ──
-  var saved = loadProgress();
-  if (saved && typeof saved.maxWatched === 'number') {
-    maxWatched = saved.maxWatched;
-  }
-  // ── Init Video.js ──
-  var player = videojs('pw-video', {
-    responsive: true,
-    fluid: true,
-    autoplay: false,
-    preload: 'auto',
-    controlBar: {
-      pictureInPictureToggle: false
-    }
+  // ── Notes ──
+  try { var savedNotes = localStorage.getItem(NOTES_KEY); if (savedNotes) notesArea.value = savedNotes; } catch(e) {}
+  notesArea.addEventListener('input', function() {
+    clearTimeout(notesSaveTimer);
+    notesSaveTimer = setTimeout(function() {
+      try { localStorage.setItem(NOTES_KEY, notesArea.value); } catch(e) {}
+      notesSaved.classList.add('show');
+      setTimeout(function() { notesSaved.classList.remove('show'); }, 1500);
+    }, 500);
   });
-  // ── Set source dynamically (no <source> tag in DOM to avoid app hijack) ──
-  if (videoSrc) {
-    player.src({ type: 'video/mp4', src: videoSrc });
-  }
-  // ── Anti-skip: prevent seeking beyond maxWatched ──
+  // ── Video ──
+  var saved = loadProgress();
+  if (saved && typeof saved.maxWatched === 'number') maxWatched = saved.maxWatched;
+  var player = videojs('pw-video', {
+    responsive: true, fluid: true, autoplay: false, preload: 'auto',
+    controlBar: { pictureInPictureToggle: false }
+  });
+  if (videoSrc) player.src({ type: 'video/mp4', src: videoSrc });
   var isSeeking = false;
   player.on('seeking', function() {
-    var current = player.currentTime() || 0;
-    var duration = player.duration() || 0;
-    // Allow seeking backward or to already-watched parts
-    if (current <= maxWatched + 2) {
-      // OK — within watched range (2s grace)
-      return;
-    }
-    // Block forward skip
-    if (!isDone()) {
-      isSeeking = true;
-      player.currentTime(maxWatched);
-      showSkipWarning();
-    }
+    var cur = player.currentTime() || 0;
+    if (cur <= maxWatched + 2) return;
+    if (!isDone()) { isSeeking = true; player.currentTime(maxWatched); showSkipWarning(); }
   });
-  player.on('seeked', function() {
-    isSeeking = false;
-  });
-  // ── Track progress ──
+  player.on('seeked', function() { isSeeking = false; });
   player.on('timeupdate', function() {
     if (isSeeking) return;
-    var current = player.currentTime() || 0;
-    var duration = player.duration() || 0;
-    // Update max watched position
-    if (current > maxWatched) {
-      maxWatched = current;
-    }
-    var pct = duration > 0 ? (current / duration) * 100 : 0;
-    saveProgress({
-      time: current,
-      maxWatched: maxWatched,
-      duration: duration,
-      percent: pct,
-      updatedAt: new Date().toISOString()
-    });
-    updateUI(current, duration);
-    if (pct >= REQUIRED_PERCENT && !isDone()) {
-      completeBtn.style.display = 'inline-block';
-      completeBtn.disabled = false;
-    }
+    var cur = player.currentTime() || 0, dur = player.duration() || 0;
+    if (cur > maxWatched) maxWatched = cur;
+    var pct = dur > 0 ? (cur/dur)*100 : 0;
+    saveProgress({ time:cur, maxWatched:maxWatched, duration:dur, percent:pct, updatedAt:new Date().toISOString() });
+    updateUI(cur, dur);
+    if (pct >= REQUIRED_PERCENT && !isDone()) { completeBtn.style.display = 'inline-block'; completeBtn.disabled = false; }
   });
-  // ── Player events ──
   player.on('loadedmetadata', function() {
-    var duration = player.duration() || 0;
+    var dur = player.duration() || 0;
     if (saved && typeof saved.time === 'number' && saved.time > 0 && !isDone()) {
-      var safeTime = Math.min(saved.time, Math.max(duration - 2, 0));
-      player.currentTime(safeTime);
+      player.currentTime(Math.min(saved.time, Math.max(dur-2,0)));
       statusEl.textContent = 'Resumed from saved position';
     }
-    updateUI(player.currentTime() || 0, duration);
+    updateUI(player.currentTime()||0, dur);
   });
-  player.on('play', function() {
-    statusEl.textContent = 'Now playing';
-  });
-  player.on('pause', function() {
-    if (!isDone()) {
-      statusEl.textContent = 'Paused — progress saved';
-    }
-  });
+  player.on('play', function() { statusEl.textContent = 'Now playing'; });
+  player.on('pause', function() { if (!isDone()) statusEl.textContent = 'Paused — progress saved'; });
   player.on('ended', function() {
-    var duration = player.duration() || 0;
-    maxWatched = duration;
-    saveProgress({
-      time: duration,
-      maxWatched: duration,
-      duration: duration,
-      percent: 100,
-      updatedAt: new Date().toISOString()
-    });
-    markComplete();
-    updateUI(duration, duration);
+    var dur = player.duration()||0; maxWatched = dur;
+    saveProgress({ time:dur, maxWatched:dur, duration:dur, percent:100, updatedAt:new Date().toISOString() });
+    markComplete(); updateUI(dur, dur);
   });
-  // ── Button handlers ──
   resumeBtn.addEventListener('click', function() {
-    var data = loadProgress();
-    if (data && typeof data.time === 'number') {
-      player.currentTime(data.time);
-    }
-    player.play();
+    var d = loadProgress(); if (d && typeof d.time === 'number') player.currentTime(d.time); player.play();
   });
   restartBtn.addEventListener('click', function() {
     player.currentTime(0);
-    // Don't reset maxWatched — they already earned that progress
-    saveProgress({
-      time: 0,
-      maxWatched: maxWatched,
-      duration: player.duration() || 0,
-      percent: 0,
-      updatedAt: new Date().toISOString()
-    });
-    updateUI(0, player.duration() || 0);
-    player.play();
+    saveProgress({ time:0, maxWatched:maxWatched, duration:player.duration()||0, percent:0, updatedAt:new Date().toISOString() });
+    updateUI(0, player.duration()||0); player.play();
   });
-  completeBtn.addEventListener('click', function() {
-    markComplete();
-  });
+  completeBtn.addEventListener('click', function() { markComplete(); });
 })();
 </script>
 </body>
