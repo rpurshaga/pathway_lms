@@ -1,310 +1,325 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pathway Audio Player</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=VT323&display=swap');
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    background: transparent;
-    font-family: 'IBM Plex Sans', sans-serif;
-    overflow: visible;
-  }
-
-  body {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 36px 6px 32px;
-  }
-
-  .player {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-     padding-bottom: 12px; 
-  overflow: visible;
-  }
-
-  /* ══ BASE KEY ══ */
-  .key {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 4px;
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    border: none;
-    outline: none;
-    padding: 0;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    user-select: none;
-    background: linear-gradient(180deg, #f4f2ef, #eae8e4);
-    box-shadow:
-      -3px -3px 6px rgba(255,255,255,0.8),
-      0 0 0 1px rgba(0,0,0,0.04),
-      0 2px 0 0 #dddbd7,
-      0 4px 0 0 #d4d2ce,
-      0 6px 0 0 #cccac6,
-      3px 8px 10px rgba(0,0,0,0.1);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-  }
-
-  .key:active, .key.pressed {
-    transform: translateY(3px);
-    box-shadow:
-      -2px -2px 4px rgba(255,255,255,0.6),
-      0 0 0 1px rgba(0,0,0,0.03),
-      0 1px 0 0 #dddbd7,
-      0 2px 0 0 #d4d2ce,
-      2px 3px 5px rgba(0,0,0,0.07);
-  }
-
-  .key svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
-  }
-
-  .key .leg {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 7px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #888;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ══ Icon colors ══ */
-  .ico-gray svg { fill: #666; }
-  .ico-teal svg { fill: #2a9d8f; }
-  .ico-teal .leg { color: #2a9d8f; }
-  .ico-yellow svg { fill: #8a7a20; }
-  .ico-yellow .leg { color: #7a6c1a; }
-  .ico-teal .icon-play { margin-left: 2px; }
-
-  /* ══ LCD — dark key ══ */
-  .key-lcd {
-    background: linear-gradient(180deg, #f4f2ef, #eae8e4);
-    cursor: default;
-    box-shadow:
-      -3px -3px 6px rgba(255,255,255,0.8),
-      0 0 0 1px rgba(0,0,0,0.04),
-      0 2px 0 0 #dddbd7,
-      0 4px 0 0 #d4d2ce,
-      0 6px 0 0 #cccac6,
-      3px 8px 10px rgba(0,0,0,0.1);
-  }
-
-  .lcd-screen {
-    width: 44px;
-    height: 20px;
-    background: #111110;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .lcd-screen::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px);
-    pointer-events: none;
-    border-radius: 4px;
-  }
-
-  .lcd-time {
-    font-family: 'VT323', monospace;
-    font-size: 15px;
-    color: #5cb848;
-    text-shadow: 0 0 4px rgba(92,184,72,0.4);
-    letter-spacing: 1px;
-    line-height: 1;
-  }
-
-  .lcd-label {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 6px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #888;
-    margin-top: 1px;
-  }
-
-  /* ══ DARK MODE ══ */
-  @media (prefers-color-scheme: dark) {
-    .key {
-      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
-      box-shadow:
-        -3px -3px 6px rgba(255,255,255,0.06),
-        0 0 0 1px rgba(255,255,255,0.06),
-        0 2px 0 0 #252525,
-        0 4px 0 0 #202020,
-        0 6px 0 0 #1a1a1a,
-        3px 8px 10px rgba(0,0,0,0.3);
-    }
-    .key:active, .key.pressed {
-      box-shadow:
-        -2px -2px 4px rgba(255,255,255,0.04),
-        0 0 0 1px rgba(255,255,255,0.04),
-        0 1px 0 0 #252525,
-        0 2px 0 0 #202020,
-        2px 3px 5px rgba(0,0,0,0.2);
-    }
-    .key .leg { color: #999; }
-    .ico-gray svg { fill: #aaa; }
-    .ico-teal svg { fill: #3cc4b4; }
-    .ico-teal .leg { color: #3cc4b4; }
-    .ico-yellow svg { fill: #c4b44a; }
-    .ico-yellow .leg { color: #b8a842; }
-    .key-lcd {
-      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
-      box-shadow:
-        -3px -3px 6px rgba(255,255,255,0.06),
-        0 0 0 1px rgba(255,255,255,0.06),
-        0 2px 0 0 #252525,
-        0 4px 0 0 #202020,
-        0 6px 0 0 #1a1a1a,
-        3px 8px 10px rgba(0,0,0,0.3);
-    }
-    .lcd-label { color: #777; }
-  }
-</style>
-</head>
-<body>
-
-<div class="player">
-  <!-- Back 15s -->
-  <button class="key ico-gray" id="btnBack" title="Back 15 seconds" aria-label="Back 15 seconds">
-    <svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
-    <span class="leg">Back</span>
-  </button>
-
-  <!-- Play / Pause -->
-  <button class="key ico-teal" id="btnPlay" title="Play" aria-label="Play">
-    <svg viewBox="0 0 24 24" class="icon-play" id="iconPlay"><polygon points="8,5 19,12 8,19"/></svg>
-    <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-    <span class="leg" id="playLabel">Play</span>
-  </button>
-
-  <!-- Forward 15s -->
-  <button class="key ico-gray" id="btnFwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">
-    <svg viewBox="0 0 24 24"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
-    <span class="leg">Forward</span>
-  </button>
-
-  <!-- Speed -->
-  <button class="key ico-yellow" id="btnSpeed" title="Playback speed" aria-label="Playback speed">
-    <svg viewBox="0 0 24 24"><path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/><path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/></svg>
-    <span class="leg" id="speedLabel">1×</span>
-  </button>
-
-  <!-- LCD Time -->
-  <div class="key key-lcd" title="Time remaining">
-    <div class="lcd-screen">
-      <span class="lcd-time" id="lcdTime">--:--</span>
+import { useState, useCallback, useRef } from "react";
+interface KeyProps {
+  children: React.ReactNode;
+  accent?: "teal" | "yellow" | "gray";
+  onClick?: () => void;
+}
+function Key({ children, accent = "gray", onClick }: KeyProps) {
+  const [pressed, setPressed] = useState(false);
+  const down = useCallback(() => setPressed(true), []);
+  const up = useCallback(() => setPressed(false), []);
+  const size = 72;
+  return (
+    <button
+      onPointerDown={down}
+      onPointerUp={up}
+      onPointerLeave={up}
+      onClick={onClick}
+      style={{
+        transition: "all 80ms ease-out",
+        transform: pressed ? "scale(0.97)" : "scale(1)",
+        width: size, height: size,
+        borderRadius: 14,
+        background: "#ebe9e5",
+        border: "none", outline: "none", cursor: "pointer",
+        boxShadow: pressed
+          ? "inset 3px 3px 6px rgba(0,0,0,0.12), inset -3px -3px 6px rgba(255,255,255,0.5)"
+          : "4px 4px 10px rgba(0,0,0,0.1), -4px -4px 10px rgba(255,255,255,0.7), inset 0 1px 1px rgba(255,255,255,0.4)",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        gap: 2, padding: 0,
+        WebkitTapHighlightColor: "transparent",
+        userSelect: "none",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+function VolumeSlider() {
+  const [vol, setVol] = useState(70);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  const updateVol = useCallback((clientY: number) => {
+    if (!trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(100, ((rect.bottom - clientY) / rect.height) * 100));
+    setVol(Math.round(pct));
+  }, []);
+  const onDown = useCallback((e: React.PointerEvent) => {
+    dragging.current = true;
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    updateVol(e.clientY);
+  }, [updateVol]);
+  const onMove = useCallback((e: React.PointerEvent) => {
+    if (dragging.current) updateVol(e.clientY);
+  }, [updateVol]);
+  const onUp = useCallback(() => { dragging.current = false; }, []);
+  const isMuted = vol === 0;
+  return (
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center",
+      gap: 6,
+    }}>
+      <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, fill: "#777", flexShrink: 0 }}>
+        {isMuted ? (
+          <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+        ) : (
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+        )}
+      </svg>
+      <div style={{
+        width: 36, height: 86, borderRadius: 18,
+        background: "#e8e6e2",
+        boxShadow: "inset 2px 2px 5px rgba(0,0,0,0.08), inset -2px -2px 5px rgba(255,255,255,0.7)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <div
+          ref={trackRef}
+          onPointerDown={onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          style={{
+            width: 8, height: 60, borderRadius: 4,
+            background: "#d8d6d2", position: "relative", cursor: "pointer",
+            boxShadow: "inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.5), inset 0 1px 2px rgba(0,0,0,0.15)",
+            touchAction: "none",
+          }}
+        >
+          <div style={{
+            position: "absolute", bottom: 0, left: 0, right: 0,
+            height: `${vol}%`, borderRadius: 4,
+            background: "linear-gradient(0deg, #2a9d8f, #38c4ba)",
+            boxShadow: "0 -1px 4px rgba(42,157,143,0.5), 0 0 6px rgba(42,157,143,0.3), inset 0 1px 1px rgba(255,255,255,0.3)",
+          }} />
+        </div>
+      </div>
+      <span style={{
+        fontFamily: "'IBM Plex Sans', sans-serif",
+        fontSize: 9, fontWeight: 600, color: "#999",
+      }}>{vol}%</span>
     </div>
-    <span class="lcd-label">Remaining</span>
-  </div>
-</div>
-
-<script>
-(function() {
-  var audio = null;
-  var speeds = [1, 1.25, 1.5, 1.75, 2, 0.75];
-  var speedIdx = 0;
-
-  var params = new URLSearchParams(window.location.search);
-  var audioSrc = '';
-  if (params.get('b')) {
-    try { audioSrc = atob(params.get('b')); } catch(e) { audioSrc = ''; }
-  } else if (params.get('src')) {
-    audioSrc = params.get('src');
-  }
-
-  function fmt(s) {
-    if (isNaN(s) || s < 0) return '--:--';
-    var m = Math.floor(s / 60);
-    var sec = Math.floor(s % 60);
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-
-  function getAudio() {
-    if (!audio) {
-      audio = new Audio();
-      audio.preload = 'metadata';
-      audio.src = audioSrc;
-      audio.addEventListener('ended', function() { setPlaying(false); });
-      audio.addEventListener('loadedmetadata', function() {
-        document.getElementById('lcdTime').textContent = fmt(audio.duration);
-      });
-      audio.addEventListener('timeupdate', function() {
-        document.getElementById('lcdTime').textContent = fmt(audio.duration - audio.currentTime);
-      });
-    }
-    return audio;
-  }
-
-  function setPlaying(p) {
-    document.getElementById('iconPlay').style.display = p ? 'none' : 'block';
-    document.getElementById('iconPause').style.display = p ? 'block' : 'none';
-    document.getElementById('playLabel').textContent = p ? 'Pause' : 'Play';
-    document.getElementById('btnPlay').title = p ? 'Pause' : 'Play';
-  }
-
-  document.querySelectorAll('button.key').forEach(function(btn) {
-    btn.addEventListener('touchstart', function() { btn.classList.add('pressed'); }, { passive: true });
-    btn.addEventListener('touchend', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
-    btn.addEventListener('touchcancel', function() { btn.classList.remove('pressed'); });
-    btn.addEventListener('mousedown', function() { btn.classList.add('pressed'); });
-    btn.addEventListener('mouseup', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
-    btn.addEventListener('mouseleave', function() { btn.classList.remove('pressed'); });
+  );
+}
+function Leg({ children, accent }: { children: React.ReactNode; accent?: "teal" | "yellow" }) {
+  const color = accent === "teal" ? "#2a9d8f" : accent === "yellow" ? "#7a6c1a" : "#666";
+  return (
+    <span style={{
+      fontFamily: "'IBM Plex Sans', sans-serif",
+      fontSize: 10, fontWeight: 700,
+      letterSpacing: "0.06em", textTransform: "uppercase",
+      color,
+      lineHeight: 1,
+    }}>
+      {children}
+    </span>
+  );
+}
+const NK = "pathway-player-notes";
+export function PathwayControls() {
+  const [playing, setPlaying] = useState(false);
+  const [notes, setNotes] = useState(() => {
+    try { return localStorage.getItem(NK) || ""; } catch { return ""; }
   });
-
-  document.getElementById('btnPlay').addEventListener('click', function() {
-    var a = getAudio();
-    if (a.paused) { a.play(); setPlaying(true); }
-    else { a.pause(); setPlaying(false); }
-  });
-
-  document.getElementById('btnBack').addEventListener('click', function() {
-    var a = getAudio();
-    a.currentTime = Math.max(0, a.currentTime - 15);
-  });
-
-  document.getElementById('btnFwd').addEventListener('click', function() {
-    var a = getAudio();
-    a.currentTime = Math.min(audio.duration || 0, a.currentTime + 15);
-  });
-
-  document.getElementById('btnSpeed').addEventListener('click', function() {
-    var a = getAudio();
-    speedIdx = (speedIdx + 1) % speeds.length;
-    a.playbackRate = speeds[speedIdx];
-    document.getElementById('speedLabel').textContent = speeds[speedIdx] + '\u00d7';
-  });
-
-  if (audioSrc) getAudio();
-})();
-</script>
-</body>
-</html>
+  const [saved, setSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onNotesChange = useCallback((val: string) => {
+    setNotes(val);
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      try { localStorage.setItem(NK, val); } catch {}
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1500);
+    }, 500);
+  }, []);
+  const copyNotes = useCallback(() => {
+    if (!notes) return;
+    navigator.clipboard.writeText(notes).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [notes]);
+  const grayIco = { width: 22, height: 22, fill: "#777", flexShrink: 0 } as const;
+  const tealIco = { width: 22, height: 22, fill: "#2a9d8f", flexShrink: 0 } as const;
+  const yellowIco = { width: 22, height: 22, fill: "#8a7a20", flexShrink: 0 } as const;
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "transparent",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      padding: 20, fontFamily: "'IBM Plex Sans', sans-serif",
+    }}>
+      <div style={{ textAlign: "center", marginBottom: 14 }}>
+        <h1 style={{ fontSize: 17, fontWeight: 700, color: "#333" }}>Lesson Video</h1>
+        <div style={{ fontSize: 10, color: "#999", marginTop: 2 }}>Pathway Media Player</div>
+      </div>
+      <div style={{
+        width: 500, height: 200, borderRadius: 20, background: "#111",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "0 20px 50px rgba(0,0,0,0.35), 0 8px 20px rgba(0,0,0,0.2), 0 30px 60px -10px rgba(0,0,0,0.25)",
+        marginBottom: -8, position: "relative", zIndex: 2,
+      }}>
+        <div style={{
+          width: 56, height: 56, borderRadius: "50%",
+          background: "rgba(42,157,143,0.88)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 6px 24px rgba(42,157,143,0.35)",
+        }}>
+          <svg viewBox="0 0 24 24" style={{ width: 24, height: 24, fill: "#fff", marginLeft: 2 }}>
+            <polygon points="8,5 19,12 8,19" />
+          </svg>
+        </div>
+      </div>
+      <div style={{
+        width: "92%", maxWidth: 470, padding: "20px 16px 10px",
+        borderRadius: "0 0 18px 18px", background: "#ebe9e5",
+        boxShadow: "8px 8px 20px rgba(0,0,0,0.12), -8px -8px 20px rgba(255,255,255,0.8), inset 0 1px 2px rgba(255,255,255,0.35)",
+        position: "relative", zIndex: 1,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px" }}>
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            <Key accent="gray">
+              <svg viewBox="0 0 24 24" style={grayIco}>
+                <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="700" fontFamily="IBM Plex Sans" style={{ fill: "inherit" }}>15</text>
+              </svg>
+              <Leg>Back</Leg>
+            </Key>
+            <Key accent="teal" onClick={() => setPlaying(!playing)}>
+              {playing ? (
+                <svg viewBox="0 0 24 24" style={tealIco}>
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" style={{ ...tealIco, marginLeft: 2 }}>
+                  <polygon points="8,5 19,12 8,19" />
+                </svg>
+              )}
+              <Leg accent="teal">{playing ? "Pause" : "Play"}</Leg>
+            </Key>
+            <Key accent="gray">
+              <svg viewBox="0 0 24 24" style={grayIco}>
+                <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z" />
+                <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="700" fontFamily="IBM Plex Sans" style={{ fill: "inherit" }}>15</text>
+              </svg>
+              <Leg>Forward</Leg>
+            </Key>
+            <Key accent="yellow">
+              <svg viewBox="0 0 24 24" style={yellowIco}>
+                <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z" />
+                <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z" />
+              </svg>
+              <Leg accent="yellow">1×</Leg>
+            </Key>
+          </div>
+          <VolumeSlider />
+        </div>
+        <div style={{ padding: "0 4px", marginTop: 8 }}>
+          <div style={{
+            width: "100%", height: 32, borderRadius: 16,
+            background: "#e8e6e2",
+            boxShadow: "inset 2px 2px 5px rgba(0,0,0,0.08), inset -2px -2px 5px rgba(255,255,255,0.7)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "0 8px",
+          }}>
+            <div style={{
+              width: "100%", height: 10, borderRadius: 5,
+              background: "#d8d6d2", position: "relative",
+              boxShadow: "inset 2px 2px 6px rgba(0,0,0,0.2), inset -2px -2px 6px rgba(255,255,255,0.5), inset 0 1px 2px rgba(0,0,0,0.15)",
+            }}>
+              <div style={{
+                height: "100%", width: "35%", borderRadius: 5,
+                background: "linear-gradient(90deg, #2a9d8f, #38c4ba)",
+                boxShadow: "0 1px 4px rgba(42,157,143,0.5), 0 0 8px rgba(42,157,143,0.3), inset 0 1px 1px rgba(255,255,255,0.3)",
+              }} />
+              <div style={{
+                position: "absolute", top: 0, bottom: 0, left: "35%", right: 0,
+                background: "rgba(0,0,0,0.15)", borderRadius: "0 5px 5px 0",
+                pointerEvents: "none", zIndex: 1,
+              }} />
+            </div>
+          </div>
+          <div style={{
+            display: "flex", justifyContent: "space-between",
+            fontSize: 10, color: "#999", marginTop: 4,
+          }}>
+            <span>1:24</span>
+            <span>4:02</span>
+          </div>
+        </div>
+      </div>
+      <div style={{
+        width: "92%", maxWidth: 470, padding: "16px 16px 14px",
+        borderRadius: 18, background: "#ebe9e5",
+        boxShadow: "8px 8px 20px rgba(0,0,0,0.12), -8px -8px 20px rgba(255,255,255,0.8), 0 12px 30px -8px rgba(0,0,0,0.14), inset 0 1px 2px rgba(255,255,255,0.35)",
+        marginTop: 12,
+      }}>
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          marginBottom: 8,
+        }}>
+          <span style={{
+            fontFamily: "'IBM Plex Sans', sans-serif",
+            fontSize: 11, fontWeight: 700, color: "#555",
+            letterSpacing: "0.04em", textTransform: "uppercase",
+          }}>Notes</span>
+          {saved && (
+            <span style={{
+              fontFamily: "'IBM Plex Sans', sans-serif",
+              fontSize: 9, fontWeight: 600, color: "#2a9d8f",
+              transition: "opacity 300ms",
+            }}>Saved</span>
+          )}
+        </div>
+        <div style={{
+          borderRadius: 12,
+          background: "#e8e6e2",
+          boxShadow: "inset 2px 2px 5px rgba(0,0,0,0.08), inset -2px -2px 5px rgba(255,255,255,0.7)",
+          padding: 3,
+        }}>
+          <textarea
+            value={notes}
+            onChange={(e) => onNotesChange(e.target.value)}
+            placeholder="Take notes while watching..."
+            style={{
+              width: "100%", height: 80, resize: "vertical",
+              fontFamily: "'IBM Plex Sans', sans-serif",
+              fontSize: 11, lineHeight: 1.5,
+              color: "#444", background: "transparent",
+              border: "none", outline: "none",
+              padding: "8px 10px",
+              borderRadius: 10,
+            }}
+          />
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+          <button
+            onClick={copyNotes}
+            style={{
+              fontFamily: "'IBM Plex Sans', sans-serif",
+              fontSize: 10, fontWeight: 600,
+              color: copied ? "#2a9d8f" : "#777",
+              background: "#ebe9e5",
+              border: "none", borderRadius: 10,
+              padding: "5px 14px", cursor: "pointer",
+              boxShadow: "3px 3px 6px rgba(0,0,0,0.08), -3px -3px 6px rgba(255,255,255,0.6)",
+              transition: "all 80ms ease-out",
+              outline: "none",
+            }}
+          >
+            {copied ? (
+              <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <svg viewBox="0 0 24 24" style={{ width: 11, height: 11, fill: "currentColor" }}>
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+                Copied!
+              </span>
+            ) : "Copy Notes"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
