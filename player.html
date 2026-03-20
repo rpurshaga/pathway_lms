@@ -1,3 +1,227 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway Audio Player</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=VT323&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: transparent;
+    font-family: 'IBM Plex Sans', sans-serif;
+    overflow: visible;
+  }
+
+  body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 36px 6px 32px;
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+     padding-bottom: 12px; 
+  overflow: visible;
+  }
+
+  /* ══ BASE KEY ══ */
+  .key {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    border: none;
+    outline: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    user-select: none;
+    background: linear-gradient(180deg, #f4f2ef, #eae8e4);
+    box-shadow:
+      -3px -3px 6px rgba(255,255,255,0.8),
+      0 0 0 1px rgba(0,0,0,0.04),
+      0 2px 0 0 #dddbd7,
+      0 4px 0 0 #d4d2ce,
+      0 6px 0 0 #cccac6,
+      3px 8px 10px rgba(0,0,0,0.1);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .key:active, .key.pressed {
+    transform: translateY(3px);
+    box-shadow:
+      -2px -2px 4px rgba(255,255,255,0.6),
+      0 0 0 1px rgba(0,0,0,0.03),
+      0 1px 0 0 #dddbd7,
+      0 2px 0 0 #d4d2ce,
+      2px 3px 5px rgba(0,0,0,0.07);
+  }
+
+  .key svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .key .leg {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ══ Icon colors ══ */
+  .ico-gray svg { fill: #666; }
+  .ico-teal svg { fill: #2a9d8f; }
+  .ico-teal .leg { color: #2a9d8f; }
+  .ico-yellow svg { fill: #8a7a20; }
+  .ico-yellow .leg { color: #7a6c1a; }
+  .ico-teal .icon-play { margin-left: 2px; }
+
+  /* ══ LCD — dark key ══ */
+  .key-lcd {
+    background: linear-gradient(180deg, #f4f2ef, #eae8e4);
+    cursor: default;
+    box-shadow:
+      -3px -3px 6px rgba(255,255,255,0.8),
+      0 0 0 1px rgba(0,0,0,0.04),
+      0 2px 0 0 #dddbd7,
+      0 4px 0 0 #d4d2ce,
+      0 6px 0 0 #cccac6,
+      3px 8px 10px rgba(0,0,0,0.1);
+  }
+
+  .lcd-screen {
+    width: 44px;
+    height: 20px;
+    background: #111110;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .lcd-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.08) 1px, rgba(0,0,0,0.08) 2px);
+    pointer-events: none;
+    border-radius: 4px;
+  }
+
+  .lcd-time {
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    color: #5cb848;
+    text-shadow: 0 0 4px rgba(92,184,72,0.4);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .lcd-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 6px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin-top: 1px;
+  }
+
+  /* ══ DARK MODE ══ */
+  @media (prefers-color-scheme: dark) {
+    .key {
+      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
+      box-shadow:
+        -3px -3px 6px rgba(255,255,255,0.06),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 2px 0 0 #252525,
+        0 4px 0 0 #202020,
+        0 6px 0 0 #1a1a1a,
+        3px 8px 10px rgba(0,0,0,0.3);
+    }
+    .key:active, .key.pressed {
+      box-shadow:
+        -2px -2px 4px rgba(255,255,255,0.04),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 1px 0 0 #252525,
+        0 2px 0 0 #202020,
+        2px 3px 5px rgba(0,0,0,0.2);
+    }
+    .key .leg { color: #999; }
+    .ico-gray svg { fill: #aaa; }
+    .ico-teal svg { fill: #3cc4b4; }
+    .ico-teal .leg { color: #3cc4b4; }
+    .ico-yellow svg { fill: #c4b44a; }
+    .ico-yellow .leg { color: #b8a842; }
+    .key-lcd {
+      background: linear-gradient(180deg, #3a3a3a, #2e2e2e);
+      box-shadow:
+        -3px -3px 6px rgba(255,255,255,0.06),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 2px 0 0 #252525,
+        0 4px 0 0 #202020,
+        0 6px 0 0 #1a1a1a,
+        3px 8px 10px rgba(0,0,0,0.3);
+    }
+    .lcd-label { color: #777; }
+  }
+</style>
+</head>
+<body>
+
+<div class="player">
+  <!-- Back 15s -->
+  <button class="key ico-gray" id="btnBack" title="Back 15 seconds" aria-label="Back 15 seconds">
+    <svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
+    <span class="leg">Back</span>
+  </button>
+
+  <!-- Play / Pause -->
+  <button class="key ico-teal" id="btnPlay" title="Play" aria-label="Play">
+    <svg viewBox="0 0 24 24" class="icon-play" id="iconPlay"><polygon points="8,5 19,12 8,19"/></svg>
+    <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    <span class="leg" id="playLabel">Play</span>
+  </button>
+
+  <!-- Forward 15s -->
+  <button class="key ico-gray" id="btnFwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">
+    <svg viewBox="0 0 24 24"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" style="fill:inherit">15</text></svg>
+    <span class="leg">Forward</span>
+  </button>
+
+  <!-- Speed -->
+  <button class="key ico-yellow" id="btnSpeed" title="Playback speed" aria-label="Playback speed">
+    <svg viewBox="0 0 24 24"><path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/><path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/></svg>
+    <span class="leg" id="speedLabel">1×</span>
+  </button>
+
+  <!-- LCD Time -->
+  <div class="key key-lcd" title="Time remaining">
+    <div class="lcd-screen">
+      <span class="lcd-time" id="lcdTime">--:--</span>
 import { useState, useCallback, useRef } from "react";
 interface KeyProps {
   children: React.ReactNode;
@@ -99,6 +323,61 @@ function VolumeSlider() {
         fontSize: 9, fontWeight: 600, color: "#999",
       }}>{vol}%</span>
     </div>
+    <span class="lcd-label">Remaining</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  var audio = null;
+  var speeds = [1, 1.25, 1.5, 1.75, 2, 0.75];
+  var speedIdx = 0;
+
+  var params = new URLSearchParams(window.location.search);
+  var audioSrc = '';
+  if (params.get('b')) {
+    try { audioSrc = atob(params.get('b')); } catch(e) { audioSrc = ''; }
+  } else if (params.get('src')) {
+    audioSrc = params.get('src');
+  }
+
+  function fmt(s) {
+    if (isNaN(s) || s < 0) return '--:--';
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function getAudio() {
+    if (!audio) {
+      audio = new Audio();
+      audio.preload = 'metadata';
+      audio.src = audioSrc;
+      audio.addEventListener('ended', function() { setPlaying(false); });
+      audio.addEventListener('loadedmetadata', function() {
+        document.getElementById('lcdTime').textContent = fmt(audio.duration);
+      });
+      audio.addEventListener('timeupdate', function() {
+        document.getElementById('lcdTime').textContent = fmt(audio.duration - audio.currentTime);
+      });
+    }
+    return audio;
+  }
+
+  function setPlaying(p) {
+    document.getElementById('iconPlay').style.display = p ? 'none' : 'block';
+    document.getElementById('iconPause').style.display = p ? 'block' : 'none';
+    document.getElementById('playLabel').textContent = p ? 'Pause' : 'Play';
+    document.getElementById('btnPlay').title = p ? 'Pause' : 'Play';
+  }
+
+  document.querySelectorAll('button.key').forEach(function(btn) {
+    btn.addEventListener('touchstart', function() { btn.classList.add('pressed'); }, { passive: true });
+    btn.addEventListener('touchend', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
+    btn.addEventListener('touchcancel', function() { btn.classList.remove('pressed'); });
+    btn.addEventListener('mousedown', function() { btn.classList.add('pressed'); });
+    btn.addEventListener('mouseup', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
+    btn.addEventListener('mouseleave', function() { btn.classList.remove('pressed'); });
   );
 }
 function Leg({ children, accent }: { children: React.ReactNode; accent?: "teal" | "yellow" }) {
@@ -121,6 +400,35 @@ export function PathwayControls() {
   const [notes, setNotes] = useState(() => {
     try { return localStorage.getItem(NK) || ""; } catch { return ""; }
   });
+
+  document.getElementById('btnPlay').addEventListener('click', function() {
+    var a = getAudio();
+    if (a.paused) { a.play(); setPlaying(true); }
+    else { a.pause(); setPlaying(false); }
+  });
+
+  document.getElementById('btnBack').addEventListener('click', function() {
+    var a = getAudio();
+    a.currentTime = Math.max(0, a.currentTime - 15);
+  });
+
+  document.getElementById('btnFwd').addEventListener('click', function() {
+    var a = getAudio();
+    a.currentTime = Math.min(audio.duration || 0, a.currentTime + 15);
+  });
+
+  document.getElementById('btnSpeed').addEventListener('click', function() {
+    var a = getAudio();
+    speedIdx = (speedIdx + 1) % speeds.length;
+    a.playbackRate = speeds[speedIdx];
+    document.getElementById('speedLabel').textContent = speeds[speedIdx] + '\u00d7';
+  });
+
+  if (audioSrc) getAudio();
+})();
+</script>
+</body>
+</html>
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
