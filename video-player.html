@@ -31,7 +31,7 @@
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    padding:6px 24px 10px;
+    padding:28px 24px 10px;
     overflow:visible;
   }
 
@@ -50,11 +50,11 @@
     position:relative;
     z-index:2;
     box-shadow:
-      0 20px 50px rgba(0,0,0,0.22),
-      0 8px 20px rgba(0,0,0,0.12),
-      12px 0 30px rgba(0,0,0,0.08),
-      -12px 0 30px rgba(0,0,0,0.08);
-    margin-bottom:-6px;
+      0 20px 50px rgba(0,0,0,0.25),
+      0 10px 20px rgba(0,0,0,0.14),
+      8px 4px 24px rgba(0,0,0,0.08),
+      -8px 4px 24px rgba(0,0,0,0.08);
+    margin-bottom:-14px;
   }
 
   .pw-video{
@@ -119,9 +119,29 @@
   .pw-btn-row{
     display:flex;
     align-items:center;
+    padding:0 4px;
+    position:relative;
+  }
+
+  .pw-btn-group{
+    display:flex;
+    align-items:center;
     justify-content:center;
     gap:12px;
-    padding:0 4px;
+    flex:1;
+  }
+
+  .pw-vol-col{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    height:62px;
+    width:28px;
   }
 
   .pw-key{
@@ -134,8 +154,7 @@
     cursor:pointer;
     background:linear-gradient(145deg,#f5f3ef,#e2dfda);
     box-shadow:
-      0 -4px 8px rgba(255,255,255,.9),
-      3px 3px 6px rgba(0,0,0,.07),
+      3px 3px 6px rgba(0,0,0,.08),
       -3px -3px 6px rgba(255,255,255,.75),
       inset 0 1px 0 rgba(255,255,255,.5),
       inset 0 -1px 0 rgba(0,0,0,.03);
@@ -164,39 +183,35 @@
   .pw-teal{ fill:var(--pw-teal); color:var(--pw-teal); }
   .pw-yellow{ fill:var(--pw-yellow); color:#7a6c1a; }
 
-  /* Vertical volume */
-  .pw-vol-col{
-    flex:0 0 28px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-    height:62px;
-  }
-
-  .pw-vol-col svg{ width:12px; height:12px; fill:#999; }
-  .pw-vol-label{ font-size:8px; font-weight:600; color:#aaa; }
+  .pw-vol-col svg{ width:12px; height:12px; fill:#999; flex-shrink:0; }
+  .pw-vol-label{ font-size:8px; font-weight:600; color:#aaa; width:28px; text-align:center; }
 
   .pw-vol-track-v{
     flex:1;
-    width:6px;
-    border-radius:3px;
-    background:var(--pw-track);
+    width:10px;
+    border-radius:5px;
+    background:linear-gradient(180deg, #b5b2ad, #a8a5a0);
     position:relative;
     cursor:pointer;
     touch-action:none;
     box-shadow:
-      inset 1px 1px 3px rgba(0,0,0,.12),
-      inset -1px -1px 3px rgba(255,255,255,.5);
+      inset 3px 3px 6px rgba(0,0,0,.28),
+      inset -1px -1px 2px rgba(255,255,255,.15),
+      inset 0 4px 4px rgba(0,0,0,.18);
     overflow:hidden;
+    border:0.5px solid rgba(0,0,0,.1);
   }
 
   .pw-vol-fill-v{
     position:absolute;
     bottom:0; left:0; right:0;
     height:70%;
-    border-radius:3px;
-    background:linear-gradient(0deg, var(--pw-teal), var(--pw-teal-2));
+    border-radius:5px;
+    background:linear-gradient(90deg, var(--pw-teal), var(--pw-teal-2));
+    box-shadow:
+      0 0 6px rgba(42,157,143,.3),
+      inset 1px 0 1px rgba(255,255,255,.25),
+      inset -1px 0 1px rgba(0,0,0,.12);
   }
 
   /* ══ SCRUB BAR ══ */
@@ -207,38 +222,45 @@
 
   .pw-scrub-capsule{
     width:100%;
-    height:22px;
-    border-radius:11px;
-    background:linear-gradient(145deg,#f1eee9,#dcd8d2);
+    height:28px;
+    border-radius:14px;
+    background:linear-gradient(90deg, #e2dfda, #d5d2cc);
     box-shadow:
-      inset 2px 2px 6px rgba(0,0,0,.07),
-      inset -2px -2px 6px rgba(255,255,255,.7);
+      inset 3px 3px 8px rgba(0,0,0,.12),
+      inset -2px -2px 5px rgba(255,255,255,.5),
+      inset 0 3px 4px rgba(0,0,0,.08);
     display:flex;
     align-items:center;
-    padding:0 6px;
+    padding:0 7px;
+    border:0.5px solid rgba(0,0,0,.06);
   }
 
   .pw-scrub-track{
-    width:100%; height:6px; border-radius:3px;
-    background:var(--pw-track);
+    width:100%; height:10px; border-radius:5px;
+    background:linear-gradient(90deg, #b5b2ad, #a8a5a0);
     position:relative; cursor:pointer;
     box-shadow:
-      inset 1px 1px 4px rgba(0,0,0,.14),
-      inset -1px -1px 4px rgba(255,255,255,.4);
+      inset 3px 3px 6px rgba(0,0,0,.28),
+      inset -1px -1px 2px rgba(255,255,255,.15),
+      inset 0 4px 4px rgba(0,0,0,.18);
+    border:0.5px solid rgba(0,0,0,.1);
   }
 
   .pw-scrub-fill{
     position:absolute; top:0; left:0; height:100%;
-    width:0%; border-radius:3px;
-    background:linear-gradient(90deg, var(--pw-teal), var(--pw-teal-2));
-    box-shadow: 0 0 6px rgba(42,157,143,.3);
+    width:0%; border-radius:5px;
+    background:linear-gradient(180deg, var(--pw-teal-2), var(--pw-teal));
+    box-shadow:
+      0 0 8px rgba(42,157,143,.35),
+      inset 0 1px 1px rgba(255,255,255,.3),
+      inset 0 -1px 1px rgba(0,0,0,.15);
     z-index:2;
   }
 
   .pw-scrub-blocked{
     position:absolute; top:0; bottom:0; right:0;
     background:rgba(0,0,0,.12);
-    border-radius:0 3px 3px 0;
+    border-radius:0 5px 5px 0;
     pointer-events:none; z-index:1;
   }
 
@@ -367,6 +389,125 @@
     user-select:none;
   }
 
+  /* ══ DARK MODE ══ */
+  @media (prefers-color-scheme: dark) {
+    :root{
+      --pw-bg:#2c2c2a;
+      --pw-well:#262624;
+      --pw-track:#3a3a38;
+      --pw-text:#ddd;
+    }
+
+    .pw-video-card{
+      box-shadow:
+        0 30px 60px rgba(0,0,0,0.45),
+        0 12px 24px rgba(0,0,0,0.3),
+        12px 0 30px rgba(0,0,0,0.15),
+        -12px 0 30px rgba(0,0,0,0.15);
+    }
+
+    .pw-controls-card, .pw-notes-card{
+      background:var(--pw-bg);
+      box-shadow:
+        0 8px 20px rgba(0,0,0,0.15),
+        0 2px 6px rgba(0,0,0,0.1),
+        8px 0 18px rgba(0,0,0,0.08),
+        -8px 0 18px rgba(0,0,0,0.08),
+        inset 1px 1px 2px rgba(255,255,255,.04),
+        inset -1px -1px 2px rgba(0,0,0,.1);
+    }
+
+    .pw-key{
+      background:linear-gradient(145deg, #353533, #2a2a28);
+      border-color:rgba(255,255,255,.05);
+      box-shadow:
+        3px 3px 6px rgba(0,0,0,.2),
+        -3px -3px 6px rgba(255,255,255,.04),
+        inset 0 1px 0 rgba(255,255,255,.06),
+        inset 0 -1px 0 rgba(0,0,0,.1);
+    }
+    .pw-key:active, .pw-key.pressed{
+      box-shadow:
+        inset 4px 4px 8px rgba(0,0,0,.2),
+        inset -4px -4px 8px rgba(255,255,255,.03);
+    }
+
+    .pw-gray{ fill:#aaa; color:#999; }
+    .pw-teal{ fill:#3cc4b4; color:#3cc4b4; }
+    .pw-yellow{ fill:#c4b44a; color:#b8a842; }
+
+    .pw-vol-col svg{ fill:#888; }
+    .pw-vol-label{ color:#666; }
+
+    .pw-vol-track-v{
+      background:linear-gradient(180deg, #3a3a38, #2e2e2c);
+      border-color:rgba(255,255,255,.04);
+      box-shadow:
+        inset 2px 2px 4px rgba(0,0,0,.3),
+        inset -1px -1px 3px rgba(255,255,255,.03),
+        inset 0 2px 2px rgba(0,0,0,.2);
+    }
+
+    .pw-scrub-capsule{
+      background:linear-gradient(90deg, #333330, #2a2a28);
+      border-color:rgba(255,255,255,.04);
+      box-shadow:
+        inset 3px 3px 6px rgba(0,0,0,.2),
+        inset -2px -2px 5px rgba(255,255,255,.03),
+        inset 0 2px 3px rgba(0,0,0,.12);
+    }
+
+    .pw-scrub-track{
+      background:linear-gradient(90deg, #3a3a38, #2e2e2c);
+      border-color:rgba(255,255,255,.04);
+      box-shadow:
+        inset 2px 2px 4px rgba(0,0,0,.3),
+        inset -1px -1px 3px rgba(255,255,255,.03),
+        inset 0 2px 2px rgba(0,0,0,.2);
+    }
+
+    .pw-scrub-blocked{ background:rgba(0,0,0,.2); }
+
+    .pw-times{ color:#666; }
+
+    .pw-skip-warn{
+      background:rgba(40,40,38,.95);
+      box-shadow: 0 10px 24px rgba(0,0,0,.3);
+      border-color:rgba(192,57,43,.2);
+    }
+
+    .pw-notes-header .title{ color:#aaa; }
+    .pw-notes-well{
+      background:var(--pw-well);
+      box-shadow:
+        inset 2px 2px 5px rgba(0,0,0,.15),
+        inset -2px -2px 5px rgba(255,255,255,.02);
+    }
+    .pw-notes-well textarea{
+      color:#ccc;
+    }
+    .pw-notes-well textarea::placeholder{ color:#555; }
+
+    .pw-copy-btn{
+      background:var(--pw-bg); color:#777;
+      box-shadow:
+        3px 3px 6px rgba(0,0,0,.15),
+        -3px -3px 6px rgba(255,255,255,.03);
+    }
+    .pw-copy-btn:active{
+      box-shadow:
+        inset 2px 2px 4px rgba(0,0,0,.15),
+        inset -2px -2px 4px rgba(255,255,255,.02);
+    }
+
+    .pw-watermark{
+      color:rgba(255,255,255,.08);
+      text-shadow: 0 1px 0 rgba(0,0,0,.3);
+    }
+
+    .pw-big-play{ background:rgba(60,196,180,.9); }
+  }
+
   /* ══ RESPONSIVE ══ */
   @media (max-width:640px){
     body{ padding:6px 10px 10px; }
@@ -391,7 +532,7 @@
 
 <div class="pw-player-wrap">
   <div class="pw-video-card">
-    <video id="pwVideo" class="pw-video" playsinline preload="metadata"></video>
+    <video id="pwVideo" class="pw-video" playsinline preload="none" autoplay="false"></video>
     <div class="pw-overlay" id="pwOverlay"></div>
     <button class="pw-big-play" id="pwBigPlay" aria-label="Play video">
       <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
@@ -403,38 +544,40 @@
 
   <div class="pw-controls-card">
     <div class="pw-btn-row">
-      <button class="pw-key" id="pwBack" type="button">
-        <svg viewBox="0 0 24 24" class="pw-gray">
-          <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-          <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#888">15</text>
-        </svg>
-        <span class="pw-leg pw-gray">Back</span>
-      </button>
+      <div class="pw-btn-group">
+        <button class="pw-key" id="pwBack" type="button">
+          <svg viewBox="0 0 24 24" class="pw-gray">
+            <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#888">15</text>
+          </svg>
+          <span class="pw-leg pw-gray">Back</span>
+        </button>
 
-      <button class="pw-key" id="pwPlay" type="button">
-        <svg viewBox="0 0 24 24" id="pwPlayIcon" class="pw-teal">
-          <polygon points="8,5 19,12 8,19"/>
-        </svg>
-        <span class="pw-leg pw-teal" id="pwPlayLabel">Play</span>
-      </button>
+        <button class="pw-key" id="pwPlay" type="button">
+          <svg viewBox="0 0 24 24" id="pwPlayIcon" class="pw-teal">
+            <polygon points="8,5 19,12 8,19"/>
+          </svg>
+          <span class="pw-leg pw-teal" id="pwPlayLabel">Play</span>
+        </button>
 
-      <button class="pw-key" id="pwForward" type="button">
-        <svg viewBox="0 0 24 24" class="pw-gray">
-          <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
-          <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#888">15</text>
-        </svg>
-        <span class="pw-leg pw-gray">Forward</span>
-      </button>
+        <button class="pw-key" id="pwForward" type="button">
+          <svg viewBox="0 0 24 24" class="pw-gray">
+            <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+            <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#888">15</text>
+          </svg>
+          <span class="pw-leg pw-gray">Forward</span>
+        </button>
 
-      <button class="pw-key" id="pwSpeed" type="button">
-        <svg viewBox="0 0 24 24" class="pw-yellow">
-          <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/>
-          <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/>
-        </svg>
-        <span class="pw-leg pw-yellow" id="pwSpeedLabel">1×</span>
-      </button>
+        <button class="pw-key" id="pwSpeed" type="button">
+          <svg viewBox="0 0 24 24" class="pw-yellow">
+            <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/>
+            <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/>
+          </svg>
+          <span class="pw-leg pw-yellow" id="pwSpeedLabel">1×</span>
+        </button>
+      </div>
 
-      <!-- Vertical volume -->
+      <!-- Volume — far right -->
       <div class="pw-vol-col">
         <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02z"/></svg>
         <div class="pw-vol-track-v" id="pwVolTrack">
@@ -568,7 +711,7 @@
     if (!getDone() && pct >= requiredPercent) { setDone(true); blocked.style.display = 'none'; }
   }
 
-  function togglePlay() { if (video.paused) video.play(); else video.pause(); }
+  function togglePlay() { userInitiated = true; if (video.paused) video.play(); else video.pause(); }
 
   function seekToX(clientX) {
     var rect = track.getBoundingClientRect();
@@ -590,6 +733,20 @@
 
   if (videoSrc) video.src = videoSrc;
 
+  // Prevent TalentLMS app from auto-playing
+  var userInitiated = false;
+  video.autoplay = false;
+  video.pause();
+
+  // If video somehow starts without user click, pause it
+  video.addEventListener('play', function() {
+    if (!userInitiated) {
+      video.pause();
+      video.currentTime = saved && saved.time > 0 ? saved.time : 0;
+      return;
+    }
+  }, { once: false });
+
   var saved = loadJSON(PK);
   if (saved) { maxWatched = saved.maxWatched||0; }
   try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
@@ -602,8 +759,9 @@
 
   video.addEventListener('loadedmetadata', function() {
     timeTotal.textContent = fmt(video.duration);
-    if (saved && saved.time > 0 && !getDone()) {
-      video.currentTime = Math.min(saved.time, Math.max((video.duration||0)-2, 0));
+    if (saved && saved.time > 0) {
+      var safeTime = Math.min(saved.time, Math.max((video.duration||0)-2, 0));
+      video.currentTime = safeTime;
     }
     updateBar();
   });
@@ -628,6 +786,12 @@
   video.addEventListener('ended', function() {
     maxWatched = video.duration||maxWatched;
     setDone(true); saveProgress(); updateBar(); updatePlayUI(false);
+  });
+
+  // Save on tab close or switch
+  window.addEventListener('beforeunload', saveProgress);
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) saveProgress();
   });
 
   bigPlay.addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
