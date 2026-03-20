@@ -33,13 +33,13 @@
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    padding:28px 24px 10px;
+    padding:28px 40px 10px;
     overflow:visible;
   }
 
   .pw-player-wrap{
     width:100%;
-    max-width:850px;
+    max-width:800px;
     overflow:visible;
   }
 
@@ -55,8 +55,8 @@
       0 30px 60px rgba(0,0,0,0.3),
       0 14px 28px rgba(0,0,0,0.18),
       0 50px 80px -10px rgba(0,0,0,0.2),
-      8px 4px 24px rgba(0,0,0,0.08),
-      -8px 4px 24px rgba(0,0,0,0.08);
+      6px 4px 18px rgba(0,0,0,0.06),
+      -6px 4px 18px rgba(0,0,0,0.06);
     margin-bottom:-14px;
   }
 
@@ -114,8 +114,8 @@
     box-shadow:
       0 8px 20px rgba(0,0,0,0.06),
       0 2px 6px rgba(0,0,0,0.04),
-      8px 0 18px rgba(0,0,0,0.03),
-      -8px 0 18px rgba(0,0,0,0.03),
+      4px 0 12px rgba(0,0,0,0.02),
+      -4px 0 12px rgba(0,0,0,0.02),
       inset 1px 1px 2px rgba(255,255,255,.5),
       inset -1px -1px 2px rgba(0,0,0,.02);
   }
@@ -280,6 +280,7 @@
     background:#fff; color:#c0392b;
     font-weight:700; font-size:13px;
     padding:12px 22px; border-radius:14px;
+    text-align:center; line-height:1.5;
     box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 4px 10px rgba(192,57,43,.15);
     border:1.5px solid rgba(192,57,43,.2);
     display:none; z-index:1000;
@@ -306,8 +307,8 @@
     box-shadow:
       0 8px 20px rgba(0,0,0,0.06),
       0 2px 6px rgba(0,0,0,0.04),
-      8px 0 18px rgba(0,0,0,0.03),
-      -8px 0 18px rgba(0,0,0,0.03),
+      4px 0 12px rgba(0,0,0,0.02),
+      -4px 0 12px rgba(0,0,0,0.02),
       inset 1px 1px 2px rgba(255,255,255,.5),
       inset -1px -1px 2px rgba(0,0,0,.02);
   }
@@ -414,8 +415,8 @@
       box-shadow:
         0 30px 60px rgba(0,0,0,0.45),
         0 12px 24px rgba(0,0,0,0.3),
-        12px 0 30px rgba(0,0,0,0.15),
-        -12px 0 30px rgba(0,0,0,0.15);
+        6px 0 18px rgba(0,0,0,0.1),
+        -6px 0 18px rgba(0,0,0,0.1);
     }
 
     .pw-controls-card, .pw-notes-card{
@@ -423,8 +424,8 @@
       box-shadow:
         0 8px 20px rgba(0,0,0,0.15),
         0 2px 6px rgba(0,0,0,0.1),
-        8px 0 18px rgba(0,0,0,0.08),
-        -8px 0 18px rgba(0,0,0,0.08),
+        4px 0 12px rgba(0,0,0,0.05),
+        -4px 0 12px rgba(0,0,0,0.05),
         inset 1px 1px 2px rgba(255,255,255,.04),
         inset -1px -1px 2px rgba(0,0,0,.1);
     }
@@ -522,7 +523,7 @@
 
   /* ══ RESPONSIVE ══ */
   @media (max-width:640px){
-    body{ padding:6px 10px 10px; }
+    body{ padding:20px 28px 10px; }
     .pw-key{ flex:0 0 52px; width:52px; height:52px; }
     .pw-key svg{ width:18px; height:18px; }
     .pw-leg{ font-size:7px; }
@@ -543,8 +544,8 @@
 <body>
 
 <div class="pw-player-wrap">
-  <div class="pw-video-card">
-    <video id="pwVideo" class="pw-video" playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5" preload="none"></video>
+  <div class="pw-video-card" id="pwVideoCard">
+    <div id="pwVideoPlaceholder" class="pw-video" style="width:100%;aspect-ratio:16/9;background:#000;"></div>
     <div class="pw-overlay" id="pwOverlay"></div>
     <button class="pw-big-play" id="pwBigPlay" aria-label="Play video">
       <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
@@ -633,7 +634,7 @@
   </div>
 </div>
 
-<div class="pw-skip-warn" id="pwSkipWarn">Please watch through this section first.</div>
+<div class="pw-skip-warn" id="pwSkipWarn">ummmm...you can't skip the video<br>and complete this part of the course</div>
 
 <script>
 (function () {
@@ -645,7 +646,9 @@
   var lessonId = params.get('id') || 'default';
   var requiredPercent = parseInt(params.get('req') || '90', 10);
 
-  var video = document.getElementById('pwVideo');
+  var video = null;
+  var videoCard = document.getElementById('pwVideoCard');
+  var placeholder = document.getElementById('pwVideoPlaceholder');
   var overlay = document.getElementById('pwOverlay');
   var bigPlay = document.getElementById('pwBigPlay');
 
@@ -694,7 +697,7 @@
   }
 
   function showSkip(msg) {
-    skipWarn.textContent = msg || 'You need to watch through this section first.';
+    skipWarn.innerHTML = msg || 'ummmm...you can\'t skip the video<br>and complete this part of the course';
     skipWarn.style.display = 'block';
     skipWarn.style.animation = 'none';
     skipWarn.offsetHeight;
@@ -704,6 +707,7 @@
   }
 
   function saveProgress() {
+    if (!video) return;
     var dur = video.duration||0;
     saveJSON(PK, { time:video.currentTime||0, maxWatched:maxWatched, duration:dur, percent:dur>0?(video.currentTime/dur)*100:0, updatedAt:new Date().toISOString() });
   }
@@ -715,7 +719,8 @@
   }
 
   function updateBar() {
-    var dur = video.duration||0, cur = video.currentTime||0;
+    var dur = video ? (video.duration||0) : 0;
+    var cur = video ? (video.currentTime||0) : 0;
     var pct = dur>0 ? (cur/dur)*100 : 0;
     var maxPct = dur>0 ? Math.min((maxWatched/dur)*100, 100) : 0;
     fill.style.width = pct+'%';
@@ -726,9 +731,13 @@
     if (!getDone() && pct >= requiredPercent) { setDone(true); blocked.style.display = 'none'; }
   }
 
-  function togglePlay() { userInitiated = true; if (video.paused) video.play(); else video.pause(); }
+  function togglePlay() {
+    if (!videoReady) { createVideo(); return; }
+    if (video.paused) video.play(); else video.pause();
+  }
 
   function seekToX(clientX) {
+    if (!video) return;
     var rect = track.getBoundingClientRect();
     var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     var target = pct * (video.duration||0);
@@ -737,6 +746,7 @@
   }
 
   function updateVol(clientY) {
+    if (!video) return;
     var rect = volTrack.getBoundingClientRect();
     var pct = Math.max(0, Math.min(1, (rect.bottom - clientY) / rect.height));
     var vol = Math.round(pct * 100);
@@ -746,115 +756,128 @@
     try { localStorage.setItem(VK, String(vol)); } catch(e) {}
   }
 
-  if (videoSrc) video.src = videoSrc;
+  // ══ LAZY VIDEO CREATION — no <video> in DOM until user clicks play ══
+  // This prevents TalentLMS app from detecting and auto-fullscreening
+  var videoReady = false;
 
-  // Prevent TalentLMS app from auto-playing
-  var userInitiated = false;
-  video.autoplay = false;
-  video.pause();
+  function createVideo() {
+    if (videoReady) return;
+    videoReady = true;
 
-  // If video somehow starts without user click, pause it
-  video.addEventListener('play', function() {
-    if (!userInitiated) {
-      video.pause();
-      video.currentTime = saved && saved.time > 0 ? saved.time : 0;
-      return;
-    }
-  }, { once: false });
+    video = document.createElement('video');
+    video.className = 'pw-video';
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('x5-playsinline', '');
+    video.setAttribute('x5-video-player-type', 'h5');
+    video.preload = 'auto';
 
+    // Replace placeholder with video
+    placeholder.parentNode.replaceChild(video, placeholder);
+
+    if (videoSrc) video.src = videoSrc;
+
+    // Restore volume
+    try {
+      var sv = parseInt(localStorage.getItem(VK)||'70', 10);
+      video.volume = sv/100; volFill.style.height = sv+'%'; volLabel.textContent = sv;
+    } catch(e) { video.volume = 0.7; }
+
+    // Events
+    video.addEventListener('loadedmetadata', function() {
+      timeTotal.textContent = fmt(video.duration);
+      if (saved && saved.time > 0) {
+        video.currentTime = Math.min(saved.time, Math.max((video.duration||0)-2, 0));
+      }
+      updateBar();
+    });
+
+    video.addEventListener('timeupdate', function() {
+      var cur = video.currentTime||0;
+      if (!getDone() && cur > lastValid+2 && cur > maxWatched+2) {
+        video.currentTime = maxWatched; showSkip(); return;
+      }
+      if (cur > maxWatched) maxWatched = cur;
+      lastValid = cur;
+      saveProgress(); updateBar();
+    });
+
+    // Anti-skip: seeking event
+    var isSnapping = false;
+    video.addEventListener('seeking', function() {
+      if (getDone() || isSnapping) return;
+      var cur = video.currentTime||0;
+      if (cur > maxWatched + 2) {
+        isSnapping = true;
+        video.currentTime = maxWatched;
+        showSkip();
+      }
+    });
+    video.addEventListener('seeked', function() { isSnapping = false; });
+
+    var fsBtn = document.getElementById('pwFsBtn');
+
+    video.addEventListener('play', function() {
+      updatePlayUI(true);
+      fsBtn.classList.add('visible');
+    });
+    video.addEventListener('pause', function() { updatePlayUI(false); saveProgress(); });
+    video.addEventListener('ended', function() {
+      maxWatched = video.duration||maxWatched;
+      setDone(true); saveProgress(); updateBar(); updatePlayUI(false);
+    });
+
+    window.addEventListener('beforeunload', saveProgress);
+    document.addEventListener('visibilitychange', function() { if (document.hidden) saveProgress(); });
+
+    fsBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    });
+
+    // Block keyboard skipping
+    document.addEventListener('keydown', function(e) {
+      if (!video) return;
+      if (e.key === 'ArrowRight' || e.key === 'Right') {
+        var target = (video.currentTime||0) + 5;
+        if (!getDone() && target > maxWatched + 2) { e.preventDefault(); showSkip(); }
+      }
+    });
+
+    // Start playback
+    video.play();
+  }
+
+  // Load saved progress (before video exists)
   var saved = loadJSON(PK);
   if (saved) { maxWatched = saved.maxWatched||0; }
   try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
   try {
     var sv = parseInt(localStorage.getItem(VK)||'70', 10);
-    video.volume = sv/100; volFill.style.height = sv+'%'; volLabel.textContent = sv;
-  } catch(e) { video.volume = 0.7; }
+    volFill.style.height = sv+'%'; volLabel.textContent = sv;
+  } catch(e) {}
 
   updatePlayUI(false); updateBar();
-
-  video.addEventListener('loadedmetadata', function() {
-    timeTotal.textContent = fmt(video.duration);
-    if (saved && saved.time > 0) {
-      var safeTime = Math.min(saved.time, Math.max((video.duration||0)-2, 0));
-      video.currentTime = safeTime;
-    }
-    updateBar();
-  });
-
-  video.addEventListener('timeupdate', function() {
-    var cur = video.currentTime||0;
-    if (!getDone() && cur > lastValid+2 && cur > maxWatched+2) {
-      video.currentTime = maxWatched; showSkip(); return;
-    }
-    if (cur > maxWatched) maxWatched = cur;
-    lastValid = cur;
-    saveProgress(); updateBar();
-  });
-
-  // Aggressive anti-skip: catch ALL seeking attempts
-  var isSnapping = false;
-  video.addEventListener('seeking', function() {
-    if (getDone() || isSnapping) return;
-    var cur = video.currentTime||0;
-    if (cur > maxWatched + 2) {
-      isSnapping = true;
-      video.currentTime = maxWatched;
-      showSkip();
-    }
-  });
-  video.addEventListener('seeked', function() {
-    isSnapping = false;
-  });
-
-  // Block keyboard arrow keys from skipping ahead
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight' || e.key === 'Right') {
-      var target = (video.currentTime||0) + 5;
-      if (!getDone() && target > maxWatched + 2) {
-        e.preventDefault();
-        showSkip();
-      }
-    }
-  });
-
-  var fsBtn = document.getElementById('pwFsBtn');
-
-  video.addEventListener('play', function() {
-    updatePlayUI(true);
-    fsBtn.classList.add('visible');
-  });
-  video.addEventListener('pause', function() { updatePlayUI(false); saveProgress(); });
-  video.addEventListener('ended', function() {
-    maxWatched = video.duration||maxWatched;
-    setDone(true); saveProgress(); updateBar(); updatePlayUI(false);
-  });
-
-  // Save on tab close or switch
-  window.addEventListener('beforeunload', saveProgress);
-  document.addEventListener('visibilitychange', function() {
-    if (document.hidden) saveProgress();
-  });
 
   bigPlay.addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
   overlay.addEventListener('click', togglePlay);
   playBtn.addEventListener('click', togglePlay);
 
-  fsBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    var el = video;
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitEnterFullscreen) el.webkitEnterFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  backBtn.addEventListener('click', function() {
+    if (!video) return;
+    video.currentTime = Math.max(0, (video.currentTime||0)-15);
   });
-
-  backBtn.addEventListener('click', function() { video.currentTime = Math.max(0, (video.currentTime||0)-15); });
   forwardBtn.addEventListener('click', function() {
+    if (!video) return;
     var t = (video.currentTime||0)+15;
     if (!getDone() && t > maxWatched+2) { showSkip(); return; }
     video.currentTime = Math.min(video.duration||0, t);
   });
 
   speedBtn.addEventListener('click', function() {
+    if (!video) return;
     speedIdx = (speedIdx+1)%speeds.length;
     video.playbackRate = speeds[speedIdx];
     speedLabel.textContent = speeds[speedIdx]+'×';
