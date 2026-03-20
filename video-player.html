@@ -46,14 +46,15 @@
   /* ══ VIDEO CARD ══ */
   .pw-video-card{
     width:100%;
-    background:#111;
+    background:#000;
     border-radius:22px;
     overflow:hidden;
     position:relative;
     z-index:2;
     box-shadow:
-      0 20px 50px rgba(0,0,0,0.25),
-      0 10px 20px rgba(0,0,0,0.14),
+      0 30px 60px rgba(0,0,0,0.3),
+      0 14px 28px rgba(0,0,0,0.18),
+      0 50px 80px -10px rgba(0,0,0,0.2),
       8px 4px 24px rgba(0,0,0,0.08),
       -8px 4px 24px rgba(0,0,0,0.08);
     margin-bottom:-14px;
@@ -64,6 +65,8 @@
     width:100%;
     height:auto;
     background:#000;
+    border-radius:22px;
+    margin:-1px 0;
   }
 
   .pw-video::-webkit-media-controls { display:none !important; }
@@ -275,11 +278,18 @@
   .pw-skip-warn{
     position:fixed; top:18px; left:50%; transform:translateX(-50%);
     background:#fff; color:#c0392b;
-    font-weight:700; font-size:12px;
-    padding:10px 18px; border-radius:14px;
-    box-shadow: 0 10px 24px rgba(0,0,0,.12), 0 2px 8px rgba(192,57,43,.12);
-    border:1px solid rgba(192,57,43,.1);
+    font-weight:700; font-size:13px;
+    padding:12px 22px; border-radius:14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 4px 10px rgba(192,57,43,.15);
+    border:1.5px solid rgba(192,57,43,.2);
     display:none; z-index:1000;
+    animation: warnPulse 0.3s ease;
+  }
+
+  @keyframes warnPulse {
+    0% { transform:translateX(-50%) scale(0.9); opacity:0; }
+    50% { transform:translateX(-50%) scale(1.02); }
+    100% { transform:translateX(-50%) scale(1); opacity:1; }
   }
 
   /* ══ NOTES CARD ══ */
@@ -684,8 +694,11 @@
   }
 
   function showSkip(msg) {
-    skipWarn.textContent = msg || 'Please watch through this section first.';
+    skipWarn.textContent = msg || 'You need to watch through this section first.';
     skipWarn.style.display = 'block';
+    skipWarn.style.animation = 'none';
+    skipWarn.offsetHeight;
+    skipWarn.style.animation = 'warnPulse 0.3s ease';
     clearTimeout(skipTimer);
     skipTimer = setTimeout(function() { skipWarn.style.display = 'none'; }, 2500);
   }
@@ -770,12 +783,38 @@
 
   video.addEventListener('timeupdate', function() {
     var cur = video.currentTime||0;
-    if (!getDone() && cur > lastValid+3 && cur > maxWatched+2) {
+    if (!getDone() && cur > lastValid+2 && cur > maxWatched+2) {
       video.currentTime = maxWatched; showSkip(); return;
     }
     if (cur > maxWatched) maxWatched = cur;
     lastValid = cur;
     saveProgress(); updateBar();
+  });
+
+  // Aggressive anti-skip: catch ALL seeking attempts
+  var isSnapping = false;
+  video.addEventListener('seeking', function() {
+    if (getDone() || isSnapping) return;
+    var cur = video.currentTime||0;
+    if (cur > maxWatched + 2) {
+      isSnapping = true;
+      video.currentTime = maxWatched;
+      showSkip();
+    }
+  });
+  video.addEventListener('seeked', function() {
+    isSnapping = false;
+  });
+
+  // Block keyboard arrow keys from skipping ahead
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'Right') {
+      var target = (video.currentTime||0) + 5;
+      if (!getDone() && target > maxWatched + 2) {
+        e.preventDefault();
+        showSkip();
+      }
+    }
   });
 
   var fsBtn = document.getElementById('pwFsBtn');
