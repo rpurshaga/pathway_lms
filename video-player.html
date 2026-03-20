@@ -523,21 +523,53 @@
 
   /* ══ RESPONSIVE ══ */
   @media (max-width:640px){
-    body{ padding:20px 28px 10px; }
+    body{ padding:20px 20px 10px; }
+
+    .pw-controls-card{ width:92%; padding:40px 12px 8px; }
+    .pw-notes-card{ width:92%; }
+
+    .pw-btn-row{
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .pw-btn-group{
+      justify-content:center;
+    }
+
+    .pw-vol-col{
+      position:static;
+      transform:none;
+      flex-direction:row;
+      height:auto;
+      width:100%;
+      gap:8px;
+      align-items:center;
+    }
+
+    .pw-vol-track-v{
+      width:100%;
+      height:6px;
+      border-radius:3px;
+      flex:1;
+    }
+
+    .pw-vol-fill-v{
+      bottom:auto; left:0; top:0;
+      height:100%;
+      width:70%;
+      border-radius:3px;
+    }
+
     .pw-key{ flex:0 0 52px; width:52px; height:52px; }
     .pw-key svg{ width:18px; height:18px; }
     .pw-leg{ font-size:7px; }
-    .pw-btn-row{ gap:8px; }
-    .pw-vol-col{ height:54px; }
-    .pw-controls-card{ width:90%; padding:14px 12px 8px; }
-    .pw-notes-card{ width:90%; }
   }
 
   @media (max-width:380px){
     .pw-key{ flex:0 0 46px; width:46px; height:46px; border-radius:12px; }
     .pw-key svg{ width:16px; height:16px; }
     .pw-leg{ font-size:6.5px; }
-    .pw-btn-row{ gap:6px; }
   }
 </style>
 </head>
@@ -745,13 +777,22 @@
     video.currentTime = target; updateBar();
   }
 
-  function updateVol(clientY) {
+  function updateVol(clientX, clientY) {
     if (!video) return;
     var rect = volTrack.getBoundingClientRect();
-    var pct = Math.max(0, Math.min(1, (rect.bottom - clientY) / rect.height));
+    var pct;
+    // Detect if horizontal (mobile) or vertical (desktop) by aspect ratio
+    if (rect.width > rect.height) {
+      pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      volFill.style.width = Math.round(pct*100)+'%';
+      volFill.style.height = '100%';
+    } else {
+      pct = Math.max(0, Math.min(1, (rect.bottom - clientY) / rect.height));
+      volFill.style.height = Math.round(pct*100)+'%';
+      volFill.style.width = '';
+    }
     var vol = Math.round(pct * 100);
     video.volume = pct;
-    volFill.style.height = vol+'%';
     volLabel.textContent = vol;
     try { localStorage.setItem(VK, String(vol)); } catch(e) {}
   }
@@ -886,11 +927,11 @@
   track.addEventListener('pointerdown', function(e) { dragging = true; seekToX(e.clientX); });
   document.addEventListener('pointermove', function(e) {
     if (dragging) seekToX(e.clientX);
-    if (volDragging) updateVol(e.clientY);
+    if (volDragging) updateVol(e.clientX, e.clientY);
   });
   document.addEventListener('pointerup', function() { dragging = false; volDragging = false; });
 
-  volTrack.addEventListener('pointerdown', function(e) { volDragging = true; updateVol(e.clientY); });
+  volTrack.addEventListener('pointerdown', function(e) { volDragging = true; updateVol(e.clientX, e.clientY); });
 
   notesArea.addEventListener('input', function() {
     clearTimeout(notesTimer);
