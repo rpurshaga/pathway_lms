@@ -32,7 +32,7 @@
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    padding:8px 10px 14px;
+    padding:6px 10px 12px;
   }
 
   .pw-player-wrap{
@@ -122,26 +122,33 @@
   }
 
   .pw-controls-card{
-    padding:16px 14px 8px;
+    padding:12px 14px 8px;
     border-radius:0 0 22px 22px;
     position:relative;
     z-index:1;
   }
 
-  .pw-btn-row{
+  .pw-top-row{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:8px;
+    gap:14px;
+  }
+
+  .pw-left-cluster{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:1;
+    min-width:0;
   }
 
   .pw-btn-group{
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content:flex-start;
     gap:8px;
     flex-wrap:wrap;
-    flex:1;
   }
 
   .pw-key{
@@ -165,6 +172,7 @@
     transition:transform 80ms ease-out, box-shadow 80ms ease-out;
     -webkit-tap-highlight-color:transparent;
     user-select:none;
+    flex:0 0 auto;
   }
   .pw-key:active,
   .pw-key.pressed{
@@ -192,23 +200,25 @@
   .pw-yellow{ fill:var(--pw-yellow); color:#7a6c1a; }
 
   .pw-vol-wrap{
-    width:44px;
+    width:230px;
     display:flex;
-    flex-direction:column;
     align-items:center;
-    gap:6px;
+    justify-content:flex-start;
+    gap:8px;
+    flex:0 0 230px;
   }
 
   .pw-speaker{
     width:16px;
     height:16px;
     fill:#777;
+    flex:0 0 auto;
   }
 
   .pw-vol-capsule{
-    width:40px;
-    height:92px;
-    border-radius:20px;
+    flex:1;
+    height:34px;
+    border-radius:17px;
     background:linear-gradient(145deg,#f1eee9,#dcd8d2);
     box-shadow:
       inset 3px 3px 8px rgba(0,0,0,.09),
@@ -216,11 +226,12 @@
     display:flex;
     align-items:center;
     justify-content:center;
+    padding:0 10px;
   }
 
   .pw-vol-track{
-    width:10px;
-    height:64px;
+    width:100%;
+    height:10px;
     border-radius:5px;
     background:var(--pw-track);
     position:relative;
@@ -234,32 +245,34 @@
 
   .pw-vol-fill{
     position:absolute;
+    top:0;
     left:0;
-    right:0;
     bottom:0;
-    height:70%;
+    width:70%;
     border-radius:5px;
-    background:linear-gradient(0deg, var(--pw-teal), var(--pw-teal-2));
+    background:linear-gradient(90deg, var(--pw-teal), var(--pw-teal-2));
     box-shadow:
-      0 -1px 4px rgba(42,157,143,.4),
       0 0 8px rgba(42,157,143,.25),
       inset 0 1px 1px rgba(255,255,255,.3);
   }
 
   .pw-vol-label{
-    font-size:9px;
+    font-size:10px;
     font-weight:600;
     color:#999;
+    width:34px;
+    text-align:right;
+    flex:0 0 auto;
   }
 
   .pw-scrub{
     padding:0 2px;
-    margin-top:2px;
+    margin-top:6px;
   }
 
   .pw-scrub-capsule{
     width:100%;
-    height:30px;
+    height:28px;
     border-radius:16px;
     background:linear-gradient(145deg,#f1eee9,#dcd8d2);
     box-shadow:
@@ -337,7 +350,7 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-top:6px;
+    margin-top:4px;
     gap:10px;
     font-size:10px;
     color:#8b8b8b;
@@ -452,13 +465,37 @@
     color:var(--pw-teal);
   }
 
+  @media (max-width:760px){
+    .pw-top-row{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:10px;
+    }
+
+    .pw-left-cluster{
+      width:100%;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:10px;
+    }
+
+    .pw-btn-group{
+      width:100%;
+      justify-content:flex-start;
+    }
+
+    .pw-vol-wrap{
+      width:100%;
+      flex:1 1 auto;
+    }
+  }
+
   @media (max-width:640px){
     body{ padding:6px 8px 12px; }
     .pw-key{ width:58px; height:58px; }
     .pw-leg{ font-size:9px; }
-    .pw-btn-row{ align-items:flex-start; }
     .pw-btn-group{ gap:8px; }
-    .pw-scrub{ margin-top:2px; }
+    .pw-vol-wrap{ gap:6px; }
   }
 </style>
 </head>
@@ -470,43 +507,45 @@
     <div class="pw-overlay" id="pwOverlay"></div>
 
     <button class="pw-big-play" id="pwBigPlay" aria-label="Play video">
-      <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+      <svg viewBox="0 0 24 0"><polygon points="8,5 19,12 8,19"/></svg>
     </button>
   </div>
 
   <div class="pw-controls-card">
-    <div class="pw-btn-row">
-      <div class="pw-btn-group">
-        <button class="pw-key" id="pwBack" type="button">
-          <svg viewBox="0 0 24 24" class="pw-gray">
-            <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-            <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#777">15</text>
-          </svg>
-          <span class="pw-leg pw-gray">Back</span>
-        </button>
+    <div class="pw-top-row">
+      <div class="pw-left-cluster">
+        <div class="pw-btn-group">
+          <button class="pw-key" id="pwBack" type="button">
+            <svg viewBox="0 0 24 24" class="pw-gray">
+              <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+              <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#777">15</text>
+            </svg>
+            <span class="pw-leg pw-gray">Back</span>
+          </button>
 
-        <button class="pw-key" id="pwPlay" type="button">
-          <svg viewBox="0 0 24 24" id="pwPlayIcon" class="pw-teal">
-            <polygon points="8,5 19,12 8,19"/>
-          </svg>
-          <span class="pw-leg pw-teal" id="pwPlayLabel">Play</span>
-        </button>
+          <button class="pw-key" id="pwPlay" type="button">
+            <svg viewBox="0 0 24 24" id="pwPlayIcon" class="pw-teal">
+              <polygon points="8,5 19,12 8,19"/>
+            </svg>
+            <span class="pw-leg pw-teal" id="pwPlayLabel">Play</span>
+          </button>
 
-        <button class="pw-key" id="pwForward" type="button">
-          <svg viewBox="0 0 24 24" class="pw-gray">
-            <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58-8-8-8s-8 3.58-8 8 3.58 8 8 8z"/>
-            <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#777">15</text>
-          </svg>
-          <span class="pw-leg pw-gray">Forward</span>
-        </button>
+          <button class="pw-key" id="pwForward" type="button">
+            <svg viewBox="0 0 24 24" class="pw-gray">
+              <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+              <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="IBM Plex Sans" fill="#777">15</text>
+            </svg>
+            <span class="pw-leg pw-gray">Forward</span>
+          </button>
 
-        <button class="pw-key" id="pwSpeed" type="button">
-          <svg viewBox="0 0 24 24" class="pw-yellow">
-            <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/>
-            <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/>
-          </svg>
-          <span class="pw-leg pw-yellow" id="pwSpeedLabel">1×</span>
-        </button>
+          <button class="pw-key" id="pwSpeed" type="button">
+            <svg viewBox="0 0 24 24" class="pw-yellow">
+              <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/>
+              <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/>
+            </svg>
+            <span class="pw-leg pw-yellow" id="pwSpeedLabel">1×</span>
+          </button>
+        </div>
       </div>
 
       <div class="pw-vol-wrap">
@@ -758,15 +797,15 @@
     updateProgressUI();
   }
 
-  function updateVolume(clientY) {
+  function updateVolume(clientX) {
     var rect = volTrack.getBoundingClientRect();
-    var pct = Math.max(0, Math.min(100, ((rect.bottom - clientY) / rect.height) * 100));
+    var pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
     var vol = Math.round(pct);
 
     video.volume = vol / 100;
     try { localStorage.setItem(VOL_KEY, String(vol)); } catch (e) {}
 
-    volFill.style.height = vol + '%';
+    volFill.style.width = vol + '%';
     volLabel.textContent = vol + '%';
 
     if (vol === 0) {
@@ -797,7 +836,7 @@
     var savedVol = parseInt(localStorage.getItem(VOL_KEY) || '70', 10);
     if (!isNaN(savedVol)) {
       video.volume = Math.max(0, Math.min(1, savedVol / 100));
-      volFill.style.height = savedVol + '%';
+      volFill.style.width = savedVol + '%';
       volLabel.textContent = savedVol + '%';
       if (savedVol === 0) {
         speakerIcon.innerHTML = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
@@ -805,7 +844,7 @@
     }
   } catch (e) {
     video.volume = 0.7;
-    volFill.style.height = '70%';
+    volFill.style.width = '70%';
     volLabel.textContent = '70%';
   }
 
@@ -900,7 +939,7 @@
 
   document.addEventListener('pointermove', function (e) {
     if (dragging) seekToClientX(e.clientX);
-    if (volDragging) updateVolume(e.clientY);
+    if (volDragging) updateVolume(e.clientX);
   });
 
   document.addEventListener('pointerup', function () {
@@ -910,7 +949,7 @@
 
   volTrack.addEventListener('pointerdown', function (e) {
     volDragging = true;
-    updateVolume(e.clientY);
+    updateVolume(e.clientX);
   });
 
   notesArea.addEventListener('input', function () {
