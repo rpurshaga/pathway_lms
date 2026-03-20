@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <title>Pathway Media Player</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -102,7 +104,7 @@
     margin-left:auto;
     margin-right:auto;
     background:var(--pw-bg);
-    padding:18px 16px 10px;
+    padding:28px 16px 10px;
     border-radius:0 0 20px 20px;
     position:relative;
     z-index:1;
@@ -532,7 +534,7 @@
 
 <div class="pw-player-wrap">
   <div class="pw-video-card">
-    <video id="pwVideo" class="pw-video" playsinline preload="none" autoplay="false"></video>
+    <video id="pwVideo" class="pw-video" playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5" preload="none"></video>
     <div class="pw-overlay" id="pwOverlay"></div>
     <button class="pw-big-play" id="pwBigPlay" aria-label="Play video">
       <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
