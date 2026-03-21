@@ -124,8 +124,8 @@
   .pw-btn-row{
     display:flex;
     align-items:center;
+    justify-content:center;
     padding:0 4px;
-    position:relative;
   }
 
   .pw-btn-group{
@@ -133,20 +133,52 @@
     align-items:center;
     justify-content:center;
     gap:12px;
-    flex:1;
   }
 
-  .pw-vol-col{
+  /* Volume overlay on video */
+  .pw-vol-overlay{
     position:absolute;
-    right:8px;
-    top:50%;
-    transform:translateY(-50%);
+    bottom:10px;
+    left:10px;
+    z-index:3;
     display:flex;
-    flex-direction:column;
     align-items:center;
-    gap:4px;
-    height:62px;
-    width:28px;
+    gap:6px;
+    opacity:0;
+    transition:opacity 0.2s ease;
+  }
+  .pw-video-card:hover .pw-vol-overlay{ opacity:1; }
+
+  .pw-vol-btn{
+    width:30px; height:30px; border-radius:8px;
+    background:rgba(0,0,0,0.45); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pw-vol-btn svg{ width:14px; height:14px; fill:#fff; }
+
+  .pw-vol-slider{
+    width:0; overflow:hidden;
+    transition:width 0.2s ease;
+    height:30px; border-radius:8px;
+    background:rgba(0,0,0,0.45);
+    display:flex; align-items:center;
+    padding:0;
+  }
+  .pw-vol-overlay.expanded .pw-vol-slider{
+    width:90px;
+    padding:0 10px;
+  }
+
+  .pw-vol-track{
+    width:100%; height:4px; border-radius:2px;
+    background:rgba(255,255,255,0.3);
+    position:relative; cursor:pointer;
+    touch-action:none;
+  }
+  .pw-vol-fill{
+    position:absolute; top:0; left:0; bottom:0;
+    width:70%; border-radius:2px;
+    background:#fff;
   }
 
   .pw-key{
@@ -187,37 +219,6 @@
   .pw-gray{ fill:#888; color:#777; }
   .pw-teal{ fill:var(--pw-teal); color:var(--pw-teal); }
   .pw-yellow{ fill:var(--pw-yellow); color:#7a6c1a; }
-
-  .pw-vol-col svg{ width:12px; height:12px; fill:#999; flex-shrink:0; }
-  .pw-vol-label{ font-size:8px; font-weight:600; color:#aaa; width:28px; text-align:center; }
-
-  .pw-vol-track-v{
-    flex:1;
-    width:10px;
-    border-radius:5px;
-    background:linear-gradient(180deg, #b5b2ad, #a8a5a0);
-    position:relative;
-    cursor:pointer;
-    touch-action:none;
-    box-shadow:
-      inset 3px 3px 6px rgba(0,0,0,.28),
-      inset -1px -1px 2px rgba(255,255,255,.15),
-      inset 0 4px 4px rgba(0,0,0,.18);
-    overflow:hidden;
-    border:0.5px solid rgba(0,0,0,.1);
-  }
-
-  .pw-vol-fill-v{
-    position:absolute;
-    bottom:0; left:0; right:0;
-    height:70%;
-    border-radius:5px;
-    background:linear-gradient(90deg, var(--pw-teal), var(--pw-teal-2));
-    box-shadow:
-      0 0 6px rgba(42,157,143,.3),
-      inset 1px 0 1px rgba(255,255,255,.25),
-      inset -1px 0 1px rgba(0,0,0,.12);
-  }
 
   /* ══ SCRUB BAR ══ */
   .pw-scrub{
@@ -413,79 +414,67 @@
 
     .pw-video-card{
       box-shadow:
-        0 30px 60px rgba(0,0,0,0.45),
-        0 12px 24px rgba(0,0,0,0.3),
-        6px 0 18px rgba(0,0,0,0.1),
-        -6px 0 18px rgba(0,0,0,0.1);
+        0 30px 60px rgba(0,0,0,0.5),
+        0 12px 24px rgba(0,0,0,0.35),
+        0 -4px 16px rgba(255,255,255,0.03),
+        6px 0 18px rgba(0,0,0,0.12),
+        -6px 0 18px rgba(0,0,0,0.12);
     }
 
     .pw-controls-card, .pw-notes-card{
       background:var(--pw-bg);
       box-shadow:
-        0 8px 20px rgba(0,0,0,0.15),
-        0 2px 6px rgba(0,0,0,0.1),
-        4px 0 12px rgba(0,0,0,0.05),
-        -4px 0 12px rgba(0,0,0,0.05),
-        inset 1px 1px 2px rgba(255,255,255,.04),
-        inset -1px -1px 2px rgba(0,0,0,.1);
+        6px 6px 16px rgba(0,0,0,0.25),
+        -6px -6px 16px rgba(255,255,255,0.06),
+        0 8px 20px rgba(0,0,0,0.12),
+        inset 1px 1px 2px rgba(255,255,255,.06),
+        inset -1px -1px 2px rgba(0,0,0,.12);
     }
 
     .pw-key{
-      background:linear-gradient(145deg, #353533, #2a2a28);
-      border-color:rgba(255,255,255,.05);
+      background:linear-gradient(145deg, #383836, #2c2c2a);
+      border-color:rgba(255,255,255,.07);
       box-shadow:
-        3px 3px 6px rgba(0,0,0,.2),
-        -3px -3px 6px rgba(255,255,255,.04),
-        inset 0 1px 0 rgba(255,255,255,.06),
-        inset 0 -1px 0 rgba(0,0,0,.1);
+        4px 4px 8px rgba(0,0,0,.3),
+        -4px -4px 8px rgba(255,255,255,.07),
+        inset 0 1px 0 rgba(255,255,255,.1),
+        inset 0 -1px 0 rgba(0,0,0,.15);
     }
     .pw-key:active, .pw-key.pressed{
       box-shadow:
-        inset 4px 4px 8px rgba(0,0,0,.2),
-        inset -4px -4px 8px rgba(255,255,255,.03);
+        inset 4px 4px 8px rgba(0,0,0,.25),
+        inset -4px -4px 8px rgba(255,255,255,.04);
     }
 
     .pw-gray{ fill:#aaa; color:#999; }
     .pw-teal{ fill:#3cc4b4; color:#3cc4b4; }
     .pw-yellow{ fill:#c4b44a; color:#b8a842; }
 
-    .pw-vol-col svg{ fill:#888; }
-    .pw-vol-label{ color:#666; }
-
-    .pw-vol-track-v{
-      background:linear-gradient(180deg, #3a3a38, #2e2e2c);
-      border-color:rgba(255,255,255,.04);
-      box-shadow:
-        inset 2px 2px 4px rgba(0,0,0,.3),
-        inset -1px -1px 3px rgba(255,255,255,.03),
-        inset 0 2px 2px rgba(0,0,0,.2);
-    }
-
     .pw-scrub-capsule{
       background:linear-gradient(90deg, #333330, #2a2a28);
-      border-color:rgba(255,255,255,.04);
+      border-color:rgba(255,255,255,.06);
       box-shadow:
-        inset 3px 3px 6px rgba(0,0,0,.2),
-        inset -2px -2px 5px rgba(255,255,255,.03),
-        inset 0 2px 3px rgba(0,0,0,.12);
+        inset 3px 3px 6px rgba(0,0,0,.25),
+        inset -2px -2px 5px rgba(255,255,255,.05),
+        inset 0 2px 3px rgba(0,0,0,.15);
     }
 
     .pw-scrub-track{
       background:linear-gradient(90deg, #3a3a38, #2e2e2c);
-      border-color:rgba(255,255,255,.04);
+      border-color:rgba(255,255,255,.06);
       box-shadow:
-        inset 2px 2px 4px rgba(0,0,0,.3),
-        inset -1px -1px 3px rgba(255,255,255,.03),
-        inset 0 2px 2px rgba(0,0,0,.2);
+        inset 2px 2px 4px rgba(0,0,0,.35),
+        inset -1px -1px 3px rgba(255,255,255,.05),
+        inset 0 2px 2px rgba(0,0,0,.22);
     }
 
-    .pw-scrub-blocked{ background:rgba(0,0,0,.2); }
+    .pw-scrub-blocked{ background:rgba(0,0,0,.25); }
 
     .pw-times{ color:#666; }
 
     .pw-skip-warn{
       background:rgba(40,40,38,.95);
-      box-shadow: 0 10px 24px rgba(0,0,0,.3);
+      box-shadow: 0 10px 24px rgba(0,0,0,.35), 0 0 12px rgba(255,255,255,.03);
       border-color:rgba(192,57,43,.2);
     }
 
@@ -493,8 +482,8 @@
     .pw-notes-well{
       background:var(--pw-well);
       box-shadow:
-        inset 2px 2px 5px rgba(0,0,0,.15),
-        inset -2px -2px 5px rgba(255,255,255,.02);
+        inset 2px 2px 5px rgba(0,0,0,.2),
+        inset -2px -2px 5px rgba(255,255,255,.04);
     }
     .pw-notes-well textarea{
       color:#ccc;
@@ -502,20 +491,20 @@
     .pw-notes-well textarea::placeholder{ color:#555; }
 
     .pw-copy-btn{
-      background:var(--pw-bg); color:#777;
+      background:var(--pw-bg); color:#888;
       box-shadow:
-        3px 3px 6px rgba(0,0,0,.15),
-        -3px -3px 6px rgba(255,255,255,.03);
+        3px 3px 6px rgba(0,0,0,.2),
+        -3px -3px 6px rgba(255,255,255,.06);
     }
     .pw-copy-btn:active{
       box-shadow:
-        inset 2px 2px 4px rgba(0,0,0,.15),
-        inset -2px -2px 4px rgba(255,255,255,.02);
+        inset 2px 2px 4px rgba(0,0,0,.2),
+        inset -2px -2px 4px rgba(255,255,255,.03);
     }
 
     .pw-watermark{
-      color:rgba(255,255,255,.08);
-      text-shadow: 0 1px 0 rgba(0,0,0,.3);
+      color:rgba(255,255,255,.1);
+      text-shadow: 0 1px 0 rgba(0,0,0,.4);
     }
 
     .pw-big-play{ background:rgba(60,196,180,.9); }
@@ -546,7 +535,6 @@
     .pw-key{ flex:0 0 52px; width:52px; height:52px; }
     .pw-key svg{ width:18px; height:18px; }
     .pw-leg{ font-size:7px; }
-    .pw-vol-col{ height:52px; }
   }
 
   @media (max-width:380px){
@@ -571,6 +559,16 @@
     <button class="pw-fs-btn" id="pwFsBtn" aria-label="Fullscreen">
       <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
     </button>
+    <div class="pw-vol-overlay" id="pwVolOverlay">
+      <button class="pw-vol-btn" id="pwVolBtn" type="button">
+        <svg viewBox="0 0 24 24" id="pwVolIcon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
+      <div class="pw-vol-slider">
+        <div class="pw-vol-track" id="pwVolTrack">
+          <div class="pw-vol-fill" id="pwVolFill"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="pw-controls-card">
@@ -606,15 +604,6 @@
           </svg>
           <span class="pw-leg pw-yellow" id="pwSpeedLabel">1×</span>
         </button>
-      </div>
-
-      <!-- Volume — far right -->
-      <div class="pw-vol-col">
-        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02z"/></svg>
-        <div class="pw-vol-track-v" id="pwVolTrack">
-          <div class="pw-vol-fill-v" id="pwVolFill"></div>
-        </div>
-        <span class="pw-vol-label" id="pwVolLabel">70</span>
       </div>
     </div>
 
@@ -687,7 +676,9 @@
 
   var volTrack = document.getElementById('pwVolTrack');
   var volFill = document.getElementById('pwVolFill');
-  var volLabel = document.getElementById('pwVolLabel');
+  var volBtn = document.getElementById('pwVolBtn');
+  var volOverlay = document.getElementById('pwVolOverlay');
+  var volIcon = document.getElementById('pwVolIcon');
 
   var notesArea = document.getElementById('pwNotes');
   var savedEl = document.getElementById('pwSaved');
@@ -699,7 +690,6 @@
   var VK = 'pw-vol-' + lessonId;
 
   var maxWatched = 0, lastValid = 0;
-  var dragging = false, volDragging = false;
   var notesTimer = null, skipTimer = null;
   var speeds = [1, 1.25, 1.5, 1.75, 2], speedIdx = 0;
 
@@ -763,24 +753,20 @@
     video.currentTime = target; updateBar();
   }
 
-  function updateVol(clientX, clientY) {
+  function updateVol(clientX) {
     if (!video) return;
     var rect = volTrack.getBoundingClientRect();
-    var pct;
-    // Detect if horizontal (mobile) or vertical (desktop) by aspect ratio
-    if (rect.width > rect.height) {
-      pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      volFill.style.width = Math.round(pct*100)+'%';
-      volFill.style.height = '100%';
-    } else {
-      pct = Math.max(0, Math.min(1, (rect.bottom - clientY) / rect.height));
-      volFill.style.height = Math.round(pct*100)+'%';
-      volFill.style.width = '';
-    }
+    var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     var vol = Math.round(pct * 100);
     video.volume = pct;
-    volLabel.textContent = vol;
+    volFill.style.width = vol + '%';
     try { localStorage.setItem(VK, String(vol)); } catch(e) {}
+    // Update icon
+    if (vol === 0) {
+      volIcon.innerHTML = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+    } else {
+      volIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+    }
   }
 
   // ══ LAZY VIDEO CREATION — no <video> in DOM until user clicks play ══
@@ -807,7 +793,7 @@
     // Restore volume
     try {
       var sv = parseInt(localStorage.getItem(VK)||'70', 10);
-      video.volume = sv/100; volFill.style.height = sv+'%'; volLabel.textContent = sv;
+      video.volume = sv/100; volFill.style.width = sv+'%';
     } catch(e) { video.volume = 0.7; }
 
     // Events
@@ -883,7 +869,7 @@
   try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
   try {
     var sv = parseInt(localStorage.getItem(VK)||'70', 10);
-    volFill.style.height = sv+'%'; volLabel.textContent = sv;
+    volFill.style.width = sv+'%';
   } catch(e) {}
 
   updatePlayUI(false); updateBar();
@@ -913,12 +899,29 @@
   track.addEventListener('pointerdown', function(e) { dragging = true; seekToX(e.clientX); });
   document.addEventListener('pointermove', function(e) {
     if (dragging) seekToX(e.clientX);
-    if (volDragging) updateVol(e.clientX, e.clientY);
+    if (volDragging) updateVol(e.clientX);
   });
   document.addEventListener('pointerup', function() { dragging = false; volDragging = false; });
 
-  volTrack.addEventListener('pointerdown', function(e) { volDragging = true; updateVol(e.clientX, e.clientY); });
+  // Volume overlay — click speaker to expand/collapse slider
+  var volDragging = false;
+  volBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    volOverlay.classList.toggle('expanded');
+  });
 
+  volTrack.addEventListener('pointerdown', function(e) {
+    volDragging = true;
+    updateVol(e.clientX);
+    e.stopPropagation();
+  });
+
+  // Close volume slider when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!volOverlay.contains(e.target)) {
+      volOverlay.classList.remove('expanded');
+    }
+  });
   notesArea.addEventListener('input', function() {
     clearTimeout(notesTimer);
     notesTimer = setTimeout(function() {
