@@ -643,6 +643,7 @@
 
 <div class="pw-skip-warn" id="pwSkipWarn">ummmm...you can't skip the video<br>and complete this part of the course</div>
 
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 <script>
 (function () {
   var params = new URLSearchParams(window.location.search);
@@ -788,7 +789,17 @@
     // Replace placeholder with video
     placeholder.parentNode.replaceChild(video, placeholder);
 
-    if (videoSrc) video.src = videoSrc;
+    var _hlsMode = false;
+    if (videoSrc) {
+      if (videoSrc.indexOf('.m3u8') !== -1 && typeof Hls !== 'undefined' && Hls.isSupported()) {
+        _hlsMode = true;
+        var _hls = new Hls();
+        _hls.loadSource(videoSrc);
+        _hls.attachMedia(video);
+      } else {
+        video.src = videoSrc;
+      }
+    }
 
     // Restore volume
     try {
@@ -860,7 +871,11 @@
     });
 
     // Start playback
-    video.play();
+    if (_hlsMode) {
+      _hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play().catch(function(){}); });
+    } else {
+      video.play();
+    }
   }
 
   // Load saved progress (before video exists)
