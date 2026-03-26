@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neumorphic Animated Buttons</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neu-bg: #e8eaf0;
+      --neu-shadow-light: #ffffff;
+      --neu-shadow-dark: #c5c8d4;
+      --cel-from: #f0784a;
+      --cel-mid: #c050d8;
+      --cel-to: #7030d0;
+      --text-dark: #1a3a3a;
+      --text-mid: #3a5a5a;
+      --text-light: #ffffff;
+      --ease-neu: cubic-bezier(0.25, 0.46, 0.45, 0.94 );
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #d8dbe6;
+      font-family: 'Nunito', sans-serif;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: var(--neu-bg);
+      border-radius: 2.5rem;
+      padding: 2.5rem 2rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.4rem;
+      box-shadow:
+        10px 10px 24px var(--neu-shadow-dark),
+        -10px -10px 24px var(--neu-shadow-light);
+    }
+
+    .title {
+      font-size: 1.7rem;
+      font-weight: 900;
+      text-align: center;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      text-align: center;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    /* ── CELEBRATE BUTTON ── */
+    .btn-celebrate {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 88%;
+      padding: 0.85rem 2rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--cel-from), var(--cel-mid), var(--cel-to));
+      box-shadow:
+        6px 6px 16px var(--neu-shadow-dark),
+        -4px -4px 12px var(--neu-shadow-light),
+        0 0 0 0 rgba(192, 80, 216, 0);
+      outline: none;
+      transition: box-shadow 0.3s var(--ease-neu), transform 0.3s var(--ease-neu);
+      animation: celebrate-pulse 3s ease-in-out infinite;
+    }
+
+    .btn-celebrate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .btn-celebrate::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.45) 50%, transparent 100%);
+      transform: skewX(-20deg);
+      animation: celebrate-shimmer 3s ease-in-out infinite;
+    }
+
+    .btn-celebrate__label {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--text-light);
+      letter-spacing: 0.06em;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-celebrate__sub {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-celebrate:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        8px 12px 24px var(--neu-shadow-dark),
+        -4px -4px 14px var(--neu-shadow-light),
+        0 0 28px 6px rgba(192, 80, 216, 0.35);
+      animation-play-state: paused;
+    }
+
+    .btn-celebrate:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow:
+        inset 4px 4px 10px rgba(0,0,0,0.25),
+        inset -3px -3px 8px rgba(255,255,255,0.15);
+      animation-play-state: paused;
+    }
+
+    @keyframes celebrate-pulse {
+      0%, 100% {
+        box-shadow: 6px 6px 16px var(--neu-shadow-dark), -4px -4px 12px var(--neu-shadow-light), 0 0 0 0 rgba(192,80,216,0);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 6px 6px 20px var(--neu-shadow-dark), -4px -4px 14px var(--neu-shadow-light), 0 0 22px 8px rgba(192,80,216,0.28);
+        transform: scale(1.015);
+      }
+    }
+
+    @keyframes celebrate-shimmer {
+      0%        { left: -75%; opacity: 0; }
+      20%       { opacity: 1; }
+      60%       { left: 130%; opacity: 1; }
+      61%, 100% { opacity: 0; left: 130%; }
+    }
+
+    /* ── SOCIAL BUTTONS ── */
+    .social-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      width: 88%;
+    }
+
+    .btn-social {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem 1.4rem;
+      border: none;
+      border-radius: 999px;
+      background: var(--neu-bg);
+      cursor: pointer;
+      outline: none;
+      box-shadow:
+        5px 5px 14px var(--neu-shadow-dark),
+        -5px -5px 14px var(--neu-shadow-light);
+      transition: box-shadow 0.25s var(--ease-neu), transform 0.25s var(--ease-neu);
+      animation: social-float 4s ease-in-out infinite;
+    }
+
+    .social-list .btn-social:nth-child(1) { animation-delay: 0s; }
+    .social-list .btn-social:nth-child(2) { animation-delay: 0.4s; }
+    .social-list .btn-social:nth-child(3) { animation-delay: 0.8s; }
+
+    .btn-social__icon {
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--text-light);
+      background: var(--text-dark);
+      flex-shrink: 0;
+      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.35), inset -1px -1px 3px rgba(255,255,255,0.1);
+      transition: transform 0.25s var(--ease-neu), box-shadow 0.25s var(--ease-neu);
+    }
+
+    .btn-social__label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .btn-social:hover {
+      transform: translateX(4px);
+      box-shadow: 7px 7px 18px var(--neu-shadow-dark), -3px -3px 10px var(--neu-shadow-light);
+      animation-play-state: paused;
+    }
+
+    .btn-social:hover .btn-social__icon {
+      transform: rotate(10deg) scale(1.12);
+    }
+
+    .btn-social:active {
+      transform: translateX(1px) scale(0.98);
+      box-shadow:
+        inset 3px 3px 8px var(--neu-shadow-dark),
+        inset -3px -3px 8px var(--neu-shadow-light);
+      animation-play-state: paused;
+    }
+
+    @keyframes social-float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-3px); }
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+      width: 100%;
+    }
+
+    .btn-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 1.1rem 0.5rem;
+      border: none;
+      border-radius: 1.4rem;
+      background: var(--neu-bg);
+      cursor: pointer;
+      outline: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      text-align: center;
+      line-height: 1.4;
+      box-shadow:
+        6px 6px 14px var(--neu-shadow-dark),
+        -6px -6px 14px var(--neu-shadow-light);
+      transition: box-shadow 0.25s var(--ease-neu), transform 0.25s var(--ease-neu), color 0.25s;
+      animation: action-wobble 5s ease-in-out infinite;
+    }
+
+    .action-grid .btn-action:nth-child(1) { animation-delay: 0s; }
+    .action-grid .btn-action:nth-child(2) { animation-delay: 0.6s; }
+    .action-grid .btn-action:nth-child(3) { animation-delay: 1.2s; }
+
+    .btn-action__icon {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      transition: transform 0.3s var(--ease-neu), color 0.25s;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-4px);
+      box-shadow: 8px 10px 20px var(--neu-shadow-dark), -6px -6px 16px var(--neu-shadow-light);
+      color: #2a7a6a;
+      animation-play-state: paused;
+    }
+
+    .btn-action:hover .btn-action__icon {
+      transform: scale(1.25) rotate(-8deg);
+      color: #2a7a6a;
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+      box-shadow:
+        inset 4px 4px 10px var(--neu-shadow-dark),
+        inset -4px -4px 10px var(--neu-shadow-light);
+      animation-play-state: paused;
+    }
+
+    @keyframes action-wobble {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      25%       { transform: scale(1.015) rotate(0.4deg); }
+      75%       { transform: scale(1.015) rotate(-0.4deg); }
+    }
+
+    .btn-celebrate:focus-visible,
+    .btn-social:focus-visible,
+    .btn-action:focus-visible {
+      outline: none;
+      box-shadow:
+        6px 6px 16px var(--neu-shadow-dark),
+        -4px -4px 12px var(--neu-shadow-light),
+        0 0 0 3px rgba(26, 58, 58, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 class="title">CONGRATULATIONS  
+ON FINISHING  
+THE COURSE!</h1>
+
+    <button class="btn-celebrate">
+      <span class="btn-celebrate__label">CELEBRATE</span>
+      <span class="btn-celebrate__sub">(click here)</span>
+    </button>
+
+    <p class="subtitle">
+      as you prepare for the next one,  
+
+      consider following our social media accounts:
+    </p>
+
+    <div class="social-list">
+      <button class="btn-social">
+        <span class="btn-social__icon"><i class="fa-brands fa-instagram"></i></span>
+        <span class="btn-social__label">Instagram</span>
+      </button>
+      <button class="btn-social">
+        <span class="btn-social__icon"><i class="fa-brands fa-facebook-f"></i></span>
+        <span class="btn-social__label">Facebook</span>
+      </button>
+      <button class="btn-social">
+        <span class="btn-social__icon"><i class="fa-brands fa-youtube"></i></span>
+        <span class="btn-social__label">YouTube</span>
+      </button>
+    </div>
+
+    <div class="action-grid">
+      <button class="btn-action">
+        <i class="fa-solid fa-book-open btn-action__icon"></i>
+        <span>course  
+catalog</span>
+      </button>
+      <button class="btn-action">
+        <i class="fa-solid fa-file-lines btn-action__icon"></i>
+        <span>request  
+transcript</span>
+      </button>
+      <button class="btn-action">
+        <i class="fa-solid fa-cat btn-action__icon"></i>
+        <span>watch  
+cat videos</span>
+      </button>
+    </div>
+  </div>
+</body>
+</html>
