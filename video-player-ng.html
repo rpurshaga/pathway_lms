@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<title>Pathway Media Player — W98 Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --w98-bg: #c0c0c0;
+    --w98-face: #c0c0c0;
+    --w98-dark: #808080;
+    --w98-darker: #404040;
+    --w98-white: #ffffff;
+    --w98-title: #000080;
+    --w98-title-text: #ffffff;
+    --w98-black: #000000;
+    --w98-teal: #008080;
+    --w98-field: #ffffff;
+    --w98-field-text: #000000;
+    --w98-font: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: transparent;
+    font-family: var(--w98-font);
+    color: var(--w98-black);
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 12px 20px;
+    overflow: visible;
+  }
+  .w98-window {
+    width: 100%; max-width: 780px;
+    background: var(--w98-face);
+    position: relative; z-index: 1;
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 1px 1px 0 var(--w98-darker);
+    margin-bottom: 8px;
+  }
+  .w98-titlebar {
+    height: 22px;
+    background: linear-gradient(90deg, var(--w98-title), #1084d0);
+    display: flex; align-items: center;
+    padding: 0 3px; gap: 4px; user-select: none;
+  }
+  .w98-titlebar-icon {
+    width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .w98-titlebar-icon svg { width: 14px; height: 14px; }
+  .w98-titlebar-text {
+    flex: 1; font-family: var(--w98-font);
+    font-size: 12px; color: var(--w98-title-text); font-weight: 700;
+    letter-spacing: 0.5px; white-space: nowrap; overflow: hidden;
+  }
+  .w98-titlebar-btns { display: flex; gap: 2px; }
+  .w98-tbtn {
+    width: 16px; height: 14px; background: var(--w98-face);
+    border: 1px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    display: flex; align-items: center; justify-content: center;
+    cursor: default; font-family: var(--w98-font);
+    font-size: 10px; line-height: 1; padding: 0; color: var(--w98-black);
+  }
+  .w98-tbtn:active {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  }
+  .w98-menubar {
+    height: 22px; background: var(--w98-face);
+    display: flex; align-items: center;
+    padding: 0 4px; border-bottom: 1px solid var(--w98-dark); gap: 2px;
+  }
+  .w98-menu-item {
+    font-family: var(--w98-font); font-size: 13px;
+    padding: 1px 6px; cursor: default; letter-spacing: 0.3px;
+  }
+  .w98-menu-item:hover { background: var(--w98-title); color: var(--w98-title-text); }
+  .w98-content { padding: 4px; }
+  .w98-video-frame {
+    width: 100%;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    background: #000; position: relative; margin-bottom: 3px;
+  }
+  .w98-video { display: block; width: 100%; height: auto; background: #000; }
+  .w98-video::-webkit-media-controls { display: none !important; }
+  .w98-overlay { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
+  .w98-scanlines {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(0deg,
+      transparent, transparent 2px,
+      rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  }
+  .w98-big-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px; height: 64px; cursor: pointer; z-index: 3;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.1s;
+  }
+  .w98-big-play:hover { transform: translate(-50%, -50%) scale(1.05); }
+  .w98-big-play.hidden { opacity: 0; pointer-events: none; }
+  .w98-big-play svg { width: 28px; height: 28px; }
+  .w98-big-play:active {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  }
+  .w98-fs-btn {
+    position: absolute; bottom: 4px; right: 4px; z-index: 3;
+    width: 22px; height: 22px; background: var(--w98-face);
+    border: 1px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    cursor: pointer; display: none; align-items: center; justify-content: center;
+  }
+  .w98-video-frame:hover .w98-fs-btn.visible { display: flex; }
+  .w98-fs-btn svg { width: 12px; height: 12px; }
+  .w98-transport {
+    background: var(--w98-face); padding: 4px;
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    margin-bottom: 3px;
+  }
+  .w98-btn-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; margin-bottom: 4px;
+  }
+  .w98-btn {
+    height: 32px; min-width: 48px; padding: 0 8px;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    font-family: var(--w98-font); font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; user-select: none; color: var(--w98-black); letter-spacing: 0.3px;
+  }
+  .w98-btn:active {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    padding: 1px 7px 0 9px;
+  }
+  .w98-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .w98-btn.play-btn {
+    min-width: 72px;
+    background: linear-gradient(180deg, #e0e0e0, #b0b0b0);
+    font-weight: 700;
+  }
+  .w98-scrub-row { display: flex; align-items: center; gap: 6px; }
+  .w98-time {
+    font-family: 'Space Mono', monospace; font-size: 11px; color: #00ff00;
+    background: #000; padding: 2px 6px;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    min-width: 50px; text-align: center; letter-spacing: 1px;
+  }
+  .w98-track-wrap {
+    flex: 1; height: 20px;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    background: #000;
+    display: flex; align-items: center; padding: 0 2px;
+    cursor: pointer; position: relative;
+  }
+  .w98-track-inner {
+    width: 100%; height: 10px; position: relative;
+    background: #1a1a2e; border: 1px solid #333;
+  }
+  .w98-track-fill {
+    position: absolute; top: 0; left: 0; bottom: 0; width: 0%;
+    background: linear-gradient(180deg, #00b0b0, #006060);
+  }
+  .w98-track-blocked {
+    position: absolute; top: 0; bottom: 0; right: 0;
+    background: repeating-linear-gradient(45deg,
+      transparent, transparent 3px,
+      rgba(255,0,0,0.15) 3px, rgba(255,0,0,0.15) 6px);
+    pointer-events: none;
+  }
+  .w98-vol-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+  .w98-vol-label {
+    font-family: var(--w98-font); font-size: 12px;
+    color: var(--w98-black); min-width: 48px;
+  }
+  .w98-vol-track {
+    width: 100px; height: 14px;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    background: #000; position: relative; cursor: pointer;
+  }
+  .w98-vol-fill {
+    position: absolute; top: 0; left: 0; bottom: 0; width: 70%;
+    background: linear-gradient(180deg, #00c000, #006000);
+  }
+  .w98-vol-pct {
+    font-family: 'Space Mono', monospace; font-size: 10px;
+    color: var(--w98-dark); min-width: 30px;
+  }
+  .w98-statusbar {
+    height: 22px; background: var(--w98-face);
+    border-top: 1px solid var(--w98-dark);
+    display: flex; align-items: center; padding: 0 4px; gap: 4px;
+  }
+  .w98-status-section {
+    flex: 1; height: 16px;
+    border: 1px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    display: flex; align-items: center; padding: 0 4px;
+    font-family: var(--w98-font); font-size: 11px; overflow: hidden;
+  }
+  .w98-notes-window {
+    width: 100%; max-width: 780px;
+    background: var(--w98-face);
+    position: relative; z-index: 1;
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 1px 1px 0 var(--w98-darker);
+  }
+  .w98-notes-content { padding: 4px; }
+  .w98-notes-field {
+    width: 100%; min-height: 80px; resize: vertical;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    background: var(--w98-field); color: var(--w98-field-text);
+    font-family: var(--w98-font); font-size: 13px; line-height: 1.5;
+    padding: 4px 6px; outline: none;
+  }
+  .w98-notes-field::placeholder { color: #aaa; }
+  .w98-notes-toolbar {
+    display: flex; align-items: center; gap: 4px; margin-top: 4px;
+  }
+  .w98-notes-toolbar .w98-btn { font-size: 13px; height: 26px; }
+  .w98-saved-indicator {
+    font-family: var(--w98-font); font-size: 11px; color: var(--w98-teal);
+    opacity: 0; transition: opacity 0.3s; margin-left: auto;
+  }
+  .w98-saved-indicator.show { opacity: 1; }
+  .w98-watermark {
+    font-family: var(--w98-font); font-size: 10px;
+    color: var(--w98-dark); text-align: right; margin-top: 2px;
+  }
+  .w98-skip-warn {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 2px 2px 0 var(--w98-black);
+    padding: 0; display: none; z-index: 1000; min-width: 320px;
+  }
+  .w98-skip-warn .w98-titlebar {
+    background: linear-gradient(90deg, #800000, #ff0000);
+  }
+  .w98-skip-warn-body {
+    padding: 16px 20px; display: flex; align-items: flex-start; gap: 12px;
+  }
+  .w98-warn-icon { font-size: 32px; line-height: 1; flex-shrink: 0; }
+  .w98-warn-text {
+    font-family: var(--w98-font); font-size: 13px; line-height: 1.6;
+  }
+  .w98-skip-warn-footer {
+    display: flex; justify-content: center; padding: 0 20px 14px;
+  }
+  .w98-skip-warn-footer .w98-btn { min-width: 80px; justify-content: center; }
+  @media (max-width: 640px) {
+    body { padding: 8px 4px; }
+    .w98-btn { min-width: 38px; height: 28px; font-size: 13px; padding: 0 5px; }
+    .w98-btn.play-btn { min-width: 58px; }
+    .w98-time { font-size: 10px; min-width: 44px; }
+    .w98-vol-track { width: 70px; }
+  }
+  @media (max-width: 380px) {
+    .w98-btn { min-width: 32px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="w98-window">
+  <div class="w98-titlebar">
+    <div class="w98-titlebar-icon">
+      <svg viewBox="0 0 16 16" fill="none">
+        <polygon points="6,3 13,8 6,13" fill="var(--w98-title-text)"/>
+      </svg>
+    </div>
+    <span class="w98-titlebar-text">nextgen_certificate.exe</span>
+    <div class="w98-titlebar-btns">
+      <button class="w98-tbtn" type="button">_</button>
+      <button class="w98-tbtn" type="button">□</button>
+      <button class="w98-tbtn" type="button">✕</button>
+    </div>
+  </div>
+  <div class="w98-menubar">
+    <span class="w98-menu-item"><u>F</u>ile</span>
+    <span class="w98-menu-item"><u>V</u>iew</span>
+    <span class="w98-menu-item"><u>P</u>lay</span>
+    <span class="w98-menu-item"><u>H</u>elp</span>
+  </div>
+  <div class="w98-content">
+    <div class="w98-video-frame" id="w98VideoFrame">
+      <div id="w98VideoPlaceholder" class="w98-video" style="width:100%;aspect-ratio:16/9;background:#000;"></div>
+      <div class="w98-scanlines"></div>
+      <div class="w98-overlay" id="w98Overlay"></div>
+      <button class="w98-big-play" id="w98BigPlay" aria-label="Play video">
+        <svg viewBox="0 0 24 24"><polygon points="8,4 20,12 8,20" fill="var(--w98-teal)"/></svg>
+      </button>
+      <button class="w98-fs-btn" id="w98FsBtn" aria-label="Fullscreen">
+        <svg viewBox="0 0 16 16">
+          <path d="M2 2h5v1H3v4H2V2zm7 0h5v5h-1V3H9V2zM2 9h1v4h4v1H2V9zm12 0v5H9v-1h4V9h1z" fill="var(--w98-black)"/>
+        </svg>
+      </button>
+    </div>
+    <div class="w98-transport">
+      <div class="w98-btn-row">
+        <button class="w98-btn" id="w98Back" type="button">
+          <svg viewBox="0 0 14 14"><polygon points="8,2 2,7 8,12" fill="var(--w98-black)"/><rect x="9" y="2" width="3" height="10" fill="var(--w98-black)"/></svg>
+          -15s
+        </button>
+        <button class="w98-btn play-btn" id="w98Play" type="button">
+          <svg viewBox="0 0 14 14" id="w98PlayIcon"><polygon points="3,1 12,7 3,13" fill="var(--w98-teal)"/></svg>
+          <span id="w98PlayLabel">Play</span>
+        </button>
+        <button class="w98-btn" id="w98Forward" type="button">
+          +15s
+          <svg viewBox="0 0 14 14"><polygon points="6,2 12,7 6,12" fill="var(--w98-black)"/><rect x="2" y="2" width="3" height="10" fill="var(--w98-black)"/></svg>
+        </button>
+        <button class="w98-btn" id="w98Speed" type="button">
+          <span id="w98SpeedLabel">1×</span>
+        </button>
+      </div>
+      <div class="w98-scrub-row">
+        <div class="w98-time" id="w98TimeCur">0:00</div>
+        <div class="w98-track-wrap" id="w98Track">
+          <div class="w98-track-inner">
+            <div class="w98-track-fill" id="w98Fill"></div>
+            <div class="w98-track-blocked" id="w98Blocked"></div>
+          </div>
+        </div>
+        <div class="w98-time" id="w98TimeTotal">0:00</div>
+      </div>
+      <div class="w98-vol-row">
+        <span class="w98-vol-label">Vol:</span>
+        <div class="w98-vol-track" id="w98VolTrack">
+          <div class="w98-vol-fill" id="w98VolFill"></div>
+        </div>
+        <span class="w98-vol-pct" id="w98VolPct">70%</span>
+      </div>
+    </div>
+  </div>
+  <div class="w98-statusbar">
+    <div class="w98-status-section" id="w98Status">Ready</div>
+  </div>
+</div>
+<div class="w98-notes-window">
+  <div class="w98-titlebar">
+    <div class="w98-titlebar-icon">
+      <svg viewBox="0 0 16 16" fill="none">
+        <rect x="3" y="2" width="10" height="12" fill="var(--w98-title-text)" stroke="var(--w98-title-text)" stroke-width="0.5"/>
+        <line x1="5" y1="5" x2="11" y2="5" stroke="var(--w98-title)" stroke-width="1"/>
+        <line x1="5" y1="7.5" x2="11" y2="7.5" stroke="var(--w98-title)" stroke-width="1"/>
+        <line x1="5" y1="10" x2="9" y2="10" stroke="var(--w98-title)" stroke-width="1"/>
+      </svg>
+    </div>
+    <span class="w98-titlebar-text">notes.txt — Pathway Notepad</span>
+    <div class="w98-titlebar-btns">
+      <button class="w98-tbtn" type="button">_</button>
+      <button class="w98-tbtn" type="button">□</button>
+      <button class="w98-tbtn" type="button">✕</button>
+    </div>
+  </div>
+  <div class="w98-notes-content">
+    <textarea class="w98-notes-field" id="w98NotesArea" placeholder="Take notes while watching..."></textarea>
+    <div class="w98-notes-toolbar">
+      <button class="w98-btn" id="w98Copy" type="button">📋 Copy</button>
+      <span class="w98-saved-indicator" id="w98Saved">✓ Saved</span>
+      <span class="w98-watermark">Pathway Media Player v2.0</span>
+    </div>
+  </div>
+</div>
+<div class="w98-skip-warn" id="w98SkipWarn">
+  <div class="w98-titlebar" style="background:linear-gradient(90deg,#800000,#c00)">
+    <span class="w98-titlebar-text" style="font-size:12px">⚠ pathway_player — Error</span>
+    <div class="w98-titlebar-btns">
+      <button class="w98-tbtn" type="button" id="w98WarnClose">✕</button>
+    </div>
+  </div>
+  <div class="w98-skip-warn-body">
+    <span class="w98-warn-icon">⚠️</span>
+    <span class="w98-warn-text">
+      Error 0x004D:<br>
+      You cannot skip ahead.<br>
+      Complete the video to unlock full seek.
+    </span>
+  </div>
+  <div class="w98-skip-warn-footer">
+    <button class="w98-btn" id="w98WarnOK" type="button">OK</button>
+  </div>
+</div>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var videoSrc = '';
+  if (params.get('b')) { try { videoSrc = atob(params.get('b')); } catch(e) {} }
+  else if (params.get('src')) { videoSrc = params.get('src'); }
+  var lessonId = params.get('id') || 'default';
+  var requiredPercent = parseInt(params.get('req') || '90', 10);
+  var video = null;
+  var placeholder = document.getElementById('w98VideoPlaceholder');
+  var overlay = document.getElementById('w98Overlay');
+  var bigPlay = document.getElementById('w98BigPlay');
+  var playBtn = document.getElementById('w98Play');
+  var playIcon = document.getElementById('w98PlayIcon');
+  var playLabel = document.getElementById('w98PlayLabel');
+  var backBtn = document.getElementById('w98Back');
+  var forwardBtn = document.getElementById('w98Forward');
+  var speedBtn = document.getElementById('w98Speed');
+  var speedLabel = document.getElementById('w98SpeedLabel');
+  var track = document.getElementById('w98Track');
+  var fill = document.getElementById('w98Fill');
+  var blocked = document.getElementById('w98Blocked');
+  var timeCur = document.getElementById('w98TimeCur');
+  var timeTotal = document.getElementById('w98TimeTotal');
+  var skipWarn = document.getElementById('w98SkipWarn');
+  var warnOK = document.getElementById('w98WarnOK');
+  var warnClose = document.getElementById('w98WarnClose');
+  var volTrack = document.getElementById('w98VolTrack');
+  var volFill = document.getElementById('w98VolFill');
+  var volPct = document.getElementById('w98VolPct');
+  var statusEl = document.getElementById('w98Status');
+  var notesArea = document.getElementById('w98NotesArea');
+  var savedEl = document.getElementById('w98Saved');
+  var copyBtn = document.getElementById('w98Copy');
+  var PK = 'pw-progress-' + lessonId;
+  var NK = 'pw-notes-' + lessonId;
+  var DK = 'pw-done-' + lessonId;
+  var VK = 'pw-vol-' + lessonId;
+  var maxWatched = 0, lastValid = 0;
+  var notesTimer = null, skipTimer = null;
+  var speeds = [1, 1.25, 1.5, 1.75, 2], speedIdx = 0;
+  function loadJSON(k) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
+  function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+  function getDone() { try { return localStorage.getItem(DK) === 'true'; } catch(e) { return false; } }
+  function setDone(v) { try { localStorage.setItem(DK, v ? 'true' : 'false'); } catch(e) {} }
+  function fmt(s) {
+    if (!isFinite(s) || s < 0) return '0:00';
+    var m = Math.floor(s/60), sec = Math.floor(s%60);
+    return m+':'+(sec<10?'0':'')+sec;
+  }
+  function showSkip() {
+    skipWarn.style.display = 'block';
+    clearTimeout(skipTimer);
+    skipTimer = setTimeout(function() { skipWarn.style.display = 'none'; }, 3500);
+  }
+  warnOK.addEventListener('click', function() { skipWarn.style.display = 'none'; });
+  warnClose.addEventListener('click', function() { skipWarn.style.display = 'none'; });
+  function saveProgress() {
+    if (!video) return;
+    var dur = video.duration || 0;
+    saveJSON(PK, { time: video.currentTime || 0, maxWatched: maxWatched, duration: dur, percent: dur > 0 ? (video.currentTime / dur) * 100 : 0, updatedAt: new Date().toISOString() });
+  }
+  function updatePlayUI(playing) {
+    playIcon.innerHTML = playing
+      ? '<rect x="2" y="1" width="4" height="12" fill="var(--w98-teal)"/><rect x="8" y="1" width="4" height="12" fill="var(--w98-teal)"/>'
+      : '<polygon points="3,1 12,7 3,13" fill="var(--w98-teal)"/>';
+    playLabel.textContent = playing ? 'Pause' : 'Play';
+    bigPlay.classList.toggle('hidden', playing);
+    statusEl.textContent = playing ? 'Playing...' : 'Paused';
+  }
+  function updateBar() {
+    var dur = video ? (video.duration || 0) : 0;
+    var cur = video ? (video.currentTime || 0) : 0;
+    var pct = dur > 0 ? (cur / dur) * 100 : 0;
+    var maxPct = dur > 0 ? Math.min((maxWatched / dur) * 100, 100) : 0;
+    fill.style.width = pct + '%';
+    timeCur.textContent = fmt(cur);
+    timeTotal.textContent = fmt(dur);
+    if (getDone()) { blocked.style.display = 'none'; }
+    else { blocked.style.display = 'block'; blocked.style.left = maxPct + '%'; }
+    if (!getDone() && pct >= requiredPercent) { setDone(true); blocked.style.display = 'none'; }
+  }
+  function togglePlay() {
+    if (!videoReady) { createVideo(); return; }
+    if (video.paused) video.play(); else video.pause();
+  }
+  function seekToX(clientX) {
+    if (!video) return;
+    var rect = track.getBoundingClientRect();
+    var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    var target = pct * (video.duration || 0);
+    if (!getDone() && target > maxWatched + 2) { showSkip(); return; }
+    video.currentTime = target; updateBar();
+  }
+  function updateVol(clientX) {
+    if (!video) return;
+    var rect = volTrack.getBoundingClientRect();
+    var pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    var vol = Math.round(pct * 100);
+    video.volume = pct;
+    volFill.style.width = vol + '%';
+    volPct.textContent = vol + '%';
+    try { localStorage.setItem(VK, String(vol)); } catch(e) {}
+  }
+  var videoReady = false;
+  function createVideo() {
+    if (videoReady) return;
+    videoReady = true;
+    statusEl.textContent = 'Loading...';
+    video = document.createElement('video');
+    video.className = 'w98-video';
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('x5-playsinline', '');
+    video.setAttribute('x5-video-player-type', 'h5');
+    video.preload = 'auto';
+    placeholder.parentNode.replaceChild(video, placeholder);
+    if (videoSrc) video.src = videoSrc;
+    try {
+      var sv = parseInt(localStorage.getItem(VK) || '70', 10);
+      video.volume = sv / 100; volFill.style.width = sv + '%'; volPct.textContent = sv + '%';
+    } catch(e) { video.volume = 0.7; }
+    video.addEventListener('loadedmetadata', function() {
+      timeTotal.textContent = fmt(video.duration);
+      if (saved && saved.time > 0) video.currentTime = Math.min(saved.time, Math.max((video.duration || 0) - 2, 0));
+      updateBar(); statusEl.textContent = 'Ready';
+    });
+    video.addEventListener('timeupdate', function() {
+      var cur = video.currentTime || 0;
+      if (!getDone() && cur > lastValid + 2 && cur > maxWatched + 2) { video.currentTime = maxWatched; showSkip(); return; }
+      if (cur > maxWatched) maxWatched = cur;
+      lastValid = cur; saveProgress(); updateBar();
+    });
+    var isSnapping = false;
+    video.addEventListener('seeking', function() {
+      if (getDone() || isSnapping) return;
+      if ((video.currentTime || 0) > maxWatched + 2) { isSnapping = true; video.currentTime = maxWatched; showSkip(); }
+    });
+    video.addEventListener('seeked', function() { isSnapping = false; });
+    var fsBtn = document.getElementById('w98FsBtn');
+    video.addEventListener('play', function() { updatePlayUI(true); fsBtn.classList.add('visible'); });
+    video.addEventListener('pause', function() { updatePlayUI(false); saveProgress(); });
+    video.addEventListener('ended', function() {
+      maxWatched = video.duration || maxWatched;
+      setDone(true); saveProgress(); updateBar(); updatePlayUI(false);
+      statusEl.textContent = 'Complete ✓';
+    });
+    window.addEventListener('beforeunload', saveProgress);
+    document.addEventListener('visibilitychange', function() { if (document.hidden) saveProgress(); });
+    fsBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (!video) return;
+      if (e.key === 'ArrowRight' || e.key === 'Right') {
+        if (!getDone() && (video.currentTime || 0) + 5 > maxWatched + 2) { e.preventDefault(); showSkip(); }
+      }
+    });
+    video.play();
+  }
+  var saved = loadJSON(PK);
+  if (saved) maxWatched = saved.maxWatched || 0;
+  try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
+  try { var sv = parseInt(localStorage.getItem(VK) || '70', 10); volFill.style.width = sv + '%'; volPct.textContent = sv + '%'; } catch(e) {}
+  updatePlayUI(false); updateBar();
+  bigPlay.addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
+  overlay.addEventListener('click', togglePlay);
+  playBtn.addEventListener('click', togglePlay);
+  backBtn.addEventListener('click', function() { if (!video) return; video.currentTime = Math.max(0, (video.currentTime || 0) - 15); });
+  forwardBtn.addEventListener('click', function() {
+    if (!video) return;
+    var t = (video.currentTime || 0) + 15;
+    if (!getDone() && t > maxWatched + 2) { showSkip(); return; }
+    video.currentTime = Math.min(video.duration || 0, t);
+  });
+  speedBtn.addEventListener('click', function() {
+    if (!video) return;
+    speedIdx = (speedIdx + 1) % speeds.length;
+    video.playbackRate = speeds[speedIdx];
+    speedLabel.textContent = speeds[speedIdx] + '×';
+  });
+  var dragging = false, volDragging = false;
+  track.addEventListener('pointerdown', function(e) { dragging = true; seekToX(e.clientX); });
+  volTrack.addEventListener('pointerdown', function(e) { volDragging = true; updateVol(e.clientX); });
+  document.addEventListener('pointermove', function(e) { if (dragging) seekToX(e.clientX); if (volDragging) updateVol(e.clientX); });
+  document.addEventListener('pointerup', function() { dragging = false; volDragging = false; });
+  notesArea.addEventListener('input', function() {
+    clearTimeout(notesTimer);
+    notesTimer = setTimeout(function() {
+      try { localStorage.setItem(NK, notesArea.value); } catch(e) {}
+      savedEl.classList.add('show');
+      setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
+    }, 500);
+  });
+  copyBtn.addEventListener('click', function() {
+    var text = notesArea.value; if (!text) return;
+    var btn = this, orig = btn.innerHTML;
+    function flash() { btn.textContent = '✓ Copied!'; setTimeout(function() { btn.innerHTML = orig; }, 1800); }
+    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash); }
+    else { notesArea.select(); document.execCommand('copy'); flash(); }
+  });
+})();
+</script>
+</body>
+</html>
