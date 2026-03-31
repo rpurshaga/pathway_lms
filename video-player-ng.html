@@ -22,12 +22,15 @@
     --w98-field-text: #000000;
     --w98-font: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
   }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   html, body {
     background: transparent;
     font-family: var(--w98-font);
     color: var(--w98-black);
   }
+
   body {
     min-height: 100vh;
     display: flex;
@@ -37,6 +40,7 @@
     padding: 20px 12px 20px;
     overflow: visible;
   }
+
   .w98-window {
     width: 100%; max-width: 780px;
     background: var(--w98-face);
@@ -46,6 +50,7 @@
     box-shadow: 1px 1px 0 var(--w98-darker);
     margin-bottom: 8px;
   }
+
   .w98-titlebar {
     height: 22px;
     background: linear-gradient(90deg, var(--w98-title), #1084d0);
@@ -74,6 +79,7 @@
   .w98-tbtn:active {
     border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
   }
+
   .w98-menubar {
     height: 22px; background: var(--w98-face);
     display: flex; align-items: center;
@@ -84,7 +90,9 @@
     padding: 1px 6px; cursor: default; letter-spacing: 0.3px;
   }
   .w98-menu-item:hover { background: var(--w98-title); color: var(--w98-title-text); }
+
   .w98-content { padding: 4px; }
+
   .w98-video-frame {
     width: 100%;
     border: 2px solid;
@@ -93,13 +101,16 @@
   }
   .w98-video { display: block; width: 100%; height: auto; background: #000; }
   .w98-video::-webkit-media-controls { display: none !important; }
+
   .w98-overlay { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
+
   .w98-scanlines {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background: repeating-linear-gradient(0deg,
       transparent, transparent 2px,
       rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
   }
+
   .w98-big-play {
     position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
@@ -116,6 +127,7 @@
   .w98-big-play:active {
     border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
   }
+
   .w98-fs-btn {
     position: absolute; bottom: 4px; right: 4px; z-index: 3;
     width: 22px; height: 22px; background: var(--w98-face);
@@ -125,6 +137,7 @@
   }
   .w98-video-frame:hover .w98-fs-btn.visible { display: flex; }
   .w98-fs-btn svg { width: 12px; height: 12px; }
+
   .w98-transport {
     background: var(--w98-face); padding: 4px;
     border: 2px solid;
@@ -154,6 +167,7 @@
     background: linear-gradient(180deg, #e0e0e0, #b0b0b0);
     font-weight: 700;
   }
+
   .w98-scrub-row { display: flex; align-items: center; gap: 6px; }
   .w98-time {
     font-family: 'Space Mono', monospace; font-size: 11px; color: #00ff00;
@@ -185,6 +199,7 @@
       rgba(255,0,0,0.15) 3px, rgba(255,0,0,0.15) 6px);
     pointer-events: none;
   }
+
   .w98-vol-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
   .w98-vol-label {
     font-family: var(--w98-font); font-size: 12px;
@@ -204,6 +219,7 @@
     font-family: 'Space Mono', monospace; font-size: 10px;
     color: var(--w98-dark); min-width: 30px;
   }
+
   .w98-statusbar {
     height: 22px; background: var(--w98-face);
     border-top: 1px solid var(--w98-dark);
@@ -216,6 +232,7 @@
     display: flex; align-items: center; padding: 0 4px;
     font-family: var(--w98-font); font-size: 11px; overflow: hidden;
   }
+
   .w98-notes-window {
     width: 100%; max-width: 780px;
     background: var(--w98-face);
@@ -247,6 +264,7 @@
     font-family: var(--w98-font); font-size: 10px;
     color: var(--w98-dark); text-align: right; margin-top: 2px;
   }
+
   .w98-skip-warn {
     position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
@@ -270,6 +288,64 @@
     display: flex; justify-content: center; padding: 0 20px 14px;
   }
   .w98-skip-warn-footer .w98-btn { min-width: 80px; justify-content: center; }
+
+  /* ══ DARK MODE ══ */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --w98-bg: #3a3a3a;
+      --w98-face: #3a3a3a;
+      --w98-dark: #1a1a1a;
+      --w98-darker: #0a0a0a;
+      --w98-white: #5a5a5a;
+      --w98-title: #000060;
+      --w98-title-text: #ffffff;
+      --w98-black: #000000;
+      --w98-teal: #00a0a0;
+      --w98-field: #1e1e1e;
+      --w98-field-text: #d0d0d0;
+    }
+
+    html, body { color: #d0d0d0; }
+
+    .w98-titlebar {
+      background: linear-gradient(90deg, #000060, #0a5090);
+    }
+
+    .w98-tbtn { color: #d0d0d0; }
+
+    .w98-menubar { border-bottom-color: var(--w98-dark); }
+    .w98-menu-item { color: #d0d0d0; }
+    .w98-menu-item:hover { background: var(--w98-title); color: var(--w98-title-text); }
+
+    .w98-btn { color: #d0d0d0; }
+    .w98-btn.play-btn {
+      background: linear-gradient(180deg, #484848, #2e2e2e);
+    }
+
+    .w98-time { color: #00ff00; background: #000; }
+
+    .w98-track-inner { background: #0a0a14; }
+    .w98-track-fill { background: linear-gradient(180deg, #00c0c0, #007070); }
+
+    .w98-vol-label { color: #c0c0c0; }
+    .w98-vol-fill { background: linear-gradient(180deg, #00d000, #007000); }
+    .w98-vol-pct { color: #888; }
+
+    .w98-statusbar { border-top-color: var(--w98-dark); }
+    .w98-status-section { color: #c0c0c0; }
+
+    .w98-notes-field { background: var(--w98-field); color: var(--w98-field-text); }
+    .w98-notes-field::placeholder { color: #555; }
+
+    .w98-saved-indicator { color: var(--w98-teal); }
+    .w98-watermark { color: #555; }
+
+    .w98-skip-warn .w98-titlebar {
+      background: linear-gradient(90deg, #600000, #a00000);
+    }
+    .w98-warn-text { color: #d0d0d0; }
+  }
+
   @media (max-width: 640px) {
     body { padding: 8px 4px; }
     .w98-btn { min-width: 38px; height: 28px; font-size: 13px; padding: 0 5px; }
@@ -283,6 +359,7 @@
 </style>
 </head>
 <body>
+
 <div class="w98-window">
   <div class="w98-titlebar">
     <div class="w98-titlebar-icon">
@@ -297,12 +374,14 @@
       <button class="w98-tbtn" type="button">✕</button>
     </div>
   </div>
+
   <div class="w98-menubar">
     <span class="w98-menu-item"><u>F</u>ile</span>
     <span class="w98-menu-item"><u>V</u>iew</span>
     <span class="w98-menu-item"><u>P</u>lay</span>
     <span class="w98-menu-item"><u>H</u>elp</span>
   </div>
+
   <div class="w98-content">
     <div class="w98-video-frame" id="w98VideoFrame">
       <div id="w98VideoPlaceholder" class="w98-video" style="width:100%;aspect-ratio:16/9;background:#000;"></div>
@@ -317,6 +396,7 @@
         </svg>
       </button>
     </div>
+
     <div class="w98-transport">
       <div class="w98-btn-row">
         <button class="w98-btn" id="w98Back" type="button">
@@ -334,7 +414,12 @@
         <button class="w98-btn" id="w98Speed" type="button">
           <span id="w98SpeedLabel">1×</span>
         </button>
+        <button class="w98-btn" id="w98Orig" type="button" style="display:none;">
+          <svg viewBox="0 0 14 14" style="width:12px;height:12px;"><path d="M1 1v12h12V9h-1v3H2V2h3V1H1zm7 0v1h3.3L5.6 7.6l.8.8L12 2.7V6h1V1H8z" fill="currentColor"/></svg>
+          Original
+        </button>
       </div>
+
       <div class="w98-scrub-row">
         <div class="w98-time" id="w98TimeCur">0:00</div>
         <div class="w98-track-wrap" id="w98Track">
@@ -345,6 +430,7 @@
         </div>
         <div class="w98-time" id="w98TimeTotal">0:00</div>
       </div>
+
       <div class="w98-vol-row">
         <span class="w98-vol-label">Vol:</span>
         <div class="w98-vol-track" id="w98VolTrack">
@@ -354,10 +440,12 @@
       </div>
     </div>
   </div>
+
   <div class="w98-statusbar">
     <div class="w98-status-section" id="w98Status">Ready</div>
   </div>
 </div>
+
 <div class="w98-notes-window">
   <div class="w98-titlebar">
     <div class="w98-titlebar-icon">
@@ -375,15 +463,18 @@
       <button class="w98-tbtn" type="button">✕</button>
     </div>
   </div>
+
   <div class="w98-notes-content">
     <textarea class="w98-notes-field" id="w98NotesArea" placeholder="Take notes while watching..."></textarea>
     <div class="w98-notes-toolbar">
       <button class="w98-btn" id="w98Copy" type="button">📋 Copy</button>
+      <button class="w98-btn" id="w98OrigLink" type="button">🔗 Link to Original Video</button>
       <span class="w98-saved-indicator" id="w98Saved">✓ Saved</span>
       <span class="w98-watermark">Pathway Media Player v2.0</span>
     </div>
   </div>
 </div>
+
 <div class="w98-skip-warn" id="w98SkipWarn">
   <div class="w98-titlebar" style="background:linear-gradient(90deg,#800000,#c00)">
     <span class="w98-titlebar-text" style="font-size:12px">⚠ pathway_player — Error</span>
@@ -403,14 +494,26 @@
     <button class="w98-btn" id="w98WarnOK" type="button">OK</button>
   </div>
 </div>
+
 <script>
 (function() {
   var params = new URLSearchParams(window.location.search);
   var videoSrc = '';
   if (params.get('b')) { try { videoSrc = atob(params.get('b')); } catch(e) {} }
   else if (params.get('src')) { videoSrc = params.get('src'); }
+
   var lessonId = params.get('id') || 'default';
   var requiredPercent = parseInt(params.get('req') || '90', 10);
+
+  // Original source link (opens in new tab)
+  var origUrl = '';
+  if (params.get('orig')) { try { origUrl = atob(params.get('orig')); } catch(e) {} }
+  var origBtn = document.getElementById('w98Orig');
+  if (origUrl) {
+    origBtn.style.display = 'flex';
+    origBtn.addEventListener('click', function() { window.open(origUrl, '_blank'); });
+  }
+
   var video = null;
   var placeholder = document.getElementById('w98VideoPlaceholder');
   var overlay = document.getElementById('w98Overlay');
@@ -437,22 +540,28 @@
   var notesArea = document.getElementById('w98NotesArea');
   var savedEl = document.getElementById('w98Saved');
   var copyBtn = document.getElementById('w98Copy');
+  var origLink = document.getElementById('w98OrigLink');
+
   var PK = 'pw-progress-' + lessonId;
   var NK = 'pw-notes-' + lessonId;
   var DK = 'pw-done-' + lessonId;
   var VK = 'pw-vol-' + lessonId;
+
   var maxWatched = 0, lastValid = 0;
   var notesTimer = null, skipTimer = null;
   var speeds = [1, 1.25, 1.5, 1.75, 2], speedIdx = 0;
+
   function loadJSON(k) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
   function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
   function getDone() { try { return localStorage.getItem(DK) === 'true'; } catch(e) { return false; } }
   function setDone(v) { try { localStorage.setItem(DK, v ? 'true' : 'false'); } catch(e) {} }
+
   function fmt(s) {
     if (!isFinite(s) || s < 0) return '0:00';
     var m = Math.floor(s/60), sec = Math.floor(s%60);
     return m+':'+(sec<10?'0':'')+sec;
   }
+
   function showSkip() {
     skipWarn.style.display = 'block';
     clearTimeout(skipTimer);
@@ -460,11 +569,13 @@
   }
   warnOK.addEventListener('click', function() { skipWarn.style.display = 'none'; });
   warnClose.addEventListener('click', function() { skipWarn.style.display = 'none'; });
+
   function saveProgress() {
     if (!video) return;
     var dur = video.duration || 0;
     saveJSON(PK, { time: video.currentTime || 0, maxWatched: maxWatched, duration: dur, percent: dur > 0 ? (video.currentTime / dur) * 100 : 0, updatedAt: new Date().toISOString() });
   }
+
   function updatePlayUI(playing) {
     playIcon.innerHTML = playing
       ? '<rect x="2" y="1" width="4" height="12" fill="var(--w98-teal)"/><rect x="8" y="1" width="4" height="12" fill="var(--w98-teal)"/>'
@@ -473,6 +584,7 @@
     bigPlay.classList.toggle('hidden', playing);
     statusEl.textContent = playing ? 'Playing...' : 'Paused';
   }
+
   function updateBar() {
     var dur = video ? (video.duration || 0) : 0;
     var cur = video ? (video.currentTime || 0) : 0;
@@ -485,10 +597,12 @@
     else { blocked.style.display = 'block'; blocked.style.left = maxPct + '%'; }
     if (!getDone() && pct >= requiredPercent) { setDone(true); blocked.style.display = 'none'; }
   }
+
   function togglePlay() {
     if (!videoReady) { createVideo(); return; }
     if (video.paused) video.play(); else video.pause();
   }
+
   function seekToX(clientX) {
     if (!video) return;
     var rect = track.getBoundingClientRect();
@@ -497,6 +611,7 @@
     if (!getDone() && target > maxWatched + 2) { showSkip(); return; }
     video.currentTime = target; updateBar();
   }
+
   function updateVol(clientX) {
     if (!video) return;
     var rect = volTrack.getBoundingClientRect();
@@ -507,11 +622,13 @@
     volPct.textContent = vol + '%';
     try { localStorage.setItem(VK, String(vol)); } catch(e) {}
   }
+
   var videoReady = false;
   function createVideo() {
     if (videoReady) return;
     videoReady = true;
     statusEl.textContent = 'Loading...';
+
     video = document.createElement('video');
     video.className = 'w98-video';
     video.setAttribute('playsinline', '');
@@ -521,27 +638,32 @@
     video.preload = 'auto';
     placeholder.parentNode.replaceChild(video, placeholder);
     if (videoSrc) video.src = videoSrc;
+
     try {
       var sv = parseInt(localStorage.getItem(VK) || '70', 10);
       video.volume = sv / 100; volFill.style.width = sv + '%'; volPct.textContent = sv + '%';
     } catch(e) { video.volume = 0.7; }
+
     video.addEventListener('loadedmetadata', function() {
       timeTotal.textContent = fmt(video.duration);
       if (saved && saved.time > 0) video.currentTime = Math.min(saved.time, Math.max((video.duration || 0) - 2, 0));
       updateBar(); statusEl.textContent = 'Ready';
     });
+
     video.addEventListener('timeupdate', function() {
       var cur = video.currentTime || 0;
       if (!getDone() && cur > lastValid + 2 && cur > maxWatched + 2) { video.currentTime = maxWatched; showSkip(); return; }
       if (cur > maxWatched) maxWatched = cur;
       lastValid = cur; saveProgress(); updateBar();
     });
+
     var isSnapping = false;
     video.addEventListener('seeking', function() {
       if (getDone() || isSnapping) return;
       if ((video.currentTime || 0) > maxWatched + 2) { isSnapping = true; video.currentTime = maxWatched; showSkip(); }
     });
     video.addEventListener('seeked', function() { isSnapping = false; });
+
     var fsBtn = document.getElementById('w98FsBtn');
     video.addEventListener('play', function() { updatePlayUI(true); fsBtn.classList.add('visible'); });
     video.addEventListener('pause', function() { updatePlayUI(false); saveProgress(); });
@@ -550,6 +672,7 @@
       setDone(true); saveProgress(); updateBar(); updatePlayUI(false);
       statusEl.textContent = 'Complete ✓';
     });
+
     window.addEventListener('beforeunload', saveProgress);
     document.addEventListener('visibilitychange', function() { if (document.hidden) saveProgress(); });
     fsBtn.addEventListener('click', function(e) {
@@ -566,14 +689,18 @@
     });
     video.play();
   }
+
   var saved = loadJSON(PK);
   if (saved) maxWatched = saved.maxWatched || 0;
   try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
   try { var sv = parseInt(localStorage.getItem(VK) || '70', 10); volFill.style.width = sv + '%'; volPct.textContent = sv + '%'; } catch(e) {}
+
   updatePlayUI(false); updateBar();
+
   bigPlay.addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
   overlay.addEventListener('click', togglePlay);
   playBtn.addEventListener('click', togglePlay);
+
   backBtn.addEventListener('click', function() { if (!video) return; video.currentTime = Math.max(0, (video.currentTime || 0) - 15); });
   forwardBtn.addEventListener('click', function() {
     if (!video) return;
@@ -587,11 +714,13 @@
     video.playbackRate = speeds[speedIdx];
     speedLabel.textContent = speeds[speedIdx] + '×';
   });
+
   var dragging = false, volDragging = false;
   track.addEventListener('pointerdown', function(e) { dragging = true; seekToX(e.clientX); });
   volTrack.addEventListener('pointerdown', function(e) { volDragging = true; updateVol(e.clientX); });
   document.addEventListener('pointermove', function(e) { if (dragging) seekToX(e.clientX); if (volDragging) updateVol(e.clientX); });
   document.addEventListener('pointerup', function() { dragging = false; volDragging = false; });
+
   notesArea.addEventListener('input', function() {
     clearTimeout(notesTimer);
     notesTimer = setTimeout(function() {
@@ -600,12 +729,17 @@
       setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
     }, 500);
   });
+
   copyBtn.addEventListener('click', function() {
     var text = notesArea.value; if (!text) return;
     var btn = this, orig = btn.innerHTML;
     function flash() { btn.textContent = '✓ Copied!'; setTimeout(function() { btn.innerHTML = orig; }, 1800); }
     if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash); }
     else { notesArea.select(); document.execCommand('copy'); flash(); }
+  });
+
+  origLink.addEventListener('click', function() {
+    if (videoSrc) window.open(videoSrc, '_blank');
   });
 })();
 </script>
