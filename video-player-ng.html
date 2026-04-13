@@ -253,16 +253,24 @@
   .w98-notes-field::placeholder { color: #aaa; }
   .w98-notes-toolbar {
     display: flex; align-items: center; gap: 4px; margin-top: 4px;
+    flex-wrap: wrap;
   }
-  .w98-notes-toolbar .w98-btn { font-size: 13px; height: 26px; }
+  .w98-notes-toolbar .w98-btn {
+    font-size: 13px; height: 26px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
   .w98-saved-indicator {
     font-family: var(--w98-font); font-size: 11px; color: var(--w98-teal);
     opacity: 0; transition: opacity 0.3s; margin-left: auto;
+    white-space: nowrap;
   }
   .w98-saved-indicator.show { opacity: 1; }
   .w98-watermark {
     font-family: var(--w98-font); font-size: 10px;
-    color: var(--w98-dark); text-align: right; margin-top: 2px;
+    color: var(--w98-dark); text-align: right;
+    white-space: nowrap;
+    margin-left: 6px;
   }
 
   .w98-skip-warn {
@@ -414,10 +422,6 @@
         <button class="w98-btn" id="w98Speed" type="button">
           <span id="w98SpeedLabel">1×</span>
         </button>
-        <button class="w98-btn" id="w98Orig" type="button" style="display:none;">
-          <svg viewBox="0 0 14 14" style="width:12px;height:12px;"><path d="M1 1v12h12V9h-1v3H2V2h3V1H1zm7 0v1h3.3L5.6 7.6l.8.8L12 2.7V6h1V1H8z" fill="currentColor"/></svg>
-          Original
-        </button>
       </div>
 
       <div class="w98-scrub-row">
@@ -468,7 +472,7 @@
     <textarea class="w98-notes-field" id="w98NotesArea" placeholder="Take notes while watching..."></textarea>
     <div class="w98-notes-toolbar">
       <button class="w98-btn" id="w98Copy" type="button">📋 Copy</button>
-      <button class="w98-btn" id="w98OrigLink" type="button">🔗 Link to Original Video</button>
+      <button class="w98-btn" id="w98OrigLink" type="button" style="display:none;">🔗 View Source</button>
       <span class="w98-saved-indicator" id="w98Saved">✓ Saved</span>
       <span class="w98-watermark">Pathway Media Player v2.0</span>
     </div>
@@ -508,11 +512,6 @@
   // Original source link (opens in new tab)
   var origUrl = '';
   if (params.get('orig')) { try { origUrl = atob(params.get('orig')); } catch(e) {} }
-  var origBtn = document.getElementById('w98Orig');
-  if (origUrl) {
-    origBtn.style.display = 'flex';
-    origBtn.addEventListener('click', function() { window.open(origUrl, '_blank'); });
-  }
 
   var video = null;
   var placeholder = document.getElementById('w98VideoPlaceholder');
@@ -738,9 +737,10 @@
     else { notesArea.select(); document.execCommand('copy'); flash(); }
   });
 
-  origLink.addEventListener('click', function() {
-    if (videoSrc) window.open(videoSrc, '_blank');
-  });
+  if (origUrl) {
+    origLink.style.display = 'flex';
+    origLink.addEventListener('click', function() { window.open(origUrl, '_blank'); });
+  }
 })();
 </script>
 </body>
