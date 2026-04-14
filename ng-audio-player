@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway Audio Player — W98 Edition</title>
+<style>
+  :root {
+    --w98-face: #c0c0c0;
+    --w98-dark: #808080;
+    --w98-darker: #404040;
+    --w98-white: #ffffff;
+    --w98-title: #000080;
+    --w98-title-text: #ffffff;
+    --w98-black: #000000;
+    --w98-teal: #008080;
+    --w98-font: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: transparent;
+    font-family: var(--w98-font);
+    color: var(--w98-black);
+  }
+  body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px 8px;
+  }
+  /* ══ MAIN WINDOW ══ */
+  .w98-window {
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 1px 1px 0 var(--w98-darker);
+    display: inline-block;
+  }
+  .w98-titlebar {
+    height: 20px;
+    background: linear-gradient(90deg, var(--w98-title), #1084d0);
+    display: flex;
+    align-items: center;
+    padding: 0 3px;
+    gap: 4px;
+    user-select: none;
+  }
+  .w98-titlebar-icon {
+    width: 14px; height: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .w98-titlebar-icon svg { width: 12px; height: 12px; }
+  .w98-titlebar-text {
+    flex: 1;
+    font-family: var(--w98-font);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--w98-title-text);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .w98-titlebar-btns { display: flex; gap: 2px; }
+  .w98-tbtn {
+    width: 15px; height: 13px;
+    background: var(--w98-face);
+    border: 1px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    display: flex; align-items: center; justify-content: center;
+    cursor: default;
+    font-family: var(--w98-font);
+    font-size: 9px; line-height: 1; padding: 0;
+    color: var(--w98-black);
+  }
+  /* ══ PLAYER BODY ══ */
+  .w98-player {
+    padding: 6px;
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+  }
+  /* ══ BUTTON ══ */
+  .w98-btn {
+    height: 54px;
+    min-width: 56px;
+    padding: 0 6px;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    font-family: var(--w98-font);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    user-select: none;
+    color: var(--w98-black);
+    letter-spacing: 0.2px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .w98-btn:active, .w98-btn.pressed {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    padding: 1px 5px 0 7px;
+  }
+  .w98-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .w98-btn.play-btn {
+    background: linear-gradient(180deg, #e0e0e0, #b0b0b0);
+    min-width: 64px;
+  }
+  .w98-btn .leg {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1;
+  }
+  .ico-gray svg { fill: var(--w98-black); }
+  .ico-teal svg { fill: var(--w98-teal); }
+  .ico-teal .leg { color: var(--w98-teal); }
+  .ico-yellow svg { fill: #7a6c1a; }
+  .ico-yellow .leg { color: #7a6c1a; }
+  /* ══ LCD ══ */
+  .w98-lcd {
+    height: 54px;
+    min-width: 78px;
+    padding: 4px 6px;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .w98-lcd-screen {
+    width: 100%;
+    height: 22px;
+    background: #000;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .w98-lcd-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.2) 1px, rgba(0,0,0,0.2) 2px);
+    pointer-events: none;
+  }
+  .w98-lcd-time {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #00ff00;
+    letter-spacing: 1.5px;
+    line-height: 1;
+    text-shadow: 0 0 3px rgba(0,255,0,0.5);
+    position: relative;
+    z-index: 1;
+  }
+  .w98-lcd-label {
+    font-family: var(--w98-font);
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--w98-black);
+    line-height: 1;
+  }
+  /* ══ DARK MODE ══ */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --w98-face: #3a3a3a;
+      --w98-dark: #1a1a1a;
+      --w98-darker: #0a0a0a;
+      --w98-white: #5a5a5a;
+      --w98-title: #000060;
+      --w98-black: #000000;
+      --w98-teal: #00a0a0;
+    }
+    html, body { color: #d0d0d0; }
+    .w98-titlebar { background: linear-gradient(90deg, #000060, #0a5090); }
+    .w98-btn { color: #d0d0d0; }
+    .ico-gray svg { fill: #d0d0d0; }
+    .ico-yellow svg { fill: #c4b44a; }
+    .ico-yellow .leg { color: #c4b44a; }
+    .w98-btn.play-btn {
+      background: linear-gradient(180deg, #484848, #2e2e2e);
+    }
+    .w98-lcd-label { color: #d0d0d0; }
+  }
+  /* ══ RESPONSIVE ══ */
+  @media (max-width: 500px) {
+    .w98-btn { min-width: 48px; height: 50px; }
+    .w98-btn.play-btn { min-width: 56px; }
+    .w98-btn svg { width: 18px; height: 18px; }
+    .w98-lcd { min-width: 68px; height: 50px; }
+    .w98-lcd-time { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="w98-window">
+  <div class="w98-titlebar">
+    <div class="w98-titlebar-icon">
+      <svg viewBox="0 0 14 14" fill="none">
+        <rect x="2" y="4" width="6" height="6" fill="var(--w98-title-text)"/>
+        <polygon points="8,3 12,1 12,13 8,11" fill="var(--w98-title-text)"/>
+      </svg>
+    </div>
+    <span class="w98-titlebar-text">audio_player.exe</span>
+    <div class="w98-titlebar-btns">
+      <button class="w98-tbtn" type="button">_</button>
+      <button class="w98-tbtn" type="button">□</button>
+      <button class="w98-tbtn" type="button">✕</button>
+    </div>
+  </div>
+  <div class="w98-player">
+    <!-- Back 15s -->
+    <button class="w98-btn ico-gray" id="btnBack" title="Back 15 seconds" aria-label="Back 15 seconds">
+      <svg viewBox="0 0 24 24">
+        <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+        <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="Tahoma" style="fill:inherit">15</text>
+      </svg>
+      <span class="leg">Back</span>
+    </button>
+    <!-- Play / Pause -->
+    <button class="w98-btn play-btn ico-teal" id="btnPlay" title="Play" aria-label="Play">
+      <svg viewBox="0 0 24 24" id="iconPlay"><polygon points="8,5 19,12 8,19"/></svg>
+      <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      <span class="leg" id="playLabel">Play</span>
+    </button>
+    <!-- Forward 15s -->
+    <button class="w98-btn ico-gray" id="btnFwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">
+      <svg viewBox="0 0 24 24">
+        <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
+        <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="Tahoma" style="fill:inherit">15</text>
+      </svg>
+      <span class="leg">Forward</span>
+    </button>
+    <!-- Speed -->
+    <button class="w98-btn ico-yellow" id="btnSpeed" title="Playback speed" aria-label="Playback speed">
+      <svg viewBox="0 0 24 24">
+        <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/>
+        <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/>
+      </svg>
+      <span class="leg" id="speedLabel">1×</span>
+    </button>
+    <!-- LCD Time -->
+    <div class="w98-lcd" title="Time remaining">
+      <div class="w98-lcd-screen">
+        <span class="w98-lcd-time" id="lcdTime">--:--</span>
+      </div>
+      <span class="w98-lcd-label">Remaining</span>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+  var audio = null;
+  var speeds = [1, 1.25, 1.5, 1.75, 2, 0.75];
+  var speedIdx = 0;
+  var params = new URLSearchParams(window.location.search);
+  var audioSrc = '';
+  if (params.get('b')) {
+    try { audioSrc = atob(params.get('b')); } catch(e) { audioSrc = ''; }
+  } else if (params.get('src')) {
+    audioSrc = params.get('src');
+  }
+  function fmt(s) {
+    if (isNaN(s) || s < 0) return '--:--';
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+  function getAudio() {
+    if (!audio) {
+      audio = new Audio();
+      audio.preload = 'metadata';
+      audio.src = audioSrc;
+      audio.addEventListener('ended', function() { setPlaying(false); });
+      audio.addEventListener('loadedmetadata', function() {
+        document.getElementById('lcdTime').textContent = fmt(audio.duration);
+      });
+      audio.addEventListener('timeupdate', function() {
+        document.getElementById('lcdTime').textContent = fmt(audio.duration - audio.currentTime);
+      });
+    }
+    return audio;
+  }
+  function setPlaying(p) {
+    document.getElementById('iconPlay').style.display = p ? 'none' : 'block';
+    document.getElementById('iconPause').style.display = p ? 'block' : 'none';
+    document.getElementById('playLabel').textContent = p ? 'Pause' : 'Play';
+    document.getElementById('btnPlay').title = p ? 'Pause' : 'Play';
+  }
+  document.querySelectorAll('button.w98-btn').forEach(function(btn) {
+    btn.addEventListener('touchstart', function() { btn.classList.add('pressed'); }, { passive: true });
+    btn.addEventListener('touchend', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
+    btn.addEventListener('touchcancel', function() { btn.classList.remove('pressed'); });
+  });
+  document.getElementById('btnPlay').addEventListener('click', function() {
+    var a = getAudio();
+    if (a.paused) { a.play(); setPlaying(true); }
+    else { a.pause(); setPlaying(false); }
+  });
+  document.getElementById('btnBack').addEventListener('click', function() {
+    var a = getAudio();
+    a.currentTime = Math.max(0, a.currentTime - 15);
+  });
+  document.getElementById('btnFwd').addEventListener('click', function() {
+    var a = getAudio();
+    a.currentTime = Math.min(audio.duration || 0, a.currentTime + 15);
+  });
+  document.getElementById('btnSpeed').addEventListener('click', function() {
+    var a = getAudio();
+    speedIdx = (speedIdx + 1) % speeds.length;
+    a.playbackRate = speeds[speedIdx];
+    document.getElementById('speedLabel').textContent = speeds[speedIdx] + '\u00d7';
+  });
+  if (audioSrc) getAudio();
+})();
+</script>
+</body>
+</html>
