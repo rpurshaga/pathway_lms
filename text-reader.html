@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building a Mentoring Relationship — Transcript</title>
+<style>
+  :root {
+    --w98-face: #c0c0c0;
+    --w98-darker: #404040;
+    --w98-white: #ffffff;
+    --w98-title: #000080;
+    --w98-black: #000000;
+    --w98-teal: #008080;
+    --w98-font: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+    --course-color: #008080;
+    --hl-bg: #dfdfdf;
+    --hl-bg-hover: #c4c4c4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: transparent; font-family: var(--w98-font); color: var(--w98-black); }
+  body { padding: 20px 8px; }
+
+  .w98-doc {
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 1px 1px 0 var(--w98-darker);
+    max-width: 720px;
+    margin: 0 auto;
+    padding-top: 4px;
+    position: relative;
+    text-align: left;
+  }
+  .w98-toolbar {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px;
+    background: var(--w98-face);
+    border-bottom: 1px solid var(--w98-darker);
+    flex-wrap: wrap;
+  }
+  .w98-tb-btn {
+    font: 700 11px var(--w98-font);
+    padding: 3px 12px;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    cursor: pointer;
+    color: var(--w98-black);
+    min-width: 60px;
+  }
+  .w98-tb-btn:active, .w98-tb-btn.pressed {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  }
+  .w98-tb-btn.accent { border-top-color: var(--course-color); border-left-color: var(--course-color); }
+  .w98-tb-count {
+    margin-left: auto;
+    font: 11px var(--w98-font);
+    color: var(--w98-black);
+    padding: 0 6px;
+  }
+  .w98-paper {
+    background: var(--w98-white);
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    margin: 8px;
+    padding: 18px 22px;
+    color: var(--w98-black);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .w98-paper h1 {
+    font-family: var(--w98-font);
+    font-size: 16px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 0 0 4px 0;
+    color: var(--w98-title);
+    border-bottom: 2px solid var(--course-color);
+    padding-bottom: 4px;
+  }
+  .w98-paper h2 {
+    font-family: var(--w98-font);
+    font-size: 13px; font-weight: 700; font-style: italic;
+    color: var(--course-color);
+    margin: 0 0 14px 0;
+  }
+  .w98-paper p { margin: 0 0 12px 0; }
+  .w98-paper ul {
+    list-style: none;
+    margin: 6px 0 14px 0;
+    padding: 8px 14px;
+    background: #f4f4f0;
+    border: 1px solid var(--w98-darker);
+  }
+  .w98-paper ul li { position: relative; padding: 2px 0 2px 20px; }
+  .w98-paper ul li::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 9px;
+    width: 6px; height: 6px;
+    background: var(--course-color);
+    border: 1px solid var(--w98-black);
+  }
+  .w98-paper mark.w98-hl {
+    background: var(--hl-bg);
+    color: var(--w98-black);
+    padding: 1px 0;
+    cursor: pointer;
+    border-bottom: 1px dotted var(--w98-darker);
+  }
+  .w98-paper mark.w98-hl:hover {
+    background: var(--hl-bg-hover);
+    outline: 1px dashed var(--w98-darker);
+  }
+  .w98-statusbar {
+    display: flex; gap: 4px;
+    padding: 3px 4px 4px;
+    font-size: 11px;
+    background: var(--w98-face);
+  }
+  .w98-statusbar .cell {
+    flex: 1;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    padding: 2px 6px;
+    background: var(--w98-face);
+    color: var(--w98-black);
+  }
+  .w98-statusbar .cell.grow { flex: 3; }
+
+  .w98-hl-float {
+    position: absolute; display: none;
+    padding: 4px 12px;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    box-shadow: 1px 1px 0 var(--w98-darker);
+    font: 700 11px var(--w98-font);
+    cursor: pointer;
+    z-index: 9999;
+    user-select: none;
+    color: var(--w98-black);
+    white-space: nowrap;
+  }
+  .w98-hl-float:active { border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker); }
+
+  /* ===== Modal ===== */
+  .w98-modal {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    align-items: flex-start; justify-content: center;
+    padding: 40px 12px;
+    z-index: 10000;
+    overflow-y: auto;
+  }
+  .w98-modal.open { display: flex; }
+  .w98-modal-window {
+    width: 100%;
+    max-width: 720px;
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 2px 2px 0 var(--w98-darker);
+    font-family: var(--w98-font);
+    color: var(--w98-black);
+  }
+  .w98-modal-titlebar {
+    height: 22px;
+    background: linear-gradient(90deg, var(--course-color), #1084d0);
+    display: flex; align-items: center;
+    padding: 0 4px; gap: 6px;
+    color: #fff; font-size: 12px; font-weight: 700;
+  }
+  .w98-modal-titlebar .spacer { flex: 1; }
+  .w98-modal-close {
+    width: 16px; height: 14px;
+    background: var(--w98-face);
+    border: 1px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    color: var(--w98-black);
+    font: 700 11px var(--w98-font);
+    cursor: pointer; padding: 0; line-height: 1;
+  }
+  .w98-modal-body {
+    padding: 12px;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+  }
+  .w98-modal-toolbar {
+    display: flex; gap: 6px;
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid var(--w98-darker);
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .w98-course-block {
+    background: var(--w98-white);
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    margin-bottom: 10px;
+    padding: 0;
+  }
+  .w98-course-header {
+    padding: 6px 10px;
+    background: var(--w98-face);
+    border-bottom: 1px solid var(--w98-darker);
+    font-weight: 700; font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .w98-course-swatch {
+    display: inline-block; width: 12px; height: 12px;
+    border: 1px solid var(--w98-black);
+  }
+  .w98-article-group { padding: 6px 10px; border-bottom: 1px dotted #ccc; }
+  .w98-article-group:last-child { border-bottom: 0; }
+  .w98-article-title { font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+  .w98-hl-item {
+    padding: 5px 8px;
+    margin: 4px 0;
+    font-size: 12px;
+    line-height: 1.5;
+    background: var(--hl-bg);
+    border-left: 3px solid var(--course-color);
+    position: relative;
+  }
+  .w98-hl-item .meta {
+    display: block;
+    font-size: 10px;
+    color: #555;
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .w98-hl-item .remove-btn {
+    position: absolute; top: 4px; right: 4px;
+    width: 18px; height: 16px;
+    background: var(--w98-face);
+    border: 1px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    font: 700 10px var(--w98-font);
+    cursor: pointer; padding: 0;
+  }
+  .w98-empty {
+    text-align: center; padding: 30px; color: #666; font-style: italic;
+  }
+
+  /* ===== Print ===== */
+  @media print {
+    body * { visibility: hidden !important; }
+    .w98-paper, .w98-paper * { visibility: visible !important; }
+    .w98-paper {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%;
+      max-width: 100%;
+      border: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #fff !important;
+      color: #000 !important;
+      font-size: 12pt;
+      line-height: 1.55;
+    }
+    .w98-paper h1 {
+      color: #000 !important;
+      border-bottom: 1px solid #000 !important;
+    }
+    .w98-paper h2 { color: #333 !important; }
+    .w98-paper ul {
+      background: transparent !important;
+      border: 0 !important;
+      padding-left: 20px !important;
+    }
+    .w98-paper ul li::before { background: #000 !important; }
+    .w98-paper mark.w98-hl {
+      background: var(--hl-bg) !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .w98-doc, .w98-hl-float, .w98-modal, .w98-toolbar, .w98-statusbar { display: none !important; }
+  }
+
+  @media (max-width: 520px) {
+    .w98-paper { padding: 14px 14px; font-size: 13px; }
+    .w98-paper h1 { font-size: 14px; }
+    .w98-tb-btn { min-width: 0; padding: 3px 8px; font-size: 10.5px; }
+    .w98-statusbar { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div
+  class="w98-doc"
+  id="w98Doc"
+  data-course-id="ym102"
+  data-course-name="Youth Ministry 102"
+  data-course-color="#2a9d8f"
+  data-article-id="mentoring-transcript-01"
+  data-article-title="Building a Mentoring Relationship &mdash; Video Transcript">
+  <div class="w98-toolbar">
+    <button class="w98-tb-btn" data-action="print" type="button">Print</button>
+    <button class="w98-tb-btn" data-action="viewall" type="button">My Highlights</button>
+    <button class="w98-tb-btn" data-action="copy" type="button">Copy</button>
+    <button class="w98-tb-btn" data-action="export" type="button">Export</button>
+    <button class="w98-tb-btn" data-action="clear" type="button">Clear</button>
+    <span class="w98-tb-count">0 highlights</span>
+  </div>
+  <div class="w98-paper">
+    <h1>Building a Mentoring Relationship &mdash; Video Transcript</h1>
+    <h2>Bible-based Mentoring</h2>
+    <p>A relationship without trust is like an automobile with no gas; you can stay in it, but it will never move forward. If we want to build productive mentoring relationships with our students, we need to understand that they will not develop overnight. Establishing trust is a process. You will need to get to know your mentee and to allow them to get to know you in order to make a godly impact on their life.</p>
+    <p>You will also want to establish a relationship with the teen's parent/guardian to make sure they are comfortable with you mentoring their teen. Their approval and support will empower you to speak freely into their child's life. Depending on the relationship they share with their parent or guardian, students may also subconsciously feel safer with you knowing that you have been granted their parent or guardian's trust.</p>
+    <p>To start, you simply need to create a connection with the teen: check in with them at church, attend events they are interested in, ask questions about their life, share your own life and experiences with them.</p>
+    <p>You will also need to establish the scope of the relationship, including how often you will meet and the goals of your mentorship, as early as possible. Consider meeting in locations where you can have a private conversation, but still be around other people. For example, a coffee shop, a park, restaurant, or a home when others are home.</p>
+    <p>Each person you mentor will have unique strengths, talents, and goals. Discussing the ambitions of your mentee is important&mdash;they want to have an active role in identifying their goals and constructing a plan on how to achieve them.</p>
+    <p>Although some teens already know what they want to accomplish, others will feel more unsure. You can give their passion a direction by telling them the qualities and strengths you see within them.</p>
+    <p>Early in the relationship, you will want to discuss questions like these with your mentee:</p>
+    <ul>
+      <li>What questions do they have about God?</li>
+      <li>How do they want to grow in their relationship with God?</li>
+      <li>Do they want to be leaders?</li>
+      <li>What career are they interested in?</li>
+      <li>What are some ways they can serve?</li>
+      <li>What kinds of things do they want to learn?</li>
+      <li>What are strengths they want to develop and weaknesses they want to work on?</li>
+    </ul>
+    <p>After you have had an idea of your mentee's goals and strengths, you can begin to support them by connecting them with opportunities to lead, serve, and practice the skills they are developing.</p>
+    <p>When you invite them to serve with you in ministry, they will feel valued and capable of making a difference in their world. Simply showing them that you believe in them can be a catalyst for the growth of their self-confidence.</p>
+    <p>You may even help them to create an action plan to determine the steps they need to take to meet their goals&mdash;practical and spiritual. You can encourage and remind them of the steps they want to take.</p>
+    <p>Setting goals for a mentorship relationship may seem awkward or too practical, but remember&mdash;the purpose of mentorship is not just to form a friendship with a teen. The objective is to support them in their relationship with Christ.</p>
+  </div>
+  <div class="w98-statusbar">
+    <div class="cell grow">Building a Mentoring Relationship &mdash; Video Transcript</div>
+    <div class="cell">534 words</div>
+  </div>
+</div>
+
+<div class="w98-hl-float" id="w98HlFloat">Highlight</div>
+
+<div class="w98-modal" id="w98Modal" aria-hidden="true">
+  <div class="w98-modal-window" role="dialog" aria-labelledby="w98ModalTitle">
+    <div class="w98-modal-titlebar">
+      <span id="w98ModalTitle">My Highlights</span>
+      <span class="spacer"></span>
+      <button class="w98-modal-close" id="w98ModalClose" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="w98-modal-body">
+      <div class="w98-modal-toolbar">
+        <button class="w98-tb-btn" id="w98ExportAll" type="button">Export All</button>
+        <button class="w98-tb-btn" id="w98PrintAll" type="button">Print All</button>
+        <button class="w98-tb-btn" id="w98CopyAll" type="button">Copy All</button>
+        <span class="w98-tb-count" id="w98TotalCount">0 total</span>
+      </div>
+      <div id="w98ModalContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ===== URL param overrides =====
+  var params = new URLSearchParams(window.location.search);
+  var doc = document.getElementById('w98Doc');
+
+  var COURSE = {
+    id: params.get('courseId') || doc.dataset.courseId || 'default',
+    name: params.get('courseName') || doc.dataset.courseName || 'Course',
+    color: params.get('courseColor') || doc.dataset.courseColor || '#008080'
+  };
+  var ARTICLE = {
+    id: params.get('articleId') || doc.dataset.articleId || 'article',
+    title: params.get('articleTitle') || doc.dataset.articleTitle || (doc.querySelector('h1') ? doc.querySelector('h1').textContent.trim() : 'Article'),
+    url: window.location.href
+  };
+
+  // ===== Colors from course =====
+  function hexToRgb(h){
+    h = h.replace('#','');
+    if (h.length === 3) h = h.split('').map(function(c){return c+c;}).join('');
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+  function mixWithWhite(hex, ratio){
+    try {
+      var rgb = hexToRgb(hex);
+      return 'rgb(' + Math.round(rgb[0]*ratio + 255*(1-ratio)) + ',' +
+                      Math.round(rgb[1]*ratio + 255*(1-ratio)) + ',' +
+                      Math.round(rgb[2]*ratio + 255*(1-ratio)) + ')';
+    } catch(e) { return '#dfdfdf'; }
+  }
+  document.documentElement.style.setProperty('--course-color', COURSE.color);
+  document.documentElement.style.setProperty('--hl-bg', mixWithWhite(COURSE.color, 0.35));
+  document.documentElement.style.setProperty('--hl-bg-hover', mixWithWhite(COURSE.color, 0.55));
+
+  // ===== Storage (global, single source) =====
+  var GLOBAL_KEY = 'w98-highlights-v2';
+  function loadAll(){ try { return JSON.parse(localStorage.getItem(GLOBAL_KEY) || '[]'); } catch(e){ return []; } }
+  function saveAll(arr){ try { localStorage.setItem(GLOBAL_KEY, JSON.stringify(arr)); } catch(e){} }
+  function loadForArticle(){ return loadAll().filter(function(h){ return h.courseId === COURSE.id && h.articleId === ARTICLE.id; }); }
+
+  // ===== DOM refs =====
+  var paper = doc.querySelector('.w98-paper');
+  var floatBtn = document.getElementById('w98HlFloat');
+  var modal = document.getElementById('w98Modal');
+  var modalContent = document.getElementById('w98ModalContent');
+
+  var blocks = [].slice.call(paper.querySelectorAll('p, li'));
+  blocks.forEach(function(b, i){ b.setAttribute('data-pidx', i); });
+
+  // ===== Offsets / apply =====
+  function offsetWithin(block, node, off){
+    var w = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null, false);
+    var pos = 0, n;
+    while ((n = w.nextNode())){
+      if (n === node) return pos + off;
+      pos += n.nodeValue.length;
+    }
+    return -1;
+  }
+  function applyToBlock(block, start, end, id){
+    var w = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null, false);
+    var pos = 0, n, sN, sO, eN, eO;
+    while ((n = w.nextNode())){
+      var len = n.nodeValue.length;
+      if (!sN && pos + len >= start){ sN = n; sO = start - pos; }
+      if (sN && pos + len >= end){ eN = n; eO = end - pos; break; }
+      pos += len;
+    }
+    if (!sN || !eN) return;
+    var r = document.createRange();
+    r.setStart(sN, sO); r.setEnd(eN, eO);
+    var mark = document.createElement('mark');
+    mark.className = 'w98-hl';
+    mark.setAttribute('data-hlid', id);
+    try { r.surroundContents(mark); }
+    catch(e){
+      var c = r.extractContents();
+      mark.appendChild(c);
+      r.insertNode(mark);
+    }
+  }
+  function clearMarks(){
+    paper.querySelectorAll('mark.w98-hl').forEach(function(m){
+      var p = m.parentNode;
+      while (m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m);
+      p.normalize();
+    });
+  }
+  function render(){
+    clearMarks();
+    var hls = loadForArticle();
+    var g = {};
+    hls.forEach(function(h){ (g[h.pidx] = g[h.pidx] || []).push(h); });
+    Object.keys(g).forEach(function(pidx){
+      var block = blocks[pidx]; if (!block) return;
+      g[pidx].sort(function(a,b){ return b.start - a.start; }).forEach(function(h){
+        applyToBlock(block, h.start, h.end, h.id);
+      });
+    });
+    var cnt = doc.querySelector('.w98-tb-count');
+    if (cnt) cnt.textContent = hls.length + (hls.length === 1 ? ' highlight' : ' highlights');
+  }
+
+  // ===== Selection & floating Highlight button =====
+  function findBlock(node){
+    var el = node.nodeType === 1 ? node : node.parentNode;
+    while (el && !(el.getAttribute && el.getAttribute('data-pidx'))) el = el.parentNode;
+    return el;
+  }
+  function positionFloat(){
+    var sel = window.getSelection();
+    if (!sel.rangeCount || sel.isCollapsed){ floatBtn.style.display = 'none'; return; }
+    var r = sel.getRangeAt(0);
+    if (!paper.contains(r.commonAncestorContainer)){ floatBtn.style.display = 'none'; return; }
+    var rect = r.getBoundingClientRect();
+    floatBtn.style.top = (window.pageYOffset + rect.top - 36) + 'px';
+    floatBtn.style.left = (window.pageXOffset + rect.left + rect.width/2 - 40) + 'px';
+    floatBtn.style.display = 'block';
+  }
+  document.addEventListener('mouseup', function(){ setTimeout(positionFloat, 10); });
+  document.addEventListener('touchend', function(){ setTimeout(positionFloat, 10); });
+  document.addEventListener('selectionchange', function(){
+    var sel = window.getSelection();
+    if (!sel.rangeCount || sel.isCollapsed) floatBtn.style.display = 'none';
+  });
+  floatBtn.addEventListener('mousedown', function(e){ e.preventDefault(); });
+  floatBtn.addEventListener('click', function(){
+    var sel = window.getSelection();
+    if (!sel.rangeCount || sel.isCollapsed) return;
+    var r = sel.getRangeAt(0);
+    var sb = findBlock(r.startContainer), eb = findBlock(r.endContainer);
+    if (!sb || sb !== eb){ alert('Please keep your selection within a single paragraph.'); return; }
+    var start = offsetWithin(sb, r.startContainer, r.startOffset);
+    var end = offsetWithin(sb, r.endContainer, r.endOffset);
+    if (start < 0 || end <= start) return;
+    var all = loadAll();
+    all.push({
+      id: 'h' + Date.now() + Math.random().toString(36).slice(2,6),
+      courseId: COURSE.id,
+      courseName: COURSE.name,
+      courseColor: COURSE.color,
+      articleId: ARTICLE.id,
+      articleTitle: ARTICLE.title,
+      articleUrl: ARTICLE.url,
+      pidx: parseInt(sb.getAttribute('data-pidx')),
+      start: start, end: end,
+      text: r.toString(),
+      createdAt: new Date().toISOString()
+    });
+    saveAll(all);
+    sel.removeAllRanges();
+    floatBtn.style.display = 'none';
+    render();
+  });
+
+  // Click existing highlight to remove
+  paper.addEventListener('click', function(e){
+    var mark = e.target.closest && e.target.closest('mark.w98-hl');
+    if (!mark) return;
+    if (!confirm('Remove this highlight?')) return;
+    var id = mark.getAttribute('data-hlid');
+    saveAll(loadAll().filter(function(h){ return h.id !== id; }));
+    render();
+  });
+
+  // ===== Format helpers =====
+  function fmtDate(iso){
+    try {
+      var d = new Date(iso);
+      return d.toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+    } catch(e) { return iso; }
+  }
+  function formatArticleText(hls, title){
+    var out = title + '\n' + new Array(title.length+1).join('=') + '\n\n';
+    hls.sort(function(a,b){ return a.pidx - b.pidx || a.start - b.start; });
+    hls.forEach(function(h, i){ out += (i+1) + '. ' + h.text + '\n   [' + fmtDate(h.createdAt) + ']\n\n'; });
+    if (!hls.length) out += '(No highlights yet.)\n';
+    return out;
+  }
+  function formatAllText(allHls){
+    var out = 'All Highlights\n==============\n\n';
+    var byCourse = {};
+    allHls.forEach(function(h){
+      var k = h.courseId;
+      byCourse[k] = byCourse[k] || { name: h.courseName, color: h.courseColor, articles: {} };
+      byCourse[k].articles[h.articleId] = byCourse[k].articles[h.articleId] || { title: h.articleTitle, hls: [] };
+      byCourse[k].articles[h.articleId].hls.push(h);
+    });
+    Object.keys(byCourse).sort().forEach(function(cid){
+      var c = byCourse[cid];
+      out += '\n## ' + c.name + '\n' + new Array(c.name.length+4).join('-') + '\n';
+      Object.keys(c.articles).forEach(function(aid){
+        var a = c.articles[aid];
+        out += '\n  ' + a.title + '\n';
+        a.hls.sort(function(x,y){ return new Date(x.createdAt) - new Date(y.createdAt); })
+             .forEach(function(h){ out += '    - "' + h.text + '"\n      [' + fmtDate(h.createdAt) + ']\n'; });
+      });
+    });
+    if (!allHls.length) out += '(No highlights saved yet.)\n';
+    return out;
+  }
+
+  function copyText(text, btn){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        if (btn){ var o = btn.textContent; btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = o; }, 1500); }
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(e){}
+      document.body.removeChild(ta);
+    }
+  }
+  function downloadText(text, name){
+    var blob = new Blob([text], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== Toolbar buttons =====
+  doc.querySelectorAll('.w98-tb-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var action = btn.getAttribute('data-action');
+      if (action === 'print'){
+        window.print();
+      } else if (action === 'copy'){
+        copyText(formatArticleText(loadForArticle(), ARTICLE.title), btn);
+      } else if (action === 'export'){
+        downloadText(formatArticleText(loadForArticle(), ARTICLE.title), 'highlights-' + ARTICLE.id + '.txt');
+      } else if (action === 'clear'){
+        if (!confirm('Remove all highlights from this article?')) return;
+        saveAll(loadAll().filter(function(h){ return !(h.courseId === COURSE.id && h.articleId === ARTICLE.id); }));
+        render();
+      } else if (action === 'viewall'){
+        openModal();
+      }
+    });
+  });
+
+  // ===== Modal =====
+  function renderModal(){
+    var all = loadAll();
+    document.getElementById('w98TotalCount').textContent = all.length + ' total';
+    if (!all.length){
+      modalContent.innerHTML = '<div class="w98-empty">No highlights saved yet. Select text in any transcript and click Highlight to save one.</div>';
+      return;
+    }
+    var byCourse = {};
+    all.forEach(function(h){
+      var k = h.courseId;
+      byCourse[k] = byCourse[k] || { name: h.courseName, color: h.courseColor, articles: {} };
+      byCourse[k].articles[h.articleId] = byCourse[k].articles[h.articleId] || { title: h.articleTitle, url: h.articleUrl, hls: [] };
+      byCourse[k].articles[h.articleId].hls.push(h);
+    });
+    var html = '';
+    Object.keys(byCourse).sort(function(a,b){
+      return byCourse[a].name.localeCompare(byCourse[b].name);
+    }).forEach(function(cid){
+      var c = byCourse[cid];
+      var total = 0;
+      Object.keys(c.articles).forEach(function(aid){ total += c.articles[aid].hls.length; });
+      html += '<div class="w98-course-block">';
+      html += '<div class="w98-course-header">';
+      html += '<span class="w98-course-swatch" style="background:' + escapeAttr(c.color) + '"></span>';
+      html += '<span>' + escapeHtml(c.name) + '</span>';
+      html += '<span style="margin-left:auto; font-weight:400; font-size:11px;">' + total + ' highlights</span>';
+      html += '</div>';
+      Object.keys(c.articles).forEach(function(aid){
+        var a = c.articles[aid];
+        a.hls.sort(function(x,y){ return new Date(y.createdAt) - new Date(x.createdAt); });
+        html += '<div class="w98-article-group">';
+        html += '<div class="w98-article-title">' + escapeHtml(a.title) + '</div>';
+        a.hls.forEach(function(h){
+          var tint = mixWithWhite(c.color, 0.35);
+          html += '<div class="w98-hl-item" style="background:' + tint + '; border-left-color:' + escapeAttr(c.color) + ';">';
+          html += escapeHtml(h.text);
+          html += '<span class="meta">' + fmtDate(h.createdAt) + '</span>';
+          html += '<button class="remove-btn" data-remove="' + escapeAttr(h.id) + '" title="Remove">&times;</button>';
+          html += '</div>';
+        });
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    modalContent.innerHTML = html;
+  }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function escapeAttr(s){ return escapeHtml(s); }
+
+  function openModal(){ renderModal(); modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+  function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+  document.getElementById('w98ModalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+
+  modalContent.addEventListener('click', function(e){
+    var rb = e.target.closest && e.target.closest('[data-remove]');
+    if (!rb) return;
+    var id = rb.getAttribute('data-remove');
+    if (!confirm('Remove this highlight?')) return;
+    saveAll(loadAll().filter(function(h){ return h.id !== id; }));
+    renderModal();
+    render();
+  });
+
+  document.getElementById('w98ExportAll').addEventListener('click', function(){
+    downloadText(formatAllText(loadAll()), 'all-highlights.txt');
+  });
+  document.getElementById('w98CopyAll').addEventListener('click', function(){
+    copyText(formatAllText(loadAll()), this);
+  });
+  document.getElementById('w98PrintAll').addEventListener('click', function(){
+    var w = window.open('', '_blank');
+    var html = '<html><head><title>All Highlights</title>';
+    html += '<style>body{font-family:Georgia,serif;max-width:720px;margin:30px auto;padding:0 20px;color:#000;}';
+    html += 'h1{font-size:18pt;}h2{font-size:13pt;margin-top:20px;border-bottom:1px solid #888;padding-bottom:3px;}';
+    html += 'h3{font-size:11pt;margin-top:12px;}';
+    html += '.q{margin:8px 0 8px 16px;padding:6px 10px;background:#f2f2f2;border-left:3px solid #888;}';
+    html += '.d{font-size:9pt;color:#666;font-style:italic;display:block;margin-top:3px;}';
+    html += '@media print{body{margin:0;}.q{background:#eee !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}}';
+    html += '</style></head><body><h1>My Highlights</h1>';
+    var all = loadAll();
+    if (!all.length) html += '<p><em>No highlights saved.</em></p>';
+    var byCourse = {};
+    all.forEach(function(h){
+      var k = h.courseId;
+      byCourse[k] = byCourse[k] || { name: h.courseName, color: h.courseColor, articles: {} };
+      byCourse[k].articles[h.articleId] = byCourse[k].articles[h.articleId] || { title: h.articleTitle, hls: [] };
+      byCourse[k].articles[h.articleId].hls.push(h);
+    });
+    Object.keys(byCourse).sort(function(a,b){ return byCourse[a].name.localeCompare(byCourse[b].name); }).forEach(function(cid){
+      var c = byCourse[cid];
+      html += '<h2 style="border-bottom-color:' + escapeAttr(c.color) + '">' + escapeHtml(c.name) + '</h2>';
+      Object.keys(c.articles).forEach(function(aid){
+        var a = c.articles[aid];
+        a.hls.sort(function(x,y){ return new Date(y.createdAt) - new Date(x.createdAt); });
+        html += '<h3>' + escapeHtml(a.title) + '</h3>';
+        a.hls.forEach(function(h){
+          var tint = mixWithWhite(c.color, 0.35);
+          html += '<div class="q" style="background:' + tint + '; border-left-color:' + escapeAttr(c.color) + ';">' + escapeHtml(h.text);
+          html += '<span class="d">' + fmtDate(h.createdAt) + '</span></div>';
+        });
+      });
+    });
+    html += '</body></html>';
+    w.document.write(html);
+    w.document.close();
+    setTimeout(function(){ w.print(); }, 250);
+  });
+
+  // Initial render
+  render();
+})();
+</script>
+</body>
+</html>
