@@ -93,6 +93,53 @@
 
   .w98-content { padding: 4px; }
 
+  .w98-purpose-box {
+    margin-bottom: 4px;
+    padding: 6px 8px 8px;
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    background: var(--w98-face);
+  }
+  .w98-purpose-label {
+    font-family: var(--w98-font);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--w98-black);
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--w98-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .w98-purpose-label::before {
+    content: "?";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px; height: 14px;
+    background: var(--w98-title);
+    color: var(--w98-title-text);
+    font-family: var(--w98-font);
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .w98-purpose-field {
+    font-family: var(--w98-font);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--w98-black);
+    background: var(--w98-field);
+    border: 2px solid;
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+    padding: 6px 8px;
+    min-height: 48px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
   .w98-video-frame {
     width: 100%;
     border: 2px solid;
@@ -130,13 +177,101 @@
 
   .w98-fs-btn {
     position: absolute; bottom: 4px; right: 4px; z-index: 3;
-    width: 22px; height: 22px; background: var(--w98-face);
-    border: 1px solid;
+    width: 26px; height: 26px; background: var(--w98-face);
+    border: 2px solid;
     border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
     cursor: pointer; display: none; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.3);
   }
-  .w98-video-frame:hover .w98-fs-btn.visible { display: flex; }
-  .w98-fs-btn svg { width: 12px; height: 12px; }
+  .w98-fs-btn.visible { display: flex; }
+  .w98-fs-btn:active {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  }
+  .w98-fs-btn svg { width: 14px; height: 14px; }
+
+  /* ══ VARIANT TABS ══ */
+  .w98-tabs {
+    display: none;
+    margin-bottom: 0;
+    padding-left: 4px;
+    gap: 2px;
+  }
+  .w98-tabs.visible { display: flex; }
+  .w98-tab {
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-face);
+    border-bottom: none;
+    padding: 4px 12px 6px;
+    font-family: var(--w98-font);
+    font-size: 12px;
+    color: var(--w98-black);
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+    margin-right: -2px;
+  }
+  .w98-tab.active {
+    background: var(--w98-face);
+    padding-bottom: 8px;
+    z-index: 2;
+    font-weight: 700;
+    top: 0;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-face) var(--w98-white);
+  }
+
+  /* ══ CHOICE OVERLAY ══ */
+  .w98-choice-overlay {
+    position: absolute; inset: 0; z-index: 10;
+    background: rgba(0,0,0,0.85);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .w98-choice-dialog {
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+    box-shadow: 2px 2px 0 var(--w98-black);
+    max-width: 360px;
+    width: 100%;
+  }
+  .w98-choice-body {
+    padding: 14px 18px 12px;
+  }
+  .w98-choice-prompt {
+    font-family: var(--w98-font);
+    font-size: 13px;
+    color: var(--w98-black);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .w98-choice-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .w98-choice-btn {
+    background: var(--w98-face);
+    border: 2px solid;
+    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+    font-family: var(--w98-font);
+    font-size: 13px;
+    color: var(--w98-black);
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .w98-choice-btn:hover { background: #d4d4d4; }
+  .w98-choice-btn:active {
+    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  }
+  .w98-choice-btn-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
 
   .w98-transport {
     background: var(--w98-face); padding: 4px;
@@ -345,6 +480,14 @@
     .w98-notes-field { background: var(--w98-field); color: var(--w98-field-text); }
     .w98-notes-field::placeholder { color: #555; }
 
+    .w98-purpose-label { color: #d0d0d0; border-bottom-color: var(--w98-dark); }
+    .w98-purpose-field { background: var(--w98-field); color: var(--w98-field-text); }
+
+    .w98-tab { color: #d0d0d0; }
+    .w98-choice-prompt { color: #d0d0d0; }
+    .w98-choice-btn { color: #d0d0d0; }
+    .w98-choice-btn:hover { background: #4a4a4a; }
+
     .w98-saved-indicator { color: var(--w98-teal); }
     .w98-watermark { color: #555; }
 
@@ -391,6 +534,14 @@
   </div>
 
   <div class="w98-content">
+    <div class="w98-purpose-box" id="w98PurposeBox" style="display:none;">
+      <div class="w98-purpose-label">Why am I watching this video?</div>
+      <div class="w98-purpose-field" id="w98PurposeText"></div>
+    </div>
+    <div class="w98-tabs" id="w98Tabs">
+      <button class="w98-tab" id="w98TabA" type="button" data-variant="a">Variant A</button>
+      <button class="w98-tab" id="w98TabB" type="button" data-variant="b">Variant B</button>
+    </div>
     <div class="w98-video-frame" id="w98VideoFrame">
       <div id="w98VideoPlaceholder" class="w98-video" style="width:100%;aspect-ratio:16/9;background:#000;"></div>
       <div class="w98-scanlines"></div>
@@ -403,6 +554,26 @@
           <path d="M2 2h5v1H3v4H2V2zm7 0h5v5h-1V3H9V2zM2 9h1v4h4v1H2V9zm12 0v5H9v-1h4V9h1z" fill="var(--w98-black)"/>
         </svg>
       </button>
+      <div class="w98-choice-overlay" id="w98ChoiceOverlay" style="display:none;">
+        <div class="w98-choice-dialog">
+          <div class="w98-titlebar">
+            <span class="w98-titlebar-text">Choose your version</span>
+          </div>
+          <div class="w98-choice-body">
+            <div class="w98-choice-prompt" id="w98ChoicePrompt">This lesson has multiple versions. Which would you like to watch?</div>
+            <div class="w98-choice-btns">
+              <button class="w98-choice-btn" id="w98ChoiceA" type="button">
+                <span class="w98-choice-btn-icon">▶</span>
+                <span id="w98ChoiceALabel">Version A</span>
+              </button>
+              <button class="w98-choice-btn" id="w98ChoiceB" type="button">
+                <span class="w98-choice-btn-icon">▶</span>
+                <span id="w98ChoiceBLabel">Version B</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="w98-transport">
@@ -502,6 +673,27 @@
 <script>
 (function() {
   var params = new URLSearchParams(window.location.search);
+
+  function decodeB64(p) {
+    var v = params.get(p);
+    if (!v) return '';
+    try { return atob(v); } catch(e) { return ''; }
+  }
+  function decodeB64Text(p) {
+    var v = params.get(p);
+    if (!v) return '';
+    try { return decodeURIComponent(atob(v)); } catch(e) { return ''; }
+  }
+
+  // Variant support: if va= and vb= are both set, show choice screen
+  var variantA = decodeB64('va');
+  var variantB = decodeB64('vb');
+  var variantALabel = decodeB64Text('vaLabel') || 'Version A';
+  var variantBLabel = decodeB64Text('vbLabel') || 'Version B';
+  var variantAOrig = decodeB64('vaOrig');
+  var variantBOrig = decodeB64('vbOrig');
+  var hasVariants = !!(variantA && variantB);
+
   var videoSrc = '';
   if (params.get('b')) { try { videoSrc = atob(params.get('b')); } catch(e) {} }
   else if (params.get('src')) { videoSrc = params.get('src'); }
@@ -512,6 +704,16 @@
   // Original source link (opens in new tab)
   var origUrl = '';
   if (params.get('orig')) { try { origUrl = atob(params.get('orig')); } catch(e) {} }
+
+  // "Why am I watching this video?" purpose text
+  var whyText = '';
+  if (params.get('why')) { try { whyText = decodeURIComponent(atob(params.get('why'))); } catch(e) {} }
+  if (whyText) {
+    var purposeBox = document.getElementById('w98PurposeBox');
+    var purposeText = document.getElementById('w98PurposeText');
+    purposeText.textContent = whyText;
+    purposeBox.style.display = 'block';
+  }
 
   var video = null;
   var placeholder = document.getElementById('w98VideoPlaceholder');
@@ -545,6 +747,70 @@
   var NK = 'pw-notes-' + lessonId;
   var DK = 'pw-done-' + lessonId;
   var VK = 'pw-vol-' + lessonId;
+  var SelK = 'pw-sel-' + lessonId;
+
+  // ══ VARIANT SELECTOR ══
+  var currentVariant = null;
+  var tabsEl = document.getElementById('w98Tabs');
+  var tabA = document.getElementById('w98TabA');
+  var tabB = document.getElementById('w98TabB');
+  var choiceOverlay = document.getElementById('w98ChoiceOverlay');
+  var choiceA = document.getElementById('w98ChoiceA');
+  var choiceB = document.getElementById('w98ChoiceB');
+  var choiceALabel = document.getElementById('w98ChoiceALabel');
+  var choiceBLabel = document.getElementById('w98ChoiceBLabel');
+
+  function setVariant(which) {
+    currentVariant = which;
+    if (which === 'a') {
+      videoSrc = variantA;
+      origUrl = variantAOrig || origUrl;
+    } else {
+      videoSrc = variantB;
+      origUrl = variantBOrig || origUrl;
+    }
+    try { localStorage.setItem(SelK, which); } catch(e) {}
+    tabA.classList.toggle('active', which === 'a');
+    tabB.classList.toggle('active', which === 'b');
+    // Update orig button if shown
+    if (origUrl && origLink) {
+      origLink.style.display = 'flex';
+    }
+    // If video already loaded, swap source
+    if (videoReady && video) {
+      var wasPlaying = !video.paused;
+      video.src = videoSrc;
+      if (wasPlaying) video.play();
+    }
+  }
+
+  if (hasVariants) {
+    tabA.textContent = variantALabel;
+    tabB.textContent = variantBLabel;
+    choiceALabel.textContent = variantALabel;
+    choiceBLabel.textContent = variantBLabel;
+    tabsEl.classList.add('visible');
+
+    var savedSel = null;
+    try { savedSel = localStorage.getItem(SelK); } catch(e) {}
+    if (savedSel === 'a' || savedSel === 'b') {
+      setVariant(savedSel);
+    } else {
+      // Show choice overlay on first visit
+      choiceOverlay.style.display = 'flex';
+    }
+
+    choiceA.addEventListener('click', function() {
+      choiceOverlay.style.display = 'none';
+      setVariant('a');
+    });
+    choiceB.addEventListener('click', function() {
+      choiceOverlay.style.display = 'none';
+      setVariant('b');
+    });
+    tabA.addEventListener('click', function() { setVariant('a'); });
+    tabB.addEventListener('click', function() { setVariant('b'); });
+  }
 
   var maxWatched = 0, lastValid = 0;
   var notesTimer = null, skipTimer = null;
@@ -676,9 +942,16 @@
     document.addEventListener('visibilitychange', function() { if (document.hidden) saveProgress(); });
     fsBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      if (video.requestFullscreen) video.requestFullscreen();
-      else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      // iOS Safari only supports fullscreen on the <video> element directly
+      if (video.webkitEnterFullscreen) {
+        try { video.webkitEnterFullscreen(); return; } catch(err) {}
+      }
+      // Standard fullscreen API — try video first, then frame
+      var target = video;
+      if (target.requestFullscreen) target.requestFullscreen().catch(function() {});
+      else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+      else if (target.mozRequestFullScreen) target.mozRequestFullScreen();
+      else if (target.msRequestFullscreen) target.msRequestFullscreen();
     });
     document.addEventListener('keydown', function(e) {
       if (!video) return;
