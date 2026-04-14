@@ -247,8 +247,22 @@
 
   /* ===== Print ===== */
   @media print {
+    @page { margin: 0.6in; }
+    html, body {
+      background: #fff !important;
+      margin: 0 !important; padding: 0 !important;
+    }
     body * { visibility: hidden !important; }
     .w98-paper, .w98-paper * { visibility: visible !important; }
+    /* Neutralize ancestor chrome without hiding descendants */
+    .w98-doc {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
     .w98-paper {
       position: absolute;
       left: 0; top: 0;
@@ -278,7 +292,8 @@
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
-    .w98-doc, .w98-hl-float, .w98-modal, .w98-toolbar, .w98-statusbar { display: none !important; }
+    /* Fully remove floating/overlay elements (no layout footprint) */
+    .w98-hl-float, .w98-modal { display: none !important; }
   }
 
   @media (max-width: 520px) {
@@ -404,6 +419,43 @@
   var floatBtn = document.getElementById('w98HlFloat');
   var modal = document.getElementById('w98Modal');
   var modalContent = document.getElementById('w98ModalContent');
+
+  // ===== Hash fragment content loading =====
+  // Iframe URL can include #text=<base64 article HTML> to inject content from LMS
+  (function(){
+    var hashParams = new URLSearchParams(window.location.hash.slice(1));
+    var enc = hashParams.get('text');
+    if (enc){
+      try {
+        var b64 = enc.replace(/-/g,'+').replace(/_/g,'/');
+        while (b64.length % 4) b64 += '=';
+        var bin = atob(b64);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        paper.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      } catch(e){ console.warn('text decode failed', e); }
+    }
+    var hTitle = hashParams.get('title');
+    if (hTitle){ try { ARTICLE.title = decodeURIComponent(hTitle); } catch(e){} }
+    else if (!params.get('articleTitle') && !doc.dataset.articleTitle){
+      var h1 = paper.querySelector('h1');
+      if (h1) ARTICLE.title = h1.textContent.trim();
+    }
+  })();
+
+  // ===== Update status bar =====
+  (function(){
+    var sb = doc.querySelector('.w98-statusbar');
+    if (sb){
+      var cells = sb.querySelectorAll('.cell');
+      if (cells[0]) cells[0].textContent = ARTICLE.title;
+      if (cells[1]) {
+        var words = (paper.textContent || '').trim().split(/\s+/).filter(Boolean).length;
+        cells[1].textContent = words + ' words';
+      }
+    }
+    document.title = ARTICLE.title;
+  })();
 
   var blocks = [].slice.call(paper.querySelectorAll('p, li'));
   blocks.forEach(function(b, i){ b.setAttribute('data-pidx', i); });
