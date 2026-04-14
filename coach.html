@@ -38,30 +38,28 @@
     border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
     box-shadow: 1px 1px 0 var(--w98-darker);
     margin-bottom: 8px;
+    position: relative; /* anchor the floating minimize button */
   }
-  .w98-titlebar-icon {
-    width: 16px; height: 16px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .w98-titlebar-icon svg { width: 14px; height: 14px; }
-  .w98-titlebar-text {
-    flex: 1; font-family: var(--w98-font);
-    font-size: 12px; color: var(--w98-title-text); font-weight: 700;
-    letter-spacing: 0.5px; white-space: nowrap; overflow: hidden;
-  }
-  .w98-titlebar-btns { display: flex; gap: 2px; }
-  .w98-tbtn {
-    width: 16px; height: 14px; background: var(--w98-face);
-    border: 1px solid;
+  /* Floating minimize button in the top-right of the grey window.
+     No blue title bar — just the classic grey Win98 face. */
+  .w98-mini-btn {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 18px; height: 16px;
+    background: var(--w98-face);
+    border: 2px solid;
     border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
     display: flex; align-items: center; justify-content: center;
-    cursor: default; font-family: var(--w98-font);
-    font-size: 10px; line-height: 1; padding: 0; color: var(--w98-black);
+    cursor: pointer; font-family: var(--w98-font);
+    font-size: 12px; line-height: 1; padding: 0 0 4px 0;
+    color: var(--w98-black);
+    z-index: 4;
+    user-select: none;
   }
-  .w98-tbtn:active {
+  .w98-mini-btn:active {
     border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
   }
-  .w98-content { padding: 6px; }
+  .w98-content { padding: 10px 10px 10px 10px; }
 
   /* Body: portrait + speech area */
   .w98-coach-body {
@@ -191,10 +189,7 @@
       --w98-field-text: #d0d0d0;
     }
     html, body { color: #d0d0d0; }
-    .w98-titlebar {
-      background: linear-gradient(90deg, #000060, #0a5090);
-    }
-    .w98-tbtn { color: #d0d0d0; }
+    .w98-mini-btn { color: #d0d0d0; }
     .w98-speech-label { color: #d0d0d0; border-bottom-color: var(--w98-dark); }
     .w98-speech-field { background: var(--w98-field); color: var(--w98-field-text); }
     .w98-cursor { background: var(--w98-field-text); }
@@ -210,29 +205,14 @@
 </head>
 <body>
 <div class="w98-window" id="w98Window">
-  <div class="w98-titlebar">
-    <div class="w98-titlebar-icon">
-      <svg viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="3" width="12" height="9" fill="var(--w98-title-text)" stroke="var(--w98-title-text)" stroke-width="0.5"/>
-        <rect x="3" y="4" width="10" height="6" fill="var(--w98-title)"/>
-        <circle cx="5" cy="6" r="0.7" fill="var(--w98-title-text)"/>
-        <rect x="4" y="7.5" width="8" height="0.6" fill="var(--w98-title-text)"/>
-        <rect x="4" y="8.6" width="6" height="0.6" fill="var(--w98-title-text)"/>
-      </svg>
-    </div>
-    <span class="w98-titlebar-text" id="w98Title">coach_message.exe</span>
-    <div class="w98-titlebar-btns">
-      <button class="w98-tbtn" type="button" id="w98Min">_</button>
-      <button class="w98-tbtn" type="button" id="w98Close">✕</button>
-    </div>
-  </div>
+  <button class="w98-mini-btn" type="button" id="w98Min" aria-label="minimize">_</button>
   <div class="w98-content">
     <div class="w98-coach-body">
       <div class="w98-portrait" id="w98Portrait" data-empty="1"></div>
       <div class="w98-speech">
         <div class="w98-speech-label" id="w98SpeakerLabel">Coach</div>
         <div class="w98-speech-field" id="w98SpeechText"></div>
-        <div class="w98-continue" id="w98Continue">▼ click to replay</div>
+        <div class="w98-continue" id="w98Continue">click to replay</div>
       </div>
     </div>
   </div>
@@ -262,7 +242,7 @@
   if ([1,2,3].indexOf(charNum) === -1) charNum = 1;
 
   var defaults = {
-    1: { name: "COACH",
+    1: { name: "COACH MARA",
          img:         "https://pathway.training/wp-content/uploads/2026/04/Untitled-design-1.png",
          imgFallback: "characters/course1.png",
          text: "Watch her plant foot on the strike. Non-kicking foot next to the ball, toes pointed at target. That's where accuracy comes from." },
@@ -287,12 +267,9 @@
   var labelEl    = document.getElementById("w98SpeakerLabel");
   var textEl     = document.getElementById("w98SpeechText");
   var contEl     = document.getElementById("w98Continue");
-  var titleEl    = document.getElementById("w98Title");
   var minBtn     = document.getElementById("w98Min");
-  var closeBtn   = document.getElementById("w98Close");
   var windowEl   = document.getElementById("w98Window");
 
-  titleEl.textContent = title;
   labelEl.textContent = name;
 
   if (imgUrl) {
@@ -345,14 +322,11 @@
     cancel = function () { cancelled = true; };
   }
 
-  // ─── Title-bar button behavior (cosmetic, matches player) ────────────────
-  minBtn.addEventListener("click", function () {
-    windowEl.querySelector(".w98-content").style.display =
-      windowEl.querySelector(".w98-content").style.display === "none" ? "" : "none";
-    notifyHeight();
-  });
-  closeBtn.addEventListener("click", function () {
-    windowEl.style.display = "none";
+  // ─── Minimize button: toggle the grey content area ──────────────────────
+  minBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    var c = windowEl.querySelector(".w98-content");
+    c.style.display = c.style.display === "none" ? "" : "none";
     notifyHeight();
   });
 
