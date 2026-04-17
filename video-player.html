@@ -24,13 +24,13 @@
     color: var(--pw-text);
     -webkit-font-smoothing: antialiased;
   }
- body {
+  body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 30px 80px; 
+    padding: 30px 80px;
     overflow: invisible;
   }
   .pw-player-wrap{
@@ -38,6 +38,151 @@
     max-width:1100px;
     overflow:visible;
   }
+
+  /* ══ PROFESSOR NOTE CARD ══ */
+  .pw-coach-card{
+    width:94%;
+    max-width:1020px;
+    margin-left:auto; margin-right:auto;
+    /* Slightly darker than the controls card */
+    background:#e6e8ec;
+    border-radius:18px;
+    padding:14px 16px;
+    margin-top:10px;
+    box-shadow:
+      0 8px 20px rgba(0,0,0,0.10),
+      0 2px 6px rgba(0,0,0,0.06),
+      inset 1px 1px 2px rgba(255,255,255,.4),
+      inset -1px -1px 2px rgba(0,0,0,.05);
+    /* Two-column: text left, buttons right */
+    display:grid;
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto auto;
+    column-gap:16px;
+    row-gap:6px;
+    align-items:start;
+    position:relative;
+  }
+  .pw-coach-card.minimized .pw-coach-body{ display:none !important; }
+
+  /* Label row spans full width */
+  .pw-coach-label-row{
+    grid-column:1 / -1;
+    display:flex; align-items:center; gap:6px;
+    margin-bottom:2px;
+  }
+  .pw-coach-name{
+    font-size:11px; font-weight:700;
+    color:#555; letter-spacing:.05em; text-transform:uppercase;
+    display:flex; align-items:center; gap:5px;
+  }
+  .pw-coach-name::before{ content:"📖"; font-size:12px; }
+
+  /* Left: portrait + bubble */
+  .pw-coach-left{
+    display:flex; gap:12px; align-items:flex-start;
+    min-width:0;
+  }
+
+  /* Right: action buttons stacked */
+  .pw-coach-right{
+    display:flex; flex-direction:column;
+    gap:6px; align-items:flex-end;
+    flex-shrink:0;
+  }
+  .pw-coach-action{
+    height:28px; padding:0 12px;
+    background:linear-gradient(180deg,#f4f2ef,#eae8e4);
+    border:0.5px solid rgba(0,0,0,.08);
+    border-radius:8px; cursor:pointer;
+    font-size:11px; font-weight:600; color:#555;
+    font-family:'IBM Plex Sans',sans-serif;
+    box-shadow:2px 2px 5px rgba(0,0,0,.09),-2px -2px 5px rgba(255,255,255,.65);
+    display:flex; align-items:center; gap:5px;
+    transition:transform 80ms, box-shadow 80ms;
+    white-space:nowrap;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .pw-coach-action:active{ transform:scale(.97); box-shadow:inset 2px 2px 4px rgba(0,0,0,.1),inset -2px -2px 4px rgba(255,255,255,.4); }
+  .pw-coach-action svg{ width:11px; height:11px; fill:currentColor; }
+
+  .pw-coach-replay{
+    font-size:9px; color:var(--pw-teal); opacity:0;
+    cursor:pointer; transition:opacity .2s;
+    font-weight:600; letter-spacing:.04em;
+    text-align:right;
+  }
+  .pw-coach-replay.visible{ opacity:1; }
+
+  /* Portrait */
+  .pw-portrait{
+    flex:0 0 auto;
+    width:72px; height:72px;
+    border-radius:12px;
+    overflow:hidden;
+    background:linear-gradient(160deg,#3a4a66,#222);
+    box-shadow:
+      3px 3px 8px rgba(0,0,0,.14),
+      -2px -2px 6px rgba(255,255,255,.55),
+      inset 0 1px 0 rgba(255,255,255,.1);
+    position:relative;
+    image-rendering:pixelated;
+    flex-shrink:0;
+  }
+  .pw-portrait img{
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:center 18%;
+    image-rendering:pixelated;
+    display:block;
+  }
+  .pw-portrait.is-talking img{
+    animation:pw-bob .32s steps(2) infinite;
+  }
+  @keyframes pw-bob{
+    0%   { transform:translateY(0); }
+    100% { transform:translateY(-2px); }
+  }
+  /* Silhouette placeholder */
+  .pw-portrait[data-empty="1"]::after{
+    content:"";
+    position:absolute;
+    inset:22% 30% 10% 30%;
+    background:rgba(255,255,255,.18);
+    clip-path:polygon(30% 0,70% 0,78% 28%,85% 65%,70% 100%,30% 100%,15% 65%,22% 28%);
+  }
+
+  /* Speech bubble */
+  .pw-coach-speech{
+    flex:1 1 auto; min-width:0;
+    display:flex; flex-direction:column;
+  }
+  .pw-coach-bubble{
+    flex:1;
+    background:#dfe1e6;
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:13px; line-height:1.55;
+    color:#3a3a3a;
+    box-shadow:
+      inset 2px 2px 5px rgba(0,0,0,.09),
+      inset -2px -2px 5px rgba(255,255,255,.45);
+    min-height:48px;
+    cursor:pointer;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+  }
+  /* Blinking cursor */
+  .pw-cursor{
+    display:inline-block;
+    width:2px; height:14px;
+    background:var(--pw-teal);
+    vertical-align:text-bottom;
+    margin-left:1px;
+    animation:pw-blink .9s step-end infinite;
+  }
+  @keyframes pw-blink{ 50%{ opacity:0; } }
+
   /* ══ VIDEO CARD ══ */
   .pw-video-card{
     width:100%;
@@ -53,8 +198,8 @@
       6px 4px 18px rgba(0,0,0,0.06),
       -6px 4px 18px rgba(0,0,0,0.06);
     margin-bottom:-14px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left:auto;
+    margin-right:auto;
   }
   .pw-video{
     display:block;
@@ -81,7 +226,7 @@
   .pw-big-play:hover{ transform:translate(-50%, -50%) scale(1.05); }
   .pw-big-play.hidden{ opacity:0; pointer-events:none; }
   .pw-big-play svg{ width:26px; height:26px; fill:#fff; margin-left:2px; }
-  /* Fullscreen button — hidden until video has played */
+  /* Fullscreen button */
   .pw-fs-btn{
     position:absolute; bottom:10px; right:10px; z-index:3;
     width:32px; height:32px; border-radius:8px;
@@ -91,6 +236,7 @@
   }
   .pw-video-card:hover .pw-fs-btn.visible{ display:flex; }
   .pw-fs-btn svg{ width:14px; height:14px; fill:#fff; }
+
   /* ══ CONTROLS CARD ══ */
   .pw-controls-card{
     width:94%;
@@ -116,6 +262,7 @@
     align-items:center;
     justify-content:center;
     padding:0 10px;
+    gap:12px;
   }
   .pw-btn-group{
     display:flex;
@@ -126,14 +273,10 @@
   /* Volume overlay on video */
   .pw-vol-overlay{
     position:absolute;
-    bottom:10px;
-    left:10px;
+    bottom:10px; left:10px;
     z-index:3;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    opacity:0;
-    transition:opacity 0.2s ease;
+    display:flex; align-items:center; gap:6px;
+    opacity:0; transition:opacity 0.2s ease;
   }
   .pw-video-card:hover .pw-vol-overlay{ opacity:1; }
   .pw-vol-btn{
@@ -147,43 +290,32 @@
     transition:width 0.2s ease;
     height:30px; border-radius:8px;
     background:rgba(0,0,0,0.45);
-    display:flex; align-items:center;
-    padding:0;
+    display:flex; align-items:center; padding:0;
   }
   .pw-vol-overlay.expanded .pw-vol-slider{
-    width:90px;
-    padding:0 10px;
+    width:90px; padding:0 10px;
   }
   .pw-vol-track{
     width:100%; height:4px; border-radius:2px;
     background:rgba(255,255,255,0.3);
-    position:relative; cursor:pointer;
-    touch-action:none;
+    position:relative; cursor:pointer; touch-action:none;
   }
   .pw-vol-fill{
     position:absolute; top:0; left:0; bottom:0;
-    width:70%; border-radius:2px;
-    background:#fff;
+    width:70%; border-radius:2px; background:#fff;
   }
   .pw-key{
-    flex:0 0 62px;
-    width:62px;
-    height:62px;
-    border:0.5px solid rgba(0,0,0,0.06);
-    outline:none;
-    border-radius:14px;
-    cursor:pointer;
+    flex:0 0 62px; width:62px; height:62px;
+    border:0.5px solid rgba(0,0,0,0.06); outline:none;
+    border-radius:14px; cursor:pointer;
     background:linear-gradient(180deg, #f4f2ef, #eae8e4);
     box-shadow:
       3px 3px 7px rgba(0,0,0,.11),
       -3px -3px 7px rgba(255,255,255,.7),
       inset 0 1px 0 rgba(255,255,255,.45),
       inset 0 -1px 0 rgba(0,0,0,.04);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:3px;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:3px;
     transition:transform 80ms ease-out, box-shadow 80ms ease-out;
     -webkit-tap-highlight-color:transparent;
     user-select:none;
@@ -202,23 +334,70 @@
   .pw-gray{ fill:#888; color:#777; }
   .pw-teal{ fill:var(--pw-teal); color:var(--pw-teal); }
   .pw-yellow{ fill:var(--pw-yellow); color:#7a6c1a; }
+  .pw-green{ fill:#2a7a2a; color:#2a7a2a; }
+  .pw-blue{ fill:#1a4a9c; color:#1a4a9c; }
+
+  /* Small action key (CC, Download) */
+  .pw-key-sm{
+    flex:0 0 48px; width:48px; height:48px;
+    border:0.5px solid rgba(0,0,0,0.06); outline:none;
+    border-radius:12px; cursor:pointer;
+    background:linear-gradient(180deg, #f4f2ef, #eae8e4);
+    box-shadow:
+      3px 3px 7px rgba(0,0,0,.11),
+      -3px -3px 7px rgba(255,255,255,.7),
+      inset 0 1px 0 rgba(255,255,255,.45),
+      inset 0 -1px 0 rgba(0,0,0,.04);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:2px;
+    transition:transform 80ms ease-out, box-shadow 80ms ease-out;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    position:relative;
+  }
+  .pw-key-sm:active, .pw-key-sm.pressed{
+    transform:scale(.97);
+    box-shadow:
+      inset 4px 4px 8px rgba(0,0,0,.12),
+      inset -4px -4px 8px rgba(255,255,255,.45);
+  }
+  .pw-key-sm svg{ width:16px; height:16px; flex-shrink:0; }
+  .pw-key-sm .pw-leg{ font-size:7px; }
+
+  /* CC dropdown */
+  .pw-cc-wrap{ position:relative; }
+  .pw-cc-menu{
+    display:none;
+    position:absolute; bottom:calc(100% + 6px); left:50%;
+    transform:translateX(-50%);
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.08);
+    min-width:130px; z-index:100;
+    overflow:hidden;
+  }
+  .pw-cc-menu.open{ display:block; }
+  .pw-cc-item{
+    padding:8px 14px; font-size:12px;
+    cursor:pointer; white-space:nowrap;
+    color:#444; font-family:'IBM Plex Sans',sans-serif;
+    transition:background .1s;
+  }
+  .pw-cc-item:hover{ background:#f0f2f5; }
+  .pw-cc-item.active{ font-weight:700; color:var(--pw-teal); }
+
   /* ══ SCRUB BAR ══ */
   .pw-scrub{
-    padding:0 4px;
-    margin-top:10px;
+    padding:0 4px; margin-top:10px;
   }
   .pw-scrub-capsule{
-    width:100%;
-    height:28px;
-    border-radius:14px;
+    width:100%; height:28px; border-radius:14px;
     background:linear-gradient(90deg, #dedad2, #d1cec6);
     box-shadow:
       inset 3px 3px 8px rgba(0,0,0,.14),
       inset -2px -2px 5px rgba(255,255,255,.45),
       inset 0 3px 4px rgba(0,0,0,.09);
-    display:flex;
-    align-items:center;
-    padding:0 7px;
+    display:flex; align-items:center; padding:0 7px;
     border:0.5px solid rgba(0,0,0,.07);
   }
   .pw-scrub-track{
@@ -251,6 +430,25 @@
     display:flex; justify-content:space-between;
     font-size:9px; color:#999; margin-top:3px; padding:0 2px;
   }
+
+  /* Bottom row of controls card */
+  .pw-ctrl-bottom{
+    display:flex; align-items:center; justify-content:center;
+    gap:10px; margin-top:8px; flex-wrap:wrap;
+  }
+  .pw-link-btn{
+    display:flex; align-items:center; gap:5px;
+    background:none; border:none; cursor:pointer;
+    font-size:11px; font-weight:600; color:var(--pw-teal);
+    font-family:'IBM Plex Sans',sans-serif;
+    padding:4px 8px; border-radius:8px;
+    transition:background .15s;
+    text-decoration:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .pw-link-btn:hover{ background:rgba(42,157,143,.08); }
+  .pw-link-btn svg{ width:13px; height:13px; fill:var(--pw-teal); }
+
   /* ══ SKIP WARNING ══ */
   .pw-skip-warn{
     position: fixed; top:35%; left:50%; transform:translateX(-50%);
@@ -268,12 +466,12 @@
     50% { transform:translateX(-50%) scale(1.02); }
     100% { transform:translateX(-50%) scale(1); opacity:1; }
   }
+
   /* ══ NOTES CARD ══ */
   .pw-notes-card{
     width:94%;
     max-width:1020px;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left:auto; margin-right:auto;
     background:var(--pw-bg);
     padding:14px 16px 10px;
     border-radius:18px;
@@ -323,180 +521,243 @@
   }
   .pw-notes-well textarea::placeholder{ color:#aaa; }
   .pw-bottom-row{
-    display:flex;
-    align-items:center;
-    position:relative;
-    margin-top:5px;
-  }
-  .pw-bottom-row .pw-copy-btn{
-    margin:0 auto;
-  }
-  .pw-watermark-row{
-    position:absolute;
-    right:0;
-    top:50%;
-    transform:translateY(-50%);
+    display:flex; align-items:center;
+    position:relative; margin-top:5px; gap:8px;
   }
   .pw-copy-btn{
-    border:none; outline:none; border-radius:10px;
-    padding:4px 12px; cursor:pointer;
-    background:var(--pw-bg); color:#777;
-    font-size:10px; font-weight:600;
-    font-family:'IBM Plex Sans', sans-serif;
-    box-shadow:
-      3px 3px 6px rgba(0,0,0,.08),
-      -3px -3px 6px rgba(255,255,255,.45);
-    transition:all 80ms ease-out;
-    display:flex; align-items:center; gap:4px;
+    height:28px; padding:0 14px;
+    background:linear-gradient(180deg,#f4f2ef,#eae8e4);
+    border:0.5px solid rgba(0,0,0,.08);
+    border-radius:8px; cursor:pointer;
+    font-size:11px; font-weight:600; color:#555;
+    font-family:'IBM Plex Sans',sans-serif;
+    box-shadow:2px 2px 5px rgba(0,0,0,.09),-2px -2px 5px rgba(255,255,255,.65);
+    display:flex; align-items:center; gap:5px;
+    transition:transform 80ms, box-shadow 80ms;
+    -webkit-tap-highlight-color:transparent;
   }
-  .pw-copy-btn:active{
-    box-shadow:
-      inset 2px 2px 4px rgba(0,0,0,.1),
-      inset -2px -2px 4px rgba(255,255,255,.35);
-  }
+  .pw-copy-btn:active{ transform:scale(.97); box-shadow:inset 2px 2px 4px rgba(0,0,0,.1),inset -2px -2px 4px rgba(255,255,255,.4); }
+  .pw-copy-btn svg{ width:11px; height:11px; fill:currentColor; }
   .pw-copy-btn.copied{ color:var(--pw-teal); }
+  .pw-my-notes-btn{
+    height:28px; padding:0 14px;
+    background:linear-gradient(180deg,#f4f2ef,#eae8e4);
+    border:0.5px solid rgba(0,0,0,.08);
+    border-radius:8px; cursor:pointer;
+    font-size:11px; font-weight:600; color:var(--pw-teal);
+    font-family:'IBM Plex Sans',sans-serif;
+    box-shadow:2px 2px 5px rgba(0,0,0,.09),-2px -2px 5px rgba(255,255,255,.65);
+    display:flex; align-items:center; gap:5px;
+    transition:transform 80ms, box-shadow 80ms;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .pw-my-notes-btn:active{ transform:scale(.97); box-shadow:inset 2px 2px 4px rgba(0,0,0,.1),inset -2px -2px 4px rgba(255,255,255,.4); }
+  .pw-my-notes-btn svg{ width:11px; height:11px; fill:var(--pw-teal); }
   .pw-watermark{
-    font-size:9px;
+    font-size:9px; color:#bbb; font-weight:600;
+    letter-spacing:.04em; margin-left:auto;
+  }
+
+  /* ══ MODAL — My Notes & Highlights ══ */
+  .pw-modal-overlay{
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.35); z-index:2000;
+    align-items:center; justify-content:center;
+    backdrop-filter:blur(2px);
+  }
+  .pw-modal-overlay.open{ display:flex; }
+  .pw-modal{
+    background:var(--pw-bg);
+    border-radius:20px;
+    box-shadow:0 30px 60px rgba(0,0,0,.2), 0 8px 20px rgba(0,0,0,.1);
+    width:min(560px,95vw);
+    max-height:80vh;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  .pw-modal-header{
+    padding:14px 16px 10px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .pw-modal-title{
+    font-size:12px; font-weight:700; color:#555;
+    letter-spacing:.04em; text-transform:uppercase;
+    display:flex; align-items:center; gap:6px;
+  }
+  .pw-modal-title svg{ width:14px; height:14px; fill:var(--pw-teal); }
+  .pw-modal-close{
+    background:none; border:none; cursor:pointer;
+    font-size:16px; color:#aaa; line-height:1; padding:2px 6px;
+    border-radius:6px; transition:background .15s;
+  }
+  .pw-modal-close:hover{ background:rgba(0,0,0,.06); color:#666; }
+  .pw-modal-body{
+    flex:1; overflow-y:auto; padding:12px 16px;
+  }
+  .pw-modal-footer{
+    padding:10px 16px;
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    border-top:1px solid rgba(0,0,0,.06);
+  }
+  .pw-modal-action{
+    height:28px; padding:0 12px;
+    background:linear-gradient(180deg,#f4f2ef,#eae8e4);
+    border:0.5px solid rgba(0,0,0,.08);
+    border-radius:8px; cursor:pointer;
+    font-size:11px; font-weight:600; color:#555;
+    font-family:'IBM Plex Sans',sans-serif;
+    box-shadow:2px 2px 5px rgba(0,0,0,.09),-2px -2px 5px rgba(255,255,255,.65);
+    display:flex; align-items:center; gap:5px;
+    transition:transform 80ms;
+  }
+  .pw-modal-action:active{ transform:scale(.97); }
+  .pw-modal-action svg{ width:11px; height:11px; fill:currentColor; }
+  .pw-modal-count{ font-size:10px; color:#aaa; margin-left:auto; }
+
+  /* Entry */
+  .pw-entry{
+    padding:10px 0;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .pw-entry:last-child{ border-bottom:none; }
+  .pw-entry-meta{
+    display:flex; gap:8px; flex-wrap:wrap;
+    font-size:9px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.04em; color:#aaa; margin-bottom:4px;
+    align-items:center;
+  }
+  .pw-entry-meta .tag-note{ color:#2a7a2a; }
+  .pw-entry-meta .tag-hl  { color:var(--pw-teal); }
+  .pw-entry-text{ font-size:12px; color:#444; line-height:1.5; }
+  .pw-entry-hl        { background:#ffff80; padding:1px 4px; border-radius:3px; }
+  .pw-entry-hl.hl-green{ background:#b8f0b8; }
+  .pw-entry-hl.hl-blue { background:#b8d8f8; }
+  .pw-entry-hl.hl-red  { background:#f8b8b8; }
+  .pw-entry-del{
+    font-size:9px; color:#c0392b; cursor:pointer;
+    text-decoration:underline; margin-left:6px;
     font-weight:600;
-    font-family:'IBM Plex Sans', sans-serif;
-    letter-spacing:.04em;
-    color:rgba(0,0,0,.15);
-    text-shadow: 0 1px 0 rgba(255,255,255,.5);
-    user-select:none;
   }
-  /* ══ DARK MODE ══ */
-  @media (prefers-color-scheme: dark) {
-    :root{
-      --pw-bg:#2c2c2a;
-      --pw-well:#262624;
-      --pw-track:#3a3a38;
-      --pw-text:#ddd;
-    }
-    .pw-video-card{
-      box-shadow:
-        0 30px 60px rgba(0,0,0,0.5),
-        0 12px 24px rgba(0,0,0,0.35),
-        0 -4px 16px rgba(255,255,255,0.03),
-        6px 0 18px rgba(0,0,0,0.12),
-        -6px 0 18px rgba(0,0,0,0.12);
-    }
-    .pw-controls-card, .pw-notes-card{
-      background:var(--pw-bg);
-      box-shadow:
-        6px 6px 16px rgba(0,0,0,0.25),
-        -6px -6px 16px rgba(255,255,255,0.06),
-        0 8px 20px rgba(0,0,0,0.12),
-        inset 1px 1px 2px rgba(255,255,255,.06),
-        inset -1px -1px 2px rgba(0,0,0,.12);
-    }
-    .pw-key{
-      background:linear-gradient(145deg, #383836, #2c2c2a);
-      border-color:rgba(255,255,255,.07);
-      box-shadow:
-        4px 4px 8px rgba(0,0,0,.3),
-        -4px -4px 8px rgba(255,255,255,.07),
-        inset 0 1px 0 rgba(255,255,255,.1),
-        inset 0 -1px 0 rgba(0,0,0,.15);
-    }
-    .pw-key:active, .pw-key.pressed{
-      box-shadow:
-        inset 4px 4px 8px rgba(0,0,0,.25),
-        inset -4px -4px 8px rgba(255,255,255,.04);
-    }
-    .pw-gray{ fill:#aaa; color:#999; }
-    .pw-teal{ fill:#3cc4b4; color:#3cc4b4; }
-    .pw-yellow{ fill:#c4b44a; color:#b8a842; }
-    .pw-scrub-capsule{
-      background:linear-gradient(90deg, #333330, #2a2a28);
-      border-color:rgba(255,255,255,.06);
-      box-shadow:
-        inset 3px 3px 6px rgba(0,0,0,.25),
-        inset -2px -2px 5px rgba(255,255,255,.05),
-        inset 0 2px 3px rgba(0,0,0,.15);
-    }
-    .pw-scrub-track{
-      background:linear-gradient(90deg, #3a3a38, #2e2e2c);
-      border-color:rgba(255,255,255,.06);
-      box-shadow:
-        inset 2px 2px 4px rgba(0,0,0,.35),
-        inset -1px -1px 3px rgba(255,255,255,.05),
-        inset 0 2px 2px rgba(0,0,0,.22);
-    }
-    .pw-scrub-blocked{ background:rgba(0,0,0,.25); }
-    .pw-times{ color:#666; }
-    .pw-skip-warn{
-      background:rgba(40,40,38,.95);
-      box-shadow: 0 10px 24px rgba(0,0,0,.35), 0 0 12px rgba(255,255,255,.03);
-      border-color:rgba(192,57,43,.2);
-    }
-    .pw-notes-header .title{ color:#aaa; }
-    .pw-notes-well{
-      background:var(--pw-well);
-      box-shadow:
-        inset 2px 2px 5px rgba(0,0,0,.2),
-        inset -2px -2px 5px rgba(255,255,255,.04);
-    }
-    .pw-notes-well textarea{
-      color:#ccc;
-    }
-    .pw-notes-well textarea::placeholder{ color:#555; }
-    .pw-copy-btn{
-      background:var(--pw-bg); color:#888;
-      box-shadow:
-        3px 3px 6px rgba(0,0,0,.2),
-        -3px -3px 6px rgba(255,255,255,.06);
-    }
-    .pw-copy-btn:active{
-      box-shadow:
-        inset 2px 2px 4px rgba(0,0,0,.2),
-        inset -2px -2px 4px rgba(255,255,255,.03);
-    }
-    .pw-watermark{
-      color:rgba(255,255,255,.1);
-      text-shadow: 0 1px 0 rgba(0,0,0,.4);
-    }
-    .pw-big-play{ background:rgba(60,196,180,.9); }
+
+  /* ══ RESPONSIVE ══
+     Desktop  ≥720px : buttons left | professor note right (current)
+     Tablet   480-719: professor note stacks ABOVE buttons
+     Phone    <480px  : same stacking, smaller everything
+  ══════════════════════════════════════════════════════ */
+
+  /* Shared: prevent flex children from overflowing */
+  .pw-player-wrap{ min-width:0; }
+  .pw-controls-card{ min-width:0; }
+
+  /* Touch: remove 300ms delay on all interactive elements */
+  button, [role="button"], textarea, input {
+    touch-action: manipulation;
   }
-  /* ══ RESPONSIVE ══ */
-  @media (max-width:640px){
-    body{ padding:20px 8px 10px; }
-    .pw-player-wrap{ max-width:100%; }
-    .pw-video-card{
-      width:88%;
-      margin-left:auto;
-      margin-right:auto;
-      border-radius:18px;
-      box-shadow:
-        0 20px 40px rgba(0,0,0,0.25),
-        0 10px 20px rgba(0,0,0,0.15),
-        0 35px 55px -10px rgba(0,0,0,0.18);
+
+  /* ── Tablet portrait / large phone (480–719px) ── */
+  @media (max-width:719px){
+    body{ padding:20px 16px; }
+
+    /* Professor note goes ABOVE the buttons row */
+    #pwCoachCard{
+      order:-1;          /* visually first inside the flex column */
+      width:100% !important;
+      margin-bottom:10px;
     }
-    .pw-video{ border-radius:18px; }
-    .pw-controls-card{ width:82%; padding:40px 12px 8px; }
-    .pw-notes-card{ width:82%; }
-    .pw-key{ flex:0 0 52px; width:52px; height:52px; }
+
+    /* The top-row wrapper becomes a column so note is above buttons */
+    .pw-controls-card > div[style*="display:flex"]{
+      flex-direction:column !important;
+      gap:10px !important;
+    }
+
+    /* Buttons group: center on mobile */
+    .pw-btn-group{
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    /* Shrink portrait inside the note */
+    #pwPortrait{ width:40px !important; height:40px !important; }
+
+    /* Clamp bubble to 2 lines on tablet */
+    #pwCoachBubble{
+      -webkit-line-clamp:2 !important;
+    }
+
+    /* Notes textarea: don't grow too tall */
+    #pwNotes{ max-height:100px; }
+
+    /* Video border-radius: slightly smaller */
+    .pw-video-card{ border-radius:16px; }
+    .pw-video{ border-radius:16px; }
+  }
+
+  /* ── Phone (<480px) ── */
+  @media (max-width:479px){
+    body{ padding:10px 8px; }
+
+    .pw-player-wrap{ width:100%; }
+
+    /* Controls card: tighter padding */
+    .pw-controls-card{ padding:36px 10px 8px; border-radius:0 0 14px 14px; }
+
+    /* Smaller keys */
+    .pw-key{ flex:0 0 52px; width:52px; height:52px; border-radius:12px; }
     .pw-key svg{ width:18px; height:18px; }
-    .pw-leg{ font-size:7px; }
+    .pw-key-sm{ flex:0 0 42px; width:42px; height:42px; border-radius:10px; }
+
+    /* Buttons: tighter gap */
+    .pw-btn-group{ gap:8px; }
+
+    /* Professor note: compact */
+    #pwCoachCard{
+      padding:7px 10px 7px 12px !important;
+      border-radius:12px !important;
+      gap:8px !important;
+    }
+    #pwPortrait{ width:36px !important; height:36px !important; }
+    #pwCoachBubble{
+      font-size:11px !important;
+      padding:5px 8px !important;
+      -webkit-line-clamp:2 !important;
+    }
+
+    /* Notes card */
+    .pw-notes-card{ padding:10px 10px 8px; border-radius:14px; }
+    #pwNotes{ max-height:80px; font-size:12px; }
+
+    /* Video */
+    .pw-video-card{ border-radius:12px; }
+    .pw-video{ border-radius:12px; }
+
+    /* Modal */
+    .pw-modal-inner{ width:96vw; max-height:88vh; border-radius:14px; }
   }
-  @media (max-width:380px){
-    .pw-video-card{ width:84%; }
-    .pw-controls-card{ width:78%; }
-    .pw-notes-card{ width:78%; }
-    .pw-key{ flex:0 0 46px; width:46px; height:46px; border-radius:12px; }
-    .pw-key svg{ width:16px; height:16px; }
-    .pw-leg{ font-size:6.5px; }
+
+  /* ── Very small (< 360px, e.g. older Android) ── */
+  @media (max-width:359px){
+    body{ padding:8px 6px; }
+    .pw-key{ flex:0 0 46px; width:46px; height:46px; }
+    .pw-key-sm{ flex:0 0 38px; width:38px; height:38px; }
+    .pw-btn-group{ gap:6px; }
   }
 </style>
 </head>
 <body>
 <div class="pw-player-wrap">
+
+  <!-- ══ VIDEO CARD ══ -->
   <div class="pw-video-card" id="pwVideoCard">
-    <div id="pwVideoPlaceholder" class="pw-video" style="width:100%;aspect-ratio:16/9;background:#000;"></div>
+    <div id="pwVideoPlaceholder" style="width:100%;aspect-ratio:16/9;background:#111;border-radius:22px;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" style="width:48px;height:48px;fill:#333;"><path d="M8 5v14l11-7z"/></svg>
+    </div>
     <div class="pw-overlay" id="pwOverlay"></div>
-    <button class="pw-big-play" id="pwBigPlay" aria-label="Play video">
+    <button class="pw-big-play" id="pwBigPlay" type="button">
       <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
     </button>
-    <button class="pw-fs-btn" id="pwFsBtn" aria-label="Fullscreen">
+    <button class="pw-fs-btn" id="pwFsBtn" type="button" title="Fullscreen">
       <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
     </button>
     <div class="pw-vol-overlay" id="pwVolOverlay">
@@ -510,9 +771,14 @@
       </div>
     </div>
   </div>
+
+  <!-- ══ CONTROLS CARD ══ -->
   <div class="pw-controls-card">
-    <div class="pw-btn-row">
-      <div class="pw-btn-group">
+    <!-- ══ TOP ROW: buttons left + professor note right, same level ══ -->
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+
+      <!-- Playback buttons -->
+      <div class="pw-btn-group" style="flex-shrink:0;">
         <button class="pw-key" id="pwBack" type="button">
           <svg viewBox="0 0 24 24" class="pw-gray">
             <path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
@@ -540,8 +806,75 @@
           </svg>
           <span class="pw-leg pw-yellow" id="pwSpeedLabel">1×</span>
         </button>
+        <!-- CC button — shown only when captions available -->
+        <div class="pw-cc-wrap" id="pwCCWrap" style="display:none;">
+          <button class="pw-key-sm pw-blue" id="pwCC" type="button">
+            <svg viewBox="0 0 24 24" class="pw-blue"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 7H9.5v-.5h-2v3h2V13H11v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1c0 .55-.45 1-1 1h-3c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1z"/></svg>
+            <span class="pw-leg pw-blue" id="pwCCLabel">CC</span>
+          </button>
+          <div class="pw-cc-menu" id="pwCCMenu"></div>
+        </div>
+        <!-- Download — shown only when dl param set -->
+        <button class="pw-key-sm pw-green" id="pwDownload" type="button" style="display:none;" title="Download for offline">
+          <svg viewBox="0 0 24 24" class="pw-green"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          <span class="pw-leg pw-green">Save</span>
+        </button>
       </div>
-    </div>
+
+      <!-- Professor note — fills remaining width, same height as buttons -->
+      <div id="pwCoachCard" style="
+        flex:1; min-width:0;
+        display:flex; align-items:center;
+        gap:0;
+        padding:8px 14px 8px 16px;
+        background:#e4e6ea;
+        border-radius:14px;
+        box-shadow:
+          inset 2px 2px 5px rgba(0,0,0,.08),
+          inset -2px -2px 5px rgba(255,255,255,.45);
+        /* Fixed height: label ~16px + 3px gap + bubble 48px + 16px top/bottom padding = 83px.
+           Align-items:flex-start so content stacks from top, not stretched. */
+        min-height:83px;
+        max-height:83px;
+        overflow:hidden;
+        flex-shrink:0;
+        align-items:flex-start;
+      ">
+        <!-- Hidden portrait (kept for JS compatibility, not visible) -->
+        <div id="pwPortrait" data-empty="1" style="display:none;"></div>
+        <!-- Text block -->
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;">
+            <span style="font-size:9px;font-weight:700;color:#666;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;">Note from the Professor</span>
+            <span id="pwCoachName" style="font-size:9px;color:#aaa;font-weight:600;"></span>
+          </div>
+          <div id="pwCoachBubble" style="
+            background:#d8dae0;
+            border-radius:8px;
+            padding:6px 10px;
+            font-size:12px; line-height:1.5;
+            color:#3a3a3a;
+            box-shadow:
+              inset 2px 2px 4px rgba(0,0,0,.09),
+              inset -2px -2px 4px rgba(255,255,255,.4);
+            white-space:pre-wrap;
+            word-wrap:break-word;
+            word-break:break-word;
+            overflow:hidden;
+            /* Fixed 2-line height: 12px × 1.5 × 2 = 36px text + 6px top + 6px bottom padding = 48px.
+               This never grows regardless of how much text is typed. */
+            height:48px;
+            flex-shrink:0;
+          "></div>
+        </div>
+        <!-- Hidden replay (kept for JS compatibility) -->
+        <div id="pwCoachReplay" style="display:none;"></div>
+        <!-- Hidden minimize (kept for JS compatibility) -->
+        <button id="pwCoachMin" type="button" style="display:none;"></button>
+      </div>
+
+    </div><!-- end top row -->
+
     <div class="pw-scrub">
       <div class="pw-scrub-capsule">
         <div class="pw-scrub-track" id="pwTrack">
@@ -554,7 +887,16 @@
         <span id="pwTimeTotal">0:00</span>
       </div>
     </div>
+    <!-- Watch Original — shown only when orig param set -->
+    <div class="pw-ctrl-bottom" id="pwCtrlBottom" style="display:none;">
+      <button class="pw-link-btn" id="pwOriginal" type="button">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Watch Original
+      </button>
+    </div>
   </div>
+
+  <!-- ══ NOTES CARD ══ -->
   <div class="pw-notes-card">
     <div class="pw-notes-header">
       <div class="pw-notes-title-group">
@@ -567,54 +909,121 @@
       <textarea id="pwNotes" placeholder="Take notes while watching..."></textarea>
     </div>
     <div class="pw-bottom-row">
-      <button class="pw-copy-btn" id="pwCopy" type="button">Copy Notes</button>
-      <div class="pw-watermark-row"><span class="pw-watermark">Pathway Media Player</span></div>
+      <button class="pw-my-notes-btn" id="pwMyNotes" type="button">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        My Notes
+      </button>
+      <button class="pw-copy-btn" id="pwCopy" type="button">
+        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        Copy Notes
+      </button>
+      <span class="pw-watermark">Pathway Media Player</span>
+    </div>
+  </div>
+
+</div><!-- /.pw-player-wrap -->
+
+<!-- ══ MODAL — My Notes & Highlights ══ -->
+<div class="pw-modal-overlay" id="pwNotesModal">
+  <div class="pw-modal">
+    <div class="pw-modal-header">
+      <div class="pw-modal-title">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        My Notes &amp; Highlights
+      </div>
+      <button class="pw-modal-close" id="pwModalClose" type="button">×</button>
+    </div>
+    <div class="pw-modal-body" id="pwModalBody">
+      <div style="color:#aaa;font-size:12px;">No notes or highlights yet.</div>
+    </div>
+    <div class="pw-modal-footer">
+      <button class="pw-modal-action" id="pwModalExport">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        Export .txt
+      </button>
+      <button class="pw-modal-action" id="pwModalCopy">
+        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        Copy All
+      </button>
+      <button class="pw-modal-action" id="pwModalPrint">
+        <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Print
+      </button>
+      <span class="pw-modal-count" id="pwModalCount">0 entries</span>
     </div>
   </div>
 </div>
+
 <div class="pw-skip-warn" id="pwSkipWarn">ummmm...you can't skip the video<br>and complete this part of the course</div>
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 <script>
 (function () {
+  /* ─── URL params ──────────────────────────────────────────────── */
   var params = new URLSearchParams(window.location.search);
-  var videoSrc = '';
-  if (params.get('b')) { try { videoSrc = atob(params.get('b')); } catch(e) {} }
-  else if (params.get('src')) { videoSrc = params.get('src'); }
-  var lessonId = params.get('id') || 'default';
-  var requiredPercent = parseInt(params.get('req') || '90', 10);
-  var video = null;
-  var videoCard = document.getElementById('pwVideoCard');
+  function p(k)     { return params.get(k) || ''; }
+  function b64(k)   { var v = p(k); if (!v) return ''; try { return atob(v); } catch(e) { return ''; } }
+  function b64text(k) {
+    var v = p(k); if (!v) return '';
+    try { return decodeURIComponent(escape(atob(v))); } catch(e) {
+      try { return decodeURIComponent(atob(v)); } catch(_) { return ''; }
+    }
+  }
+
+  /* ─── Core config ─────────────────────────────────────────────── */
+  var videoSrc        = b64('b') || p('src');
+  var lessonId        = p('id') || 'default';
+  var requiredPercent = parseInt(p('req') || '90', 10);
+  var downloadUrl     = b64('dl') || p('dl');
+  var originalUrl     = b64('orig') || p('orig');
+
+  /* Course / article metadata (shared with W98 player localStorage) */
+  var COURSE  = { id: p('courseId') || lessonId, name: p('courseName') || 'Course' };
+  var ARTICLE = { id: p('articleId') || lessonId, title: p('articleTitle') || 'Video' };
+
+  /* ─── DOM refs ────────────────────────────────────────────────── */
+  var videoCard   = document.getElementById('pwVideoCard');
   var placeholder = document.getElementById('pwVideoPlaceholder');
-  var overlay = document.getElementById('pwOverlay');
-  var bigPlay = document.getElementById('pwBigPlay');
-  var playBtn = document.getElementById('pwPlay');
-  var playIcon = document.getElementById('pwPlayIcon');
-  var playLabel = document.getElementById('pwPlayLabel');
-  var backBtn = document.getElementById('pwBack');
-  var forwardBtn = document.getElementById('pwForward');
-  var speedBtn = document.getElementById('pwSpeed');
-  var speedLabel = document.getElementById('pwSpeedLabel');
-  var track = document.getElementById('pwTrack');
-  var fill = document.getElementById('pwScrubFill');
-  var blocked = document.getElementById('pwBlocked');
-  var timeCur = document.getElementById('pwTimeCur');
-  var timeTotal = document.getElementById('pwTimeTotal');
-  var skipWarn = document.getElementById('pwSkipWarn');
-  var volTrack = document.getElementById('pwVolTrack');
-  var volFill = document.getElementById('pwVolFill');
-  var volBtn = document.getElementById('pwVolBtn');
-  var volOverlay = document.getElementById('pwVolOverlay');
-  var volIcon = document.getElementById('pwVolIcon');
-  var notesArea = document.getElementById('pwNotes');
-  var savedEl = document.getElementById('pwSaved');
-  var copyBtn = document.getElementById('pwCopy');
+  var overlay     = document.getElementById('pwOverlay');
+  var bigPlay     = document.getElementById('pwBigPlay');
+  var playBtn     = document.getElementById('pwPlay');
+  var playIcon    = document.getElementById('pwPlayIcon');
+  var playLabel   = document.getElementById('pwPlayLabel');
+  var backBtn     = document.getElementById('pwBack');
+  var forwardBtn  = document.getElementById('pwForward');
+  var speedBtn    = document.getElementById('pwSpeed');
+  var speedLabel  = document.getElementById('pwSpeedLabel');
+  var track       = document.getElementById('pwTrack');
+  var fill        = document.getElementById('pwScrubFill');
+  var blocked     = document.getElementById('pwBlocked');
+  var timeCur     = document.getElementById('pwTimeCur');
+  var timeTotal   = document.getElementById('pwTimeTotal');
+  var skipWarn    = document.getElementById('pwSkipWarn');
+  var volTrack    = document.getElementById('pwVolTrack');
+  var volFill     = document.getElementById('pwVolFill');
+  var volBtn      = document.getElementById('pwVolBtn');
+  var volOverlay  = document.getElementById('pwVolOverlay');
+  var volIcon     = document.getElementById('pwVolIcon');
+  var notesArea   = document.getElementById('pwNotes');
+  var savedEl     = document.getElementById('pwSaved');
+  var copyBtn     = document.getElementById('pwCopy');
+
+  /* ─── Storage keys ────────────────────────────────────────────── */
   var PK = 'pw-progress-' + lessonId;
   var NK = 'pw-notes-' + lessonId;
   var DK = 'pw-done-' + lessonId;
   var VK = 'pw-vol-' + lessonId;
+  var NOTES_KEY = 'w98-notes-v1';   /* shared with W98 player */
+  var HL_KEY    = 'w98-highlights-v2'; /* shared with W98 player */
+
   var maxWatched = 0, lastValid = 0;
   var notesTimer = null, skipTimer = null;
   var speeds = [1, 1.25, 1.5, 1.75, 2], speedIdx = 0;
+  var video = null, videoReady = false;
+  var manualFullscreen = false;
+  var dragging = false, volDragging = false;
+
+  /* ─── Helpers ─────────────────────────────────────────────────── */
   function loadJSON(k) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
   function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
   function getDone() { try { return localStorage.getItem(DK) === 'true'; } catch(e) { return false; } }
@@ -624,6 +1033,15 @@
     var m = Math.floor(s/60), sec = Math.floor(s%60);
     return m+':'+(sec<10?'0':'')+sec;
   }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }); }
+    catch(e) { return iso; }
+  }
+  function loadNotes() { try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch(e) { return []; } }
+  function saveNotes(arr) { try { localStorage.setItem(NOTES_KEY, JSON.stringify(arr)); } catch(e) {} }
+  function loadHLs() { try { return JSON.parse(localStorage.getItem(HL_KEY) || '[]'); } catch(e) { return []; } }
+
+  /* ─── Skip warning ────────────────────────────────────────────── */
   function showSkip(msg) {
     skipWarn.innerHTML = msg || 'ummmm...you can\'t skip the video<br>and complete this part of the course';
     skipWarn.style.display = 'block';
@@ -633,6 +1051,8 @@
     clearTimeout(skipTimer);
     skipTimer = setTimeout(function() { skipWarn.style.display = 'none'; }, 2500);
   }
+
+  /* ─── Progress ────────────────────────────────────────────────── */
   function saveProgress() {
     if (!video) return;
     var dur = video.duration||0;
@@ -655,10 +1075,8 @@
     else { blocked.style.display = 'block'; blocked.style.left = maxPct+'%'; }
     if (!getDone() && pct >= requiredPercent) { setDone(true); blocked.style.display = 'none'; }
   }
-  function togglePlay() {
-    if (!videoReady) { createVideo(); return; }
-    if (video.paused) video.play(); else video.pause();
-  }
+
+  /* ─── Seek ────────────────────────────────────────────────────── */
   function seekToX(clientX) {
     if (!video) return;
     var rect = track.getBoundingClientRect();
@@ -667,6 +1085,8 @@
     if (!getDone() && target > maxWatched+2) { showSkip(); return; }
     video.currentTime = target; updateBar();
   }
+
+  /* ─── Volume ──────────────────────────────────────────────────── */
   function updateVol(clientX) {
     if (!video) return;
     var rect = volTrack.getBoundingClientRect();
@@ -675,31 +1095,24 @@
     video.volume = pct;
     volFill.style.width = vol + '%';
     try { localStorage.setItem(VK, String(vol)); } catch(e) {}
-    // Update icon
-    if (vol === 0) {
-      volIcon.innerHTML = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
-    } else {
-      volIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
-    }
+    volIcon.innerHTML = vol === 0
+      ? '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+      : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-3.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
   }
-  // ══ LAZY VIDEO CREATION — no <video> in DOM until user clicks play ══
-  // This prevents TalentLMS app from detecting and auto-fullscreening
-  var videoReady = false;
+
+  /* ─── Lazy video creation ─────────────────────────────────────── */
   function createVideo() {
     if (videoReady) return;
     videoReady = true;
     video = document.createElement('video');
     video.className = 'pw-video';
-    video.setAttribute('playsInline', 'true');
-    video.setAttribute('webkit-playsInline', 'true');
-    video.setAttribute('x5-playsInline', 'true');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('x5-playsinline', '');
     video.setAttribute('x5-video-player-type', 'h5');
-   video.webkitEnterFullscreen = function() {
-      if (manualFullscreen) {
-        // Only run the real fullscreen if your button turned on the "manual" flag
-        return HTMLVideoElement.prototype.webkitEnterFullscreen.call(video);
-      }
-      // Otherwise, return a resolved promise (do nothing) to trick the app
+    /* Override fullscreen methods to prevent auto-fullscreen on iOS/TalentLMS */
+    video.webkitEnterFullscreen = function() {
+      if (manualFullscreen) return HTMLVideoElement.prototype.webkitEnterFullscreen.call(video);
       return Promise.resolve();
     };
     video.requestFullscreen = function() {
@@ -710,10 +1123,8 @@
       if (manualFullscreen) return HTMLVideoElement.prototype.webkitRequestFullscreen.call(video);
       return Promise.resolve();
     };
-
     video.preload = 'auto';
-    // Replace placeholder with video
-   placeholder.parentNode.replaceChild(video, placeholder);
+    placeholder.parentNode.replaceChild(video, placeholder);
     var _hlsMode = false;
     if (videoSrc) {
       if (videoSrc.indexOf('.m3u8') !== -1 && typeof Hls !== 'undefined' && Hls.isSupported()) {
@@ -725,12 +1136,12 @@
         video.src = videoSrc;
       }
     }
-    // Restore volume
+    /* Restore volume */
     try {
       var sv = parseInt(localStorage.getItem(VK)||'70', 10);
       video.volume = sv/100; volFill.style.width = sv+'%';
     } catch(e) { video.volume = 0.7; }
-    // Events
+    /* Events */
     video.addEventListener('loadedmetadata', function() {
       timeTotal.textContent = fmt(video.duration);
       if (saved && saved.time > 0) {
@@ -747,7 +1158,6 @@
       lastValid = cur;
       saveProgress(); updateBar();
     });
-    // Anti-skip: seeking event
     var isSnapping = false;
     video.addEventListener('seeking', function() {
       if (getDone() || isSnapping) return;
@@ -771,13 +1181,16 @@
     });
     window.addEventListener('beforeunload', saveProgress);
     document.addEventListener('visibilitychange', function() { if (document.hidden) saveProgress(); });
+    /* Fullscreen button — user-initiated only */
     fsBtn.addEventListener('click', function(e) {
       e.stopPropagation();
-      if (video.requestFullscreen) video.requestFullscreen();
-      else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
-      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      manualFullscreen = true;
+      var p = video.requestFullscreen ? video.requestFullscreen()
+            : video.webkitEnterFullscreen ? Promise.resolve(video.webkitEnterFullscreen())
+            : Promise.resolve();
+      p.catch(function(){}).finally(function(){ manualFullscreen = false; });
     });
-    // Block keyboard skipping
+    /* Block keyboard skipping */
     document.addEventListener('keydown', function(e) {
       if (!video) return;
       if (e.key === 'ArrowRight' || e.key === 'Right') {
@@ -785,22 +1198,25 @@
         if (!getDone() && target > maxWatched + 2) { e.preventDefault(); showSkip(); }
       }
     });
-    // Start playback
     if (_hlsMode) {
       _hls.on(Hls.Events.MANIFEST_PARSED, function() { video.play().catch(function(){}); });
     } else {
       video.play();
     }
   }
-  // Load saved progress (before video exists)
+
+  /* ─── Restore saved state ─────────────────────────────────────── */
   var saved = loadJSON(PK);
   if (saved) { maxWatched = saved.maxWatched||0; }
   try { var sn = localStorage.getItem(NK); if (sn) notesArea.value = sn; } catch(e) {}
-  try {
-    var sv = parseInt(localStorage.getItem(VK)||'70', 10);
-    volFill.style.width = sv+'%';
-  } catch(e) {}
+  try { var sv = parseInt(localStorage.getItem(VK)||'70', 10); volFill.style.width = sv+'%'; } catch(e) {}
   updatePlayUI(false); updateBar();
+
+  /* ─── Playback controls ───────────────────────────────────────── */
+  function togglePlay() {
+    if (!videoReady) { createVideo(); return; }
+    if (video.paused) video.play(); else video.pause();
+  }
   bigPlay.addEventListener('click', function(e) { e.stopPropagation(); togglePlay(); });
   overlay.addEventListener('click', togglePlay);
   playBtn.addEventListener('click', togglePlay);
@@ -820,29 +1236,97 @@
     video.playbackRate = speeds[speedIdx];
     speedLabel.textContent = speeds[speedIdx]+'×';
   });
+
+  /* ─── Scrub bar ───────────────────────────────────────────────── */
   track.addEventListener('pointerdown', function(e) { dragging = true; seekToX(e.clientX); });
   document.addEventListener('pointermove', function(e) {
     if (dragging) seekToX(e.clientX);
     if (volDragging) updateVol(e.clientX);
   });
   document.addEventListener('pointerup', function() { dragging = false; volDragging = false; });
-  // Volume overlay — click speaker to expand/collapse slider
-  var volDragging = false;
+
+  /* ─── Volume ──────────────────────────────────────────────────── */
   volBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     volOverlay.classList.toggle('expanded');
   });
   volTrack.addEventListener('pointerdown', function(e) {
-    volDragging = true;
-    updateVol(e.clientX);
-    e.stopPropagation();
+    volDragging = true; updateVol(e.clientX); e.stopPropagation();
   });
-  // Close volume slider when clicking outside
   document.addEventListener('click', function(e) {
-    if (!volOverlay.contains(e.target)) {
-      volOverlay.classList.remove('expanded');
-    }
+    if (!volOverlay.contains(e.target)) volOverlay.classList.remove('expanded');
+    if (!document.getElementById('pwCCMenu').contains(e.target) &&
+        e.target !== document.getElementById('pwCC'))
+      document.getElementById('pwCCMenu').classList.remove('open');
   });
+
+  /* ─── CC / Subtitles ──────────────────────────────────────────── */
+  /* For HLS streams, tracks are added to the video element after load */
+  function setupCCFromVideo() {
+    if (!video || !video.textTracks || video.textTracks.length === 0) return;
+    var ccWrap = document.getElementById('pwCCWrap');
+    var ccMenu = document.getElementById('pwCCMenu');
+    ccWrap.style.display = 'flex';
+    var off = document.createElement('div');
+    off.className = 'pw-cc-item active'; off.textContent = 'Off'; off.dataset.idx = '-1';
+    ccMenu.appendChild(off);
+    for (var i = 0; i < video.textTracks.length; i++) {
+      var t = video.textTracks[i];
+      var item = document.createElement('div');
+      item.className = 'pw-cc-item';
+      item.textContent = t.label || t.language || ('Track ' + (i+1));
+      item.dataset.idx = String(i);
+      ccMenu.appendChild(item);
+    }
+    ccMenu.addEventListener('click', function(e) {
+      var item = e.target.closest('.pw-cc-item');
+      if (!item) return;
+      ccMenu.querySelectorAll('.pw-cc-item').forEach(function(i) { i.classList.remove('active'); });
+      item.classList.add('active');
+      var idx = parseInt(item.dataset.idx, 10);
+      for (var j = 0; j < video.textTracks.length; j++) {
+        video.textTracks[j].mode = (j === idx) ? 'showing' : 'hidden';
+      }
+      document.getElementById('pwCCLabel').textContent = idx >= 0
+        ? (video.textTracks[idx].language || 'CC').toUpperCase()
+        : 'CC';
+      ccMenu.classList.remove('open');
+    });
+  }
+  document.getElementById('pwCC').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('pwCCMenu').classList.toggle('open');
+  });
+  /* Check for tracks after video loads (HLS adds them asynchronously) */
+  var ccCheckInterval = setInterval(function() {
+    if (video && video.textTracks && video.textTracks.length > 0) {
+      clearInterval(ccCheckInterval);
+      setupCCFromVideo();
+    }
+  }, 1000);
+
+  /* ─── Download ────────────────────────────────────────────────── */
+  if (downloadUrl) {
+    var dlBtn = document.getElementById('pwDownload');
+    dlBtn.style.display = 'flex';
+    dlBtn.addEventListener('click', function() {
+      var a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = (ARTICLE.title || 'video').replace(/[^a-z0-9]/gi,'_') + '.mp4';
+      a.click();
+    });
+  }
+
+  /* ─── Watch Original ──────────────────────────────────────────── */
+  if (originalUrl) {
+    var ctrlBottom = document.getElementById('pwCtrlBottom');
+    ctrlBottom.style.display = 'flex';
+    document.getElementById('pwOriginal').addEventListener('click', function() {
+      window.open(originalUrl, '_blank', 'noopener');
+    });
+  }
+
+  /* ─── Notes — auto-save ───────────────────────────────────────── */
   notesArea.addEventListener('input', function() {
     clearTimeout(notesTimer);
     notesTimer = setTimeout(function() {
@@ -851,19 +1335,294 @@
       setTimeout(function() { savedEl.classList.remove('show'); }, 1500);
     }, 500);
   });
+
+  /* ─── Copy Notes ──────────────────────────────────────────────── */
   copyBtn.addEventListener('click', function() {
     var text = notesArea.value; if (!text) return;
     var btn = this, orig = btn.innerHTML;
     var ok = '<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Copied!';
     function flash() { btn.classList.add('copied'); btn.innerHTML = ok; setTimeout(function() { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800); }
-    if (navigator.clipboard) { navigator.clipboard.writeText(text).then(flash); }
+    if (navigator.clipboard) { navigator.clipboard.writeText(notesArea.value).then(flash); }
     else { notesArea.select(); document.execCommand('copy'); flash(); }
   });
-  document.querySelectorAll('.pw-key').forEach(function(btn) {
-    btn.addEventListener('pointerdown', function() { btn.classList.add('pressed'); });
-    btn.addEventListener('pointerup', function() { btn.classList.remove('pressed'); });
-    btn.addEventListener('pointerleave', function() { btn.classList.remove('pressed'); });
+
+  /* ─── My Notes button — save + open modal ────────────────────── */
+  document.getElementById('pwMyNotes').addEventListener('click', function() {
+    var txt = notesArea.value.trim();
+    if (txt) {
+      var all = loadNotes();
+      all.push({
+        id:           'note-' + Date.now() + '-' + Math.random().toString(36).substr(2,4),
+        courseId:     COURSE.id,
+        courseName:   COURSE.name,
+        articleId:    ARTICLE.id,
+        articleTitle: ARTICLE.title,
+        text:         txt,
+        timestamp:    new Date().toISOString()
+      });
+      saveNotes(all);
+      notesArea.value = '';
+      try { localStorage.setItem(NK, ''); } catch(e) {}
+    }
+    buildModal();
+    document.getElementById('pwNotesModal').classList.add('open');
   });
+
+  /* ─── Modal ───────────────────────────────────────────────────── */
+  function buildModal() {
+    var notes = loadNotes().filter(function(n) { return n.courseId === COURSE.id; });
+    var hls   = loadHLs().filter(function(h)   { return h.courseId === COURSE.id; });
+    var entries = [];
+    notes.forEach(function(n) { entries.push({ type:'note', data:n, ts:n.timestamp }); });
+    hls.forEach(function(h)   { entries.push({ type:'hl',   data:h, ts:h.timestamp }); });
+    entries.sort(function(a,b) { return a.ts < b.ts ? -1 : 1; });
+
+    var body = document.getElementById('pwModalBody');
+    body.innerHTML = '';
+    document.getElementById('pwModalCount').textContent = entries.length + ' entr' + (entries.length===1?'y':'ies');
+
+    if (entries.length === 0) {
+      body.innerHTML = '<div style="color:#aaa;font-size:12px;">No notes or highlights yet.</div>';
+      return;
+    }
+    entries.forEach(function(entry) {
+      var div = document.createElement('div');
+      div.className = 'pw-entry';
+
+      var meta = document.createElement('div');
+      meta.className = 'pw-entry-meta';
+      var typeTag = document.createElement('span');
+      typeTag.className = entry.type==='note' ? 'tag-note' : 'tag-hl';
+      typeTag.textContent = entry.type==='note' ? '📝 Note' : '🖍 Highlight';
+      var courseTag = document.createElement('span');
+      courseTag.textContent = entry.data.courseName || COURSE.name;
+      var sectionTag = document.createElement('span');
+      sectionTag.textContent = entry.data.articleTitle || ARTICLE.title;
+      var dateTag = document.createElement('span');
+      dateTag.textContent = fmtDate(entry.ts);
+      meta.appendChild(typeTag); meta.appendChild(courseTag);
+      meta.appendChild(sectionTag); meta.appendChild(dateTag);
+
+      var text = document.createElement('div');
+      text.className = 'pw-entry-text';
+      if (entry.type==='hl') {
+        var mark = document.createElement('span');
+        mark.className = 'pw-entry-hl hl-' + (entry.data.color||'green');
+        mark.textContent = entry.data.text;
+        text.appendChild(mark);
+      } else {
+        text.textContent = entry.data.text;
+      }
+
+      var del = document.createElement('span');
+      del.className = 'pw-entry-del';
+      del.textContent = 'remove';
+      del.addEventListener('click', function() {
+        if (!confirm('Remove this entry?')) return;
+        if (entry.type==='note') {
+          saveNotes(loadNotes().filter(function(n) { return n.id !== entry.data.id; }));
+        } else {
+          var all = loadHLs().filter(function(h) { return h.id !== entry.data.id; });
+          try { localStorage.setItem(HL_KEY, JSON.stringify(all)); } catch(e) {}
+        }
+        buildModal();
+      });
+
+      div.appendChild(meta); div.appendChild(text); div.appendChild(del);
+      body.appendChild(div);
+    });
+  }
+
+  document.getElementById('pwModalClose').addEventListener('click', function() {
+    document.getElementById('pwNotesModal').classList.remove('open');
+  });
+  document.getElementById('pwNotesModal').addEventListener('click', function(e) {
+    if (e.target === document.getElementById('pwNotesModal'))
+      document.getElementById('pwNotesModal').classList.remove('open');
+  });
+
+  /* Export */
+  document.getElementById('pwModalExport').addEventListener('click', function() {
+    var notes = loadNotes().filter(function(n) { return n.courseId === COURSE.id; });
+    var hls   = loadHLs().filter(function(h)   { return h.courseId === COURSE.id; });
+    var entries = [];
+    notes.forEach(function(n) { entries.push({ type:'note', data:n, ts:n.timestamp }); });
+    hls.forEach(function(h)   { entries.push({ type:'hl',   data:h, ts:h.timestamp }); });
+    entries.sort(function(a,b) { return a.ts < b.ts ? -1 : 1; });
+    var lines = ['MY NOTES & HIGHLIGHTS', '='.repeat(40), ''];
+    entries.forEach(function(entry) {
+      lines.push('[' + (entry.type==='note'?'NOTE':'HIGHLIGHT') + '] ' +
+        (entry.data.courseName||'') + ' > ' + (entry.data.articleTitle||'') +
+        ' — ' + fmtDate(entry.ts));
+      lines.push(entry.data.text); lines.push('');
+    });
+    var blob = new Blob([lines.join('\n')], { type:'text/plain' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'notes_and_highlights.txt';
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+  });
+
+  /* Copy all */
+  document.getElementById('pwModalCopy').addEventListener('click', function() {
+    var notes = loadNotes().filter(function(n) { return n.courseId === COURSE.id; });
+    var hls   = loadHLs().filter(function(h)   { return h.courseId === COURSE.id; });
+    var entries = [];
+    notes.forEach(function(n) { entries.push({ type:'note', data:n, ts:n.timestamp }); });
+    hls.forEach(function(h)   { entries.push({ type:'hl',   data:h, ts:h.timestamp }); });
+    entries.sort(function(a,b) { return a.ts < b.ts ? -1 : 1; });
+    var lines = [];
+    entries.forEach(function(entry) {
+      lines.push('[' + (entry.type==='note'?'NOTE':'HIGHLIGHT') + '] ' +
+        (entry.data.articleTitle||'') + ' — ' + fmtDate(entry.ts));
+      lines.push(entry.data.text); lines.push('');
+    });
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(lines.join('\n')).then(function() { alert('Copied!'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = lines.join('\n');
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Copied!');
+    }
+  });
+
+  /* Print */
+  document.getElementById('pwModalPrint').addEventListener('click', function() {
+    var notes = loadNotes().filter(function(n) { return n.courseId === COURSE.id; });
+    var hls   = loadHLs().filter(function(h)   { return h.courseId === COURSE.id; });
+    var entries = [];
+    notes.forEach(function(n) { entries.push({ type:'note', data:n, ts:n.timestamp }); });
+    hls.forEach(function(h)   { entries.push({ type:'hl',   data:h, ts:h.timestamp }); });
+    entries.sort(function(a,b) { return a.ts < b.ts ? -1 : 1; });
+    var rows = entries.map(function(entry) {
+      var color = entry.type==='hl'
+        ? ({green:'#b8f0b8',blue:'#b8d8f8',red:'#f8b8b8'}[entry.data.color]||'#ffff80')
+        : '#ffffff';
+      return '<tr style="background:'+color+'">' +
+        '<td style="padding:4px 8px;border:1px solid #ddd;font-weight:700;">'+(entry.type==='note'?'NOTE':'HIGHLIGHT')+'</td>'+
+        '<td style="padding:4px 8px;border:1px solid #ddd;">'+(entry.data.courseName||'')+'</td>'+
+        '<td style="padding:4px 8px;border:1px solid #ddd;">'+(entry.data.articleTitle||'')+'</td>'+
+        '<td style="padding:4px 8px;border:1px solid #ddd;">'+fmtDate(entry.ts)+'</td>'+
+        '<td style="padding:4px 8px;border:1px solid #ddd;">'+entry.data.text+'</td>'+
+        '</tr>';
+    }).join('');
+    var html = '<!DOCTYPE html><html><head><title>Notes &amp; Highlights</title>'+
+      '<style>body{font-family:"IBM Plex Sans",sans-serif;font-size:12px;padding:20px}'+
+      'table{border-collapse:collapse;width:100%}th{background:#2a9d8f;color:#fff;padding:6px 8px;border:1px solid #ddd;text-align:left}</style></head>'+
+      '<body><h2>My Notes &amp; Highlights</h2>'+
+      '<p style="font-size:11px;color:#999">Course: '+COURSE.name+' — Exported '+new Date().toLocaleString()+'</p>'+
+      '<table><thead><tr><th>Type</th><th>Course</th><th>Section</th><th>Date</th><th>Content</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></body></html>';
+    var w = window.open('', '_blank');
+    w.document.write(html); w.document.close();
+    setTimeout(function() { w.print(); }, 250);
+  });
+
+  /* ─── Key press feedback ──────────────────────────────────────── */
+  document.querySelectorAll('.pw-key, .pw-key-sm').forEach(function(btn) {
+    btn.addEventListener('pointerdown', function() { btn.classList.add('pressed'); });
+    btn.addEventListener('pointerup',   function() { btn.classList.remove('pressed'); });
+    btn.addEventListener('pointerleave',function() { btn.classList.remove('pressed'); });
+  });
+
+  /* ─── COACH CARD ──────────────────────────────────────────────── */
+  (function() {
+    var CHARS = {
+      1: { name:'Coach Mara', img:'https://api.dicebear.com/7.x/pixel-art/svg?seed=Mara&backgroundColor=b6e3f4' },
+      2: { name:'Coach Eli',  img:'https://api.dicebear.com/7.x/pixel-art/svg?seed=Eli&backgroundColor=d1f4cc'  },
+      3: { name:'Coach Sam',  img:'https://api.dicebear.com/7.x/pixel-art/svg?seed=Sam&backgroundColor=ffd5dc'  }
+    };
+    var charNum    = parseInt(p('char')||'1', 10);
+    var d          = CHARS[charNum] || CHARS[1];
+    var imgUrl     = b64('img') || p('imgSrc') || d.img;
+    var coachName  = b64text('name') || p('name') || d.name;
+    var coachText  = b64text('text') || p('text') || b64text('msg') || p('msg') || '';
+    var coachSpeed = parseInt(p('speed')||'30', 10);
+    var startDelay = parseInt(p('delay')||'400', 10);
+    var coachLoop  = p('loop')==='1' || p('loop')==='true';
+
+    var portraitEl = document.getElementById('pwPortrait');
+    var nameEl     = document.getElementById('pwCoachName');
+    var bubbleEl   = document.getElementById('pwCoachBubble');
+    var replayEl   = document.getElementById('pwCoachReplay');
+    var minBtn     = document.getElementById('pwCoachMin');
+    var cardEl     = document.getElementById('pwCoachCard');
+
+    nameEl.textContent = coachName;
+
+    /* Portrait */
+    if (imgUrl) {
+      var img = document.createElement('img');
+      img.alt = coachName;
+      img.onload = function() { portraitEl.removeAttribute('data-empty'); };
+      img.src = imgUrl;
+      portraitEl.appendChild(img);
+    }
+
+    /* Typewriter */
+    var cancelFn = null;
+    function typewrite(fullText) {
+      if (cancelFn) cancelFn();
+      bubbleEl.textContent = '';
+      replayEl.classList.remove('visible');
+      portraitEl.classList.add('is-talking');
+      var cursor = document.createElement('span');
+      cursor.className = 'pw-cursor';
+      bubbleEl.appendChild(cursor);
+      var i = 0, cancelled = false;
+      function step() {
+        if (cancelled) return;
+        if (i >= fullText.length) {
+          portraitEl.classList.remove('is-talking');
+          replayEl.classList.add('visible');
+          return;
+        }
+        var ch = fullText.charAt(i++);
+        cursor.remove();
+        bubbleEl.appendChild(document.createTextNode(ch));
+        bubbleEl.appendChild(cursor);
+        var pause = ',.!?;:'.indexOf(ch) >= 0 ? coachSpeed * 5 : coachSpeed;
+        setTimeout(step, pause);
+      }
+      setTimeout(step, startDelay);
+      cancelFn = function() { cancelled = true; };
+    }
+
+    /* Minimize */
+    minBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      cardEl.classList.toggle('minimized');
+      var isMin = cardEl.classList.contains('minimized');
+      minBtn.innerHTML = isMin
+        ? '<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M19 13H5v-2h14v2zm0-8H5v2h14V5zm0 12H5v2h14v-2z"/></svg> Expand'
+        : '<svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M19 13H5v-2h14v2z"/></svg> Minimize';
+    });
+
+    /* Click to replay */
+    bubbleEl.addEventListener('click', function() {
+      if (coachLoop || replayEl.classList.contains('visible')) typewrite(coachText);
+    });
+    replayEl.addEventListener('click', function() { typewrite(coachText); });
+
+    /* Auto-start */
+    var coachStarted = false;
+    function startCoach() {
+      if (coachStarted) return;
+      coachStarted = true;
+      typewrite(coachText);
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(en) { if (en.isIntersecting) { startCoach(); io.disconnect(); } });
+      }, { threshold: 0.1 });
+      io.observe(cardEl);
+    }
+    setTimeout(startCoach, 1000);
+  })();
+
 })();
 </script>
 </body>
