@@ -24,18 +24,18 @@
     color: var(--pw-text);
     -webkit-font-smoothing: antialiased;
   }
-  body{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    padding:28px 40px 10px;
-    overflow:visible;
+ body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px 5px; /* Reduced side padding from 40px to 5px */
+    overflow: visible;
   }
   .pw-player-wrap{
     width:100%;
-    max-width:800px;
+    max-width:1050px;
     overflow:visible;
   }
   /* ══ VIDEO CARD ══ */
@@ -91,8 +91,8 @@
   .pw-fs-btn svg{ width:14px; height:14px; fill:#fff; }
   /* ══ CONTROLS CARD ══ */
   .pw-controls-card{
-    width:88%;
-    max-width:790px;
+    width:94%;
+    max-width:1020px;
     margin-left:auto;
     margin-right:auto;
     background:var(--pw-bg);
@@ -113,7 +113,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:0 4px;
+    padding:0 10px;
   }
   .pw-btn-group{
     display:flex;
@@ -268,8 +268,8 @@
   }
   /* ══ NOTES CARD ══ */
   .pw-notes-card{
-    width:88%;
-    max-width:790px;
+    width:94%;
+    max-width:1020px;
     margin-left:auto;
     margin-right:auto;
     background:var(--pw-bg);
@@ -313,10 +313,10 @@
     padding:3px;
   }
   .pw-notes-well textarea{
-    width:100%; min-height:72px; resize:vertical;
+    width:100%; min-height:90px; resize:vertical;
     border:none; outline:none; background:transparent;
     border-radius:10px; padding:8px 10px;
-    color:#444; font-size:12px; line-height:1.5;
+    color:#444; font-size:13px; line-height:1.5;
     font-family:'IBM Plex Sans', sans-serif;
   }
   .pw-notes-well textarea::placeholder{ color:#aaa; }
