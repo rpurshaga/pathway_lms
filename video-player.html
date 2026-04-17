@@ -694,14 +694,26 @@
     video.setAttribute('webkit-playsinline', 'true');
     video.setAttribute('x5-playsinline', 'true');
     video.setAttribute('x5-video-player-type', 'h5');
-    video.requestFullscreen = function() { return Promise.resolve(); };
-    video.webkitRequestFullscreen = function() { return Promise.resolve(); };
-    video.webkitEnterFullscreen = function() { return Promise.resolve(); };
-    video.mozRequestFullScreen = function() { return Promise.resolve(); };
-    video.msRequestFullscreen = function() { return Promise.resolve(); };
+   video.webkitEnterFullscreen = function() {
+      if (manualFullscreen) {
+        // Only run the real fullscreen if your button turned on the "manual" flag
+        return HTMLVideoElement.prototype.webkitEnterFullscreen.call(video);
+      }
+      // Otherwise, return a resolved promise (do nothing) to trick the app
+      return Promise.resolve();
+    };
+    video.requestFullscreen = function() {
+      if (manualFullscreen) return HTMLVideoElement.prototype.requestFullscreen.call(video);
+      return Promise.resolve();
+    };
+    video.webkitRequestFullscreen = function() {
+      if (manualFullscreen) return HTMLVideoElement.prototype.webkitRequestFullscreen.call(video);
+      return Promise.resolve();
+    };
+
     video.preload = 'auto';
     // Replace placeholder with video
-    placeholder.parentNode.replaceChild(video, placeholder);
+   placeholder.parentNode.replaceChild(video, placeholder);
     var _hlsMode = false;
     if (videoSrc) {
       if (videoSrc.indexOf('.m3u8') !== -1 && typeof Hls !== 'undefined' && Hls.isSupported()) {
