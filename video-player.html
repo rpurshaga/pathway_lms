@@ -10,7 +10,7 @@
 <style>
   :root{
     --pw-bg:#e4e1d9;
-    --pw-well:#d8d5cc;
+    --pw-well:#f0eeeb;
     --pw-track:#c4c1b8;
     --pw-text:#333;
     --pw-teal:#2a9d8f;
@@ -93,22 +93,11 @@
   .pw-fs-btn svg{ width:14px; height:14px; fill:#fff; }
   /* ══ CONTROLS CARD ══ */
   .pw-controls-card{
-    width:94%;
-    max-width:1020px;
-    margin-left:auto;
-    margin-right:auto;
-    background:var(--pw-bg);
-    padding:50px 16px 10px;
-    border-radius:0 0 20px 20px;
-    position:relative;
-    z-index:1;
+   transform: translateY(-2px); /* Subtle lift */
     box-shadow:
-      0 8px 20px rgba(0,0,0,0.08),
-      0 2px 6px rgba(0,0,0,0.05),
-      4px 0 12px rgba(0,0,0,0.03),
-      -4px 0 12px rgba(0,0,0,0.03),
-      inset 1px 1px 2px rgba(255,255,255,.45),
-      inset -1px -1px 2px rgba(0,0,0,.04);
+      0 4px 8px rgba(0,0,0,0.04),
+      0 20px 45px rgba(0,0,0,0.12),
+      inset 1px 1px 0 rgba(255,255,255,0.9);
   }
   /* Buttons + volume row */
   .pw-btn-row{
@@ -270,22 +259,11 @@
   }
   /* ══ NOTES CARD ══ */
   .pw-notes-card{
-    width:94%;
-    max-width:1020px;
-    margin-left:auto;
-    margin-right:auto;
-    background:var(--pw-bg);
-    padding:14px 16px 10px;
-    border-radius:18px;
-    margin-top:10px;
-    position:relative;
+    transform: translateY(-2px); /* Subtle lift */
     box-shadow:
-      0 8px 20px rgba(0,0,0,0.08),
-      0 2px 6px rgba(0,0,0,0.05),
-      4px 0 12px rgba(0,0,0,0.03),
-      -4px 0 12px rgba(0,0,0,0.03),
-      inset 1px 1px 2px rgba(255,255,255,.45),
-      inset -1px -1px 2px rgba(0,0,0,.04);
+      0 4px 8px rgba(0,0,0,0.04),
+      0 20px 45px rgba(0,0,0,0.12),
+      inset 1px 1px 0 rgba(255,255,255,0.9);
   }
   .pw-notes-header{
     display:flex; align-items:center; justify-content:space-between;
@@ -307,6 +285,7 @@
   }
   .pw-saved.show{ opacity:1; }
   .pw-notes-well{
+    border: 1px solid rgba(0,0,0,0.08)
     border-radius:12px;
     background:var(--pw-well);
     box-shadow:
