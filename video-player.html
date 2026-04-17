@@ -17,6 +17,34 @@
     --pw-teal-2:#38c4ba;
     --pw-yellow:#8a7a20;
   }
+  /* ── BGMC brand theme ── */
+  [data-theme="bgmc"]{
+    --pw-bg:#1e1e1e;
+    --pw-well:#2b2b2b;
+    --pw-track:#2b2b2b;
+    --pw-text:#f0f0f0;
+    --pw-teal:#F5A800;
+    --pw-teal-2:#E09900;
+    --pw-yellow:#F5A800;
+  }
+  [data-theme="bgmc"] html,[data-theme="bgmc"] body,html[data-theme="bgmc"],html[data-theme="bgmc"] body{background:#1e1e1e;color:#f0f0f0;}
+  [data-theme="bgmc"] .pw-copy-btn,[data-theme="bgmc"] .pw-my-notes-btn{
+    background:linear-gradient(180deg,#333,#252525);
+    color:#F5A800;
+    border-color:rgba(245,168,0,.2);
+    box-shadow:2px 2px 5px rgba(0,0,0,.4),-2px -2px 5px rgba(255,255,255,.04);
+  }
+  [data-theme="bgmc"] .pw-notes-card,[data-theme="bgmc"] .pw-notes-well textarea{
+    background:#252525; color:#f0f0f0; border-color:rgba(245,168,0,.15);
+  }
+  [data-theme="bgmc"] .pw-notes-well textarea::placeholder{color:#666;}
+  [data-theme="bgmc"] .pw-watermark{color:rgba(245,168,0,.35);}
+  [data-theme="bgmc"] .pw-controls-card{background:#1e1e1e;}
+  [data-theme="bgmc"] .pw-key{
+    background:linear-gradient(180deg,#333,#252525);
+    border-color:rgba(245,168,0,.15);
+    box-shadow:3px 3px 7px rgba(0,0,0,.5),-3px -3px 7px rgba(255,255,255,.04),inset 0 1px 0 rgba(255,255,255,.06);
+  }
   *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
   html, body {
     background: transparent;
@@ -917,6 +945,10 @@
         <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
         Copy Notes
       </button>
+      <button class="pw-copy-btn" id="pwThemeBtn" type="button" title="Toggle BGMC theme" style="margin-left:0;">
+        <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor;"><path d="M12 3a9 9 0 0 0 0 18 1 1 0 0 0 0-2 7 7 0 0 1 0-14 1 1 0 0 0 0-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span id="pwThemeLabel">Theme</span>
+      </button>
       <span class="pw-watermark">Pathway Media Player</span>
     </div>
   </div>
@@ -1490,6 +1522,25 @@
   });
 
   /* Print */
+  /* ── Theme toggle ── */
+  (function(){
+    var pwThemes = ['light', 'bgmc'];
+    var PWTHEME_KEY = 'pw-video-theme';
+    var pwThIdx = pwThemes.indexOf(localStorage.getItem(PWTHEME_KEY) || 'light');
+    if (pwThIdx < 0) pwThIdx = 0;
+    function applyPwTheme(idx) {
+      var t = pwThemes[idx];
+      document.documentElement.setAttribute('data-theme', t === 'light' ? '' : t);
+      document.getElementById('pwThemeLabel').textContent = t === 'light' ? 'Theme' : 'BGMC';
+      localStorage.setItem(PWTHEME_KEY, t);
+    }
+    applyPwTheme(pwThIdx);
+    document.getElementById('pwThemeBtn').addEventListener('click', function() {
+      pwThIdx = (pwThIdx + 1) % pwThemes.length;
+      applyPwTheme(pwThIdx);
+    });
+  })();
+
   document.getElementById('pwModalPrint').addEventListener('click', function() {
     var notes = loadNotes().filter(function(n) { return n.courseId === COURSE.id; });
     var hls   = loadHLs().filter(function(h)   { return h.courseId === COURSE.id; });
@@ -1528,39 +1579,29 @@
     btn.addEventListener('pointerleave',function() { btn.classList.remove('pressed'); });
   });
 
-  /* ─── COACH CARD ──────────────────────────────────────────────── */
+  /* ─── PROFESSOR NOTE ────────────────────────────────────────── */
   (function() {
-    var CHARS = {
-      1: { name:'Coach Mara', img:'https://api.dicebear.com/7.x/pixel-art/svg?seed=Mara&backgroundColor=b6e3f4' },
-      2: { name:'Coach Eli',  img:'https://api.dicebear.com/7.x/pixel-art/svg?seed=Eli&backgroundColor=d1f4cc'  },
-      3: { name:'Coach Sam',  img:'https://api.dicebear.com/7.x/pixel-art/svg?seed=Sam&backgroundColor=ffd5dc'  }
-    };
-    var charNum    = parseInt(p('char')||'1', 10);
-    var d          = CHARS[charNum] || CHARS[1];
-    var imgUrl     = b64('img') || p('imgSrc') || d.img;
-    var coachName  = b64text('name') || p('name') || d.name;
+    /* Fully customisable via URL params — no hardcoded names or images.
+       ?name=  or  ?name=<base64>   — professor's name (plain text or base64)
+       ?msg=   or  ?text=<base64>   — the note text (base64 recommended)
+       ?speed= — typing speed in ms per character (default 30)
+       ?delay= — ms before typing starts (default 400)
+       ?loop=1 — loop the typewriter on click
+    */
+    var coachName  = b64text('name') || p('name') || '';
     var coachText  = b64text('text') || p('text') || b64text('msg') || p('msg') || '';
     var coachSpeed = parseInt(p('speed')||'30', 10);
     var startDelay = parseInt(p('delay')||'400', 10);
     var coachLoop  = p('loop')==='1' || p('loop')==='true';
 
-    var portraitEl = document.getElementById('pwPortrait');
     var nameEl     = document.getElementById('pwCoachName');
     var bubbleEl   = document.getElementById('pwCoachBubble');
     var replayEl   = document.getElementById('pwCoachReplay');
     var minBtn     = document.getElementById('pwCoachMin');
     var cardEl     = document.getElementById('pwCoachCard');
 
-    nameEl.textContent = coachName;
-
-    /* Portrait */
-    if (imgUrl) {
-      var img = document.createElement('img');
-      img.alt = coachName;
-      img.onload = function() { portraitEl.removeAttribute('data-empty'); };
-      img.src = imgUrl;
-      portraitEl.appendChild(img);
-    }
+    /* Show professor name only if provided */
+    if (coachName) nameEl.textContent = '· ' + coachName;
 
     /* Typewriter */
     var cancelFn = null;
@@ -1568,7 +1609,6 @@
       if (cancelFn) cancelFn();
       bubbleEl.textContent = '';
       replayEl.classList.remove('visible');
-      portraitEl.classList.add('is-talking');
       var cursor = document.createElement('span');
       cursor.className = 'pw-cursor';
       bubbleEl.appendChild(cursor);
@@ -1576,7 +1616,6 @@
       function step() {
         if (cancelled) return;
         if (i >= fullText.length) {
-          portraitEl.classList.remove('is-talking');
           replayEl.classList.add('visible');
           return;
         }
