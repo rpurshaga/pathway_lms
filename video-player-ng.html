@@ -55,6 +55,23 @@
   --w98-title:   #7a2050;
   --w98-teal:    #a03060;
 }
+/* ── BGMC brand theme ── */
+[data-wtheme="bgmc"] {
+  --w98-face:       #2b2b2b;
+  --w98-dark:       #1a1a1a;
+  --w98-darker:     #0d0d0d;
+  --w98-white:      #444444;
+  --w98-black:      #f0f0f0;
+  --w98-title:      #1a1a1a;
+  --w98-title-text: #F5A800;
+  --w98-teal:       #F5A800;
+  --w98-field:      #1e1e1e;
+  --w98-field-text: #F5A800;
+}
+[data-wtheme="bgmc"] html,
+[data-wtheme="bgmc"] body,
+html[data-wtheme="bgmc"],
+html[data-wtheme="bgmc"] body { color: #f0f0f0; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -647,6 +664,7 @@ body {
           <div class="w98-theme-item" data-wtheme="maroon"><div class="w98-theme-swatch" style="background:#e0c8c8;"></div>Maroon</div>
           <div class="w98-theme-item" data-wtheme="midnight"><div class="w98-theme-swatch" style="background:#2a2a3a;"></div>Midnight</div>
           <div class="w98-theme-item" data-wtheme="rose"><div class="w98-theme-swatch" style="background:#e8d0d8;"></div>Rose</div>
+          <div class="w98-theme-item" data-wtheme="bgmc"><div class="w98-theme-swatch" style="background:#2b2b2b;border:1px solid #F5A800;"></div><span style="color:#F5A800;font-weight:700;">BGMC</span></div>
         </div>
       </div>
     </div>
@@ -934,7 +952,7 @@ body {
 
   /* ─── Window chrome theme ─────────────────────────────────────── */
   var WTHEME_KEY = 'w98-video-wtheme';
-  var wthemeNames = { '': 'Classic', 'navy': 'Navy', 'forest': 'Forest', 'maroon': 'Maroon', 'midnight': 'Midnight', 'rose': 'Rose' };
+  var wthemeNames = { '': 'Classic', 'navy': 'Navy', 'forest': 'Forest', 'maroon': 'Maroon', 'midnight': 'Midnight', 'rose': 'Rose', 'bgmc': 'BGMC' };
   var currentWTheme = localStorage.getItem(WTHEME_KEY) || '';
 
   function applyWTheme(t) {
