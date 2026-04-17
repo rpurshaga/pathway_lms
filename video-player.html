@@ -690,10 +690,15 @@
     videoReady = true;
     video = document.createElement('video');
     video.className = 'pw-video';
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    video.setAttribute('x5-playsinline', '');
+    video.setAttribute('playsinline', 'true');
+    video.setAttribute('webkit-playsinline', 'true');
+    video.setAttribute('x5-playsinline', 'true');
     video.setAttribute('x5-video-player-type', 'h5');
+    video.requestFullscreen = function() { return Promise.resolve(); };
+    video.webkitRequestFullscreen = function() { return Promise.resolve(); };
+    video.webkitEnterFullscreen = function() { return Promise.resolve(); };
+    video.mozRequestFullScreen = function() { return Promise.resolve(); };
+    video.msRequestFullscreen = function() { return Promise.resolve(); };
     video.preload = 'auto';
     // Replace placeholder with video
     placeholder.parentNode.replaceChild(video, placeholder);
