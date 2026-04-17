@@ -5,215 +5,870 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pathway Audio Player — W98 Edition</title>
 <style>
+/* ══════════════════════════════════════════════
+   WINDOWS 98 DESIGN TOKENS
+══════════════════════════════════════════════ */
+:root {
+  --w98-face:       #c0c0c0;
+  --w98-dark:       #808080;
+  --w98-darker:     #404040;
+  --w98-white:      #ffffff;
+  --w98-title:      #000080;
+  --w98-title-text: #ffffff;
+  --w98-black:      #000000;
+  --w98-teal:       #008080;
+  --w98-field:      #ffffff;
+  --w98-field-text: #000000;
+  --w98-font:       Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+  --course-color:   #008080;
+  --hl-bg:          #dfdfdf;
+  --hl-bg-hover:    #c4c4c4;
+  --reading-ls:     normal;
+  --reading-lh:     1.6;
+  --reading-ws:     normal;
+}
+
+/* ── Dark-mode overrides ── */
+@media (prefers-color-scheme: dark) {
   :root {
-    --w98-face: #c0c0c0;
-    --w98-dark: #808080;
-    --w98-darker: #404040;
-    --w98-white: #ffffff;
-    --w98-title: #000080;
+    --w98-face:       #3a3a3a;
+    --w98-dark:       #1a1a1a;
+    --w98-darker:     #0a0a0a;
+    --w98-white:      #5a5a5a;
+    --w98-title:      #000060;
     --w98-title-text: #ffffff;
-    --w98-black: #000000;
-    --w98-teal: #008080;
-    --w98-font: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+    --w98-black:      #000000;
+    --w98-teal:       #00a0a0;
+    --w98-field:      #1e1e1e;
+    --w98-field-text: #d0d0d0;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body {
-    background: transparent;
-    font-family: var(--w98-font);
-    color: var(--w98-black);
+  html, body { color: #d0d0d0; }
+}
+
+/* ── Manual theme overrides (data-theme attribute) ── */
+[data-theme="dark"] {
+  --w98-face:       #3a3a3a !important;
+  --w98-dark:       #1a1a1a !important;
+  --w98-darker:     #0a0a0a !important;
+  --w98-white:      #5a5a5a !important;
+  --w98-field:      #1e1e1e !important;
+  --w98-field-text: #d0d0d0 !important;
+  --w98-teal:       #00a0a0 !important;
+}
+[data-theme="dark"] html,
+[data-theme="dark"] body,
+[data-theme="dark"],
+html[data-theme="dark"],
+html[data-theme="dark"] body { color: #d0d0d0; }
+
+[data-theme="solarized"] {
+  --w98-face:       #eee8d5 !important;
+  --w98-field:      #fdf6e3 !important;
+  --w98-field-text: #586e75 !important;
+  --w98-teal:       #2aa198 !important;
+}
+[data-theme="amber"] {
+  --w98-face:       #2a1f08 !important;
+  --w98-dark:       #1a1408 !important;
+  --w98-darker:     #0a0a00 !important;
+  --w98-white:      #5a4a20 !important;
+  --w98-field:      #231c0e !important;
+  --w98-field-text: #e8c87a !important;
+  --w98-teal:       #d4a843 !important;
+}
+[data-theme="amber"] html,
+[data-theme="amber"] body,
+html[data-theme="amber"],
+html[data-theme="amber"] body { color: #e8c87a; }
+
+/* ── W98 Chrome / Window color themes ── */
+[data-wtheme="navy"] {
+  --w98-face:    #c8d0e0;
+  --w98-title:   #1a2a6c;
+  --w98-teal:    #2255b0;
+}
+[data-wtheme="forest"] {
+  --w98-face:    #c8d8c8;
+  --w98-title:   #1a5c1a;
+  --w98-teal:    #2a7a2a;
+}
+[data-wtheme="maroon"] {
+  --w98-face:    #e0c8c8;
+  --w98-title:   #6c1a1a;
+  --w98-teal:    #8c2020;
+}
+[data-wtheme="midnight"] {
+  --w98-face:    #2a2a3a;
+  --w98-dark:    #1a1a2a;
+  --w98-darker:  #0a0a1a;
+  --w98-white:   #4a4a6a;
+  --w98-black:   #d0d0e0;
+  --w98-title:   #0a0a1a;
+  --w98-title-text: #c0c0e0;
+  --w98-teal:    #4040a0;
+}
+[data-wtheme="rose"] {
+  --w98-face:    #e8d0d8;
+  --w98-title:   #7a2050;
+  --w98-teal:    #a03060;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: transparent;
+  font-family: var(--w98-font);
+  color: var(--w98-black);
+}
+body {
+  padding: 20px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ══════════════════════════════════════════════
+   COACH WINDOW (Card 4)
+══════════════════════════════════════════════ */
+.w98-coach-window {
+  width: 100%;
+  max-width: 720px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+  box-shadow: 1px 1px 0 var(--w98-darker);
+  margin-bottom: 8px;
+  position: relative;
+}
+.w98-coach-window.minimized .w98-coach-content { display: none; }
+
+.w98-coach-titlebar {
+  height: 20px;
+  background: linear-gradient(90deg, var(--w98-title), #1084d0);
+  display: flex;
+  align-items: center;
+  padding: 0 3px;
+  gap: 4px;
+  user-select: none;
+}
+.w98-coach-titlebar-icon {
+  width: 14px; height: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.w98-coach-titlebar-icon svg { width: 12px; height: 12px; }
+.w98-coach-titlebar-text {
+  flex: 1;
+  font-family: var(--w98-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--w98-title-text);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.w98-coach-titlebar-btns { display: flex; gap: 2px; }
+.w98-tbtn {
+  width: 15px; height: 13px;
+  background: var(--w98-face);
+  border: 1px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: default;
+  font-family: var(--w98-font);
+  font-size: 9px; line-height: 1; padding: 0;
+  color: var(--w98-black);
+}
+.w98-tbtn:active {
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+}
+
+.w98-coach-content { padding: 8px 10px 10px; }
+.w98-coach-body {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.w98-portrait {
+  flex: 0 0 auto;
+  width: 100px; height: 100px;
+  background: #000;
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  overflow: hidden;
+  position: relative;
+  image-rendering: pixelated;
+}
+.w98-portrait img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  image-rendering: pixelated;
+  display: block;
+}
+.w98-portrait.is-talking img {
+  animation: w98-bob 0.32s steps(2) infinite;
+}
+@keyframes w98-bob {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-2px); }
+}
+.w98-portrait[data-empty="1"] {
+  background: linear-gradient(180deg, #3a4a66 0 60%, #222 60% 100%);
+}
+.w98-portrait[data-empty="1"]::after {
+  content: "";
+  position: absolute;
+  inset: 22% 30% 10% 30%;
+  background: rgba(255,255,255,0.15);
+  clip-path: polygon(30% 0, 70% 0, 78% 28%, 85% 65%, 70% 100%, 30% 100%, 15% 65%, 22% 28%);
+}
+
+.w98-speech { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.w98-speech-label {
+  font-family: var(--w98-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--w98-black);
+  margin-bottom: 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--w98-dark);
+  display: flex; align-items: center; gap: 5px;
+}
+.w98-speech-label::before { content: "💬"; font-size: 11px; line-height: 1; }
+.w98-speech-field {
+  flex: 1;
+  font-family: var(--w98-font);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--w98-field-text);
+  background: var(--w98-field);
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  padding: 6px 8px;
+  min-height: 52px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  cursor: pointer;
+}
+.w98-cursor {
+  display: inline-block;
+  width: 7px; height: 12px;
+  background: var(--w98-field-text);
+  vertical-align: text-bottom;
+  margin-left: 1px;
+  animation: w98-blink 0.9s step-end infinite;
+}
+@keyframes w98-blink { 50% { opacity: 0; } }
+.w98-continue {
+  align-self: flex-end;
+  font-family: var(--w98-font);
+  font-size: 10px;
+  color: var(--w98-dark);
+  margin-top: 3px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.w98-continue.is-visible {
+  opacity: 1;
+  animation: w98-blink 1.1s step-end infinite;
+}
+
+/* ══════════════════════════════════════════════
+   MAIN DOCUMENT WINDOW (Cards 1 + 2 united)
+══════════════════════════════════════════════ */
+.w98-doc {
+  width: 100%;
+  max-width: 720px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+  box-shadow: 1px 1px 0 var(--w98-darker);
+  position: relative;
+}
+
+/* Title bar */
+.w98-titlebar {
+  height: 20px;
+  background: linear-gradient(90deg, var(--w98-title), #1084d0);
+  display: flex;
+  align-items: center;
+  padding: 0 3px;
+  gap: 4px;
+  user-select: none;
+}
+.w98-titlebar-icon { width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+.w98-titlebar-icon svg { width: 12px; height: 12px; }
+.w98-titlebar-text {
+  flex: 1;
+  font-family: var(--w98-font);
+  font-size: 11px; font-weight: 700;
+  color: var(--w98-title-text);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.w98-titlebar-btns { display: flex; gap: 2px; }
+
+/* ── Toolbar (Print / My Highlights / Copy / Export / Clear / count) ── */
+.w98-toolbar {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 6px;
+  background: var(--w98-face);
+  border-bottom: 1px solid var(--w98-darker);
+  flex-wrap: wrap;
+}
+.w98-tb-btn {
+  font: 700 11px var(--w98-font);
+  padding: 3px 10px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  cursor: pointer;
+  color: var(--w98-black);
+  min-width: 52px;
+  white-space: nowrap;
+}
+.w98-tb-btn:active, .w98-tb-btn.pressed {
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+}
+.w98-tb-count {
+  margin-left: auto;
+  font: 11px var(--w98-font);
+  color: var(--w98-black);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+/* ── Audio player row ── */
+.w98-player-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 6px 6px 4px;
+  border-bottom: 1px solid var(--w98-darker);
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.w98-btn {
+  height: 50px;
+  min-width: 52px;
+  padding: 0 6px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  font-family: var(--w98-font);
+  font-size: 10px; font-weight: 700;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px;
+  user-select: none;
+  color: var(--w98-black);
+  letter-spacing: 0.2px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.w98-btn:active, .w98-btn.pressed {
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  padding: 1px 5px 0 7px;
+}
+.w98-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.w98-btn.play-btn {
+  background: linear-gradient(180deg, #e0e0e0, #b0b0b0);
+  min-width: 60px;
+}
+.w98-btn .leg {
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px; line-height: 1;
+}
+.ico-gray svg { fill: var(--w98-black); }
+.ico-teal svg { fill: var(--w98-teal); }
+.ico-teal .leg { color: var(--w98-teal); }
+.ico-yellow svg { fill: #7a6c1a; }
+.ico-yellow .leg { color: #7a6c1a; }
+
+/* LCD */
+.w98-lcd {
+  height: 50px;
+  min-width: 72px;
+  padding: 4px 6px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px;
+}
+.w98-lcd-screen {
+  width: 100%; height: 20px;
+  background: #000;
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 4px;
+  position: relative; overflow: hidden;
+}
+.w98-lcd-screen::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.2) 1px, rgba(0,0,0,0.2) 2px);
+  pointer-events: none;
+}
+.w98-lcd-time {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px; font-weight: 700;
+  color: #00ff00;
+  letter-spacing: 1.5px; line-height: 1;
+  text-shadow: 0 0 3px rgba(0,255,0,0.5);
+  position: relative; z-index: 1;
+}
+.w98-lcd-label {
+  font-family: var(--w98-font);
+  font-size: 9px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--w98-black); line-height: 1;
+}
+
+/* ── Scrub bar ── */
+.w98-scrub-row {
+  padding: 4px 6px 2px;
+  border-bottom: 1px solid var(--w98-darker);
+}
+.w98-scrub-inset {
+  height: 14px;
+  background: var(--w98-field);
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  display: flex; align-items: center;
+  padding: 0 4px;
+  cursor: pointer;
+  position: relative;
+}
+.w98-scrub-track {
+  width: 100%; height: 4px;
+  background: var(--w98-dark);
+  position: relative;
+  border: 1px solid var(--w98-darker);
+}
+.w98-scrub-fill {
+  position: absolute; top: 0; left: 0;
+  height: 100%; width: 0%;
+  background: var(--w98-teal);
+}
+.w98-scrub-times {
+  display: flex; justify-content: space-between;
+  font-family: var(--w98-font);
+  font-size: 9px; color: var(--w98-black);
+  padding: 1px 2px 0;
+}
+
+/* ── Settings row (Spacing / Theme / ADHD) ── */
+.w98-settings-row {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--w98-darker);
+  flex-wrap: wrap;
+}
+.w98-set-btn {
+  font: 700 10px var(--w98-font);
+  padding: 3px 8px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  cursor: pointer;
+  color: var(--w98-black);
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
+}
+.w98-set-btn:active, .w98-set-btn.pressed {
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+}
+.w98-set-btn.active {
+  border-color: var(--w98-teal) var(--w98-darker) var(--w98-darker) var(--w98-teal);
+  color: var(--w98-teal);
+}
+.w98-set-btn svg { width: 10px; height: 10px; fill: currentColor; flex-shrink: 0; }
+
+/* ── Window theme dropdown ── */
+.w98-wtheme-wrap { position: relative; }
+.w98-wtheme-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  min-width: 130px;
+  z-index: 300;
+  box-shadow: 2px 2px 0 var(--w98-darker);
+}
+.w98-wtheme-menu.open { display: block; }
+.w98-wtheme-item {
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--w98-black);
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--w98-font);
+}
+.w98-wtheme-item:hover { background: var(--w98-title); color: var(--w98-title-text); }
+.w98-wtheme-item.active { font-weight: 700; }
+.w98-wtheme-swatch {
+  width: 12px; height: 12px;
+  border: 1px solid var(--w98-darker);
+  flex-shrink: 0;
+}
+
+/* ── Paper area ── */
+.w98-paper {
+  background: var(--w98-field);
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  margin: 6px;
+  padding: 16px 20px;
+  color: var(--w98-field-text);
+  font-size: 13px;
+  line-height: var(--reading-lh);
+  letter-spacing: var(--reading-ls);
+  word-spacing: var(--reading-ws);
+  transition: line-height .3s, letter-spacing .3s, word-spacing .3s;
+}
+.w98-paper h1 {
+  font-family: var(--w98-font);
+  font-size: 15px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0 0 4px 0;
+  color: var(--w98-title);
+  border-bottom: 2px solid var(--course-color);
+  padding-bottom: 4px;
+}
+.w98-paper h2 {
+  font-family: var(--w98-font);
+  font-size: 13px; font-weight: 700; font-style: italic;
+  color: var(--course-color);
+  margin: 0 0 12px 0;
+}
+.w98-paper h3 {
+  font-family: var(--w98-font);
+  font-size: 12px; font-weight: 700;
+  color: var(--w98-field-text);
+  margin: 16px 0 6px;
+}
+.w98-paper p { margin: 0 0 12px 0; }
+.w98-paper ul {
+  list-style: none;
+  margin: 6px 0 14px 0;
+  padding: 8px 14px;
+  background: #f4f4f0;
+  border: 1px solid var(--w98-darker);
+}
+[data-theme="dark"] .w98-paper ul,
+[data-theme="amber"] .w98-paper ul { background: rgba(255,255,255,0.05); }
+.w98-paper ul li { position: relative; padding: 2px 0 2px 20px; }
+.w98-paper ul li::before {
+  content: '';
+  position: absolute;
+  left: 4px; top: 9px;
+  width: 6px; height: 6px;
+  background: var(--course-color);
+  border: 1px solid var(--w98-black);
+}
+.w98-paper blockquote {
+  border-left: 3px solid var(--course-color);
+  padding: 4px 12px;
+  margin: 0 0 12px;
+  color: var(--w98-dark);
+  font-style: italic;
+}
+
+/* Bionic */
+.w98-bionic b { font-weight: 700; }
+
+/* Highlights */
+mark.w98-hl {
+  padding: 1px 0;
+  cursor: pointer;
+  border-bottom: 1px dotted var(--w98-darker);
+}
+mark.w98-hl:hover { outline: 1px dashed var(--w98-darker); }
+mark.w98-hl-green { background: rgba(134,239,172,0.45); }
+mark.w98-hl-blue  { background: rgba(147,197,253,0.45); }
+mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
+
+/* Source link */
+.w98-source-link {
+  display: flex; align-items: center; gap: 6px;
+  margin: 8px 6px 4px;
+  padding: 4px 10px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  text-decoration: none;
+  color: var(--w98-teal);
+  font-family: var(--w98-font);
+  font-size: 11px; font-weight: 700;
+  width: fit-content;
+}
+.w98-source-link:active { border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker); }
+.w98-source-link svg { width: 12px; height: 12px; fill: currentColor; flex-shrink: 0; }
+.w98-source-link.hidden { display: none; }
+
+/* Status bar */
+.w98-statusbar {
+  display: flex; gap: 4px;
+  padding: 3px 4px 4px;
+  font-size: 11px;
+  background: var(--w98-face);
+}
+.w98-statusbar .cell {
+  flex: 1;
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  padding: 2px 6px;
+  background: var(--w98-face);
+  color: var(--w98-black);
+}
+.w98-statusbar .cell.grow { flex: 3; }
+
+/* ── Floating Highlight button ── */
+.w98-hl-float {
+  position: absolute; display: none;
+  padding: 3px 10px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  box-shadow: 1px 1px 0 var(--w98-darker);
+  font: 700 11px var(--w98-font);
+  cursor: pointer;
+  z-index: 9999;
+  user-select: none;
+  color: var(--w98-black);
+  white-space: nowrap;
+  display: none;
+  gap: 4px;
+  align-items: center;
+}
+.w98-hl-float.show { display: flex; }
+.w98-hl-float:active { border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker); }
+.w98-hl-color-dot {
+  width: 10px; height: 10px;
+  border: 1px solid var(--w98-darker);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.w98-hl-color-dot.active { outline: 2px solid var(--w98-teal); }
+
+/* ── Sticky mini-player ── */
+.w98-sticky {
+  position: fixed;
+  bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: none;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+  box-shadow: 1px 1px 0 var(--w98-darker);
+  padding: 4px 6px;
+  gap: 4px;
+  align-items: center;
+}
+.w98-sticky.show { display: flex; }
+.w98-sticky .w98-btn { height: 34px; min-width: 36px; }
+.w98-sticky .w98-btn svg { width: 14px; height: 14px; }
+.w98-sticky .w98-btn .leg { display: none; }
+
+/* ══════════════════════════════════════════════
+   MODAL — My Highlights
+══════════════════════════════════════════════ */
+.w98-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: flex-start; justify-content: center;
+  padding: 40px 12px;
+  z-index: 10000;
+  overflow-y: auto;
+}
+.w98-modal.open { display: flex; }
+.w98-modal-window {
+  width: 100%; max-width: 720px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+  box-shadow: 2px 2px 0 var(--w98-darker);
+  font-family: var(--w98-font);
+  color: var(--w98-black);
+}
+.w98-modal-titlebar {
+  height: 22px;
+  background: linear-gradient(90deg, var(--course-color), #1084d0);
+  display: flex; align-items: center;
+  padding: 0 4px; gap: 6px;
+  color: #fff; font-size: 12px; font-weight: 700;
+}
+.w98-modal-titlebar .spacer { flex: 1; }
+.w98-modal-close {
+  width: 16px; height: 14px;
+  background: var(--w98-face);
+  border: 1px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  color: var(--w98-black);
+  font: 700 11px var(--w98-font);
+  cursor: pointer; padding: 0; line-height: 1;
+}
+.w98-modal-body {
+  padding: 10px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+.w98-modal-toolbar {
+  display: flex; gap: 6px;
+  padding: 0 0 8px 0;
+  border-bottom: 1px solid var(--w98-darker);
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.w98-course-block {
+  background: var(--w98-field);
+  border: 2px solid;
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+  margin-bottom: 8px;
+}
+.w98-course-header {
+  padding: 5px 8px;
+  background: var(--w98-face);
+  border-bottom: 1px solid var(--w98-darker);
+  font-weight: 700; font-size: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.w98-course-swatch {
+  display: inline-block; width: 12px; height: 12px;
+  border: 1px solid var(--w98-black);
+}
+.w98-article-group { padding: 5px 8px; border-bottom: 1px dotted #ccc; }
+.w98-article-group:last-child { border-bottom: 0; }
+.w98-article-title { font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+.w98-hl-item {
+  padding: 4px 8px;
+  margin: 3px 0;
+  font-size: 12px; line-height: 1.5;
+  background: var(--hl-bg);
+  border-left: 3px solid var(--course-color);
+  position: relative;
+}
+.w98-hl-item .meta {
+  display: block; font-size: 10px;
+  color: #555; margin-top: 2px; font-style: italic;
+}
+.w98-hl-item .remove-btn {
+  position: absolute; top: 4px; right: 4px;
+  width: 18px; height: 16px;
+  background: var(--w98-face);
+  border: 1px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  font: 700 10px var(--w98-font);
+  cursor: pointer; padding: 0;
+}
+.w98-empty {
+  text-align: center; padding: 24px; color: #666; font-style: italic;
+}
+
+/* ══════════════════════════════════════════════
+   PRINT
+══════════════════════════════════════════════ */
+@media print {
+  @page { margin: 0.6in; }
+  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  body * { visibility: hidden !important; }
+  .w98-paper, .w98-paper * { visibility: visible !important; }
+  .w98-doc {
+    background: transparent !important; border: 0 !important;
+    box-shadow: none !important; max-width: 100% !important;
+    margin: 0 !important; padding: 0 !important;
   }
-  body {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 20px 8px;
+  .w98-paper {
+    position: absolute; left: 0; top: 0;
+    width: 100%; max-width: 100%;
+    border: 0 !important; margin: 0 !important; padding: 0 !important;
+    background: #fff !important; color: #000 !important;
+    font-size: 12pt; line-height: 1.55;
   }
-  /* ══ MAIN WINDOW ══ */
-  .w98-window {
-    background: var(--w98-face);
-    border: 2px solid;
-    border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
-    box-shadow: 1px 1px 0 var(--w98-darker);
-    display: inline-block;
-  }
-  .w98-titlebar {
-    height: 20px;
-    background: linear-gradient(90deg, var(--w98-title), #1084d0);
-    display: flex;
-    align-items: center;
-    padding: 0 3px;
-    gap: 4px;
-    user-select: none;
-  }
-  .w98-titlebar-icon {
-    width: 14px; height: 14px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .w98-titlebar-icon svg { width: 12px; height: 12px; }
-  .w98-titlebar-text {
-    flex: 1;
-    font-family: var(--w98-font);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--w98-title-text);
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-  }
-  .w98-titlebar-btns { display: flex; gap: 2px; }
-  .w98-tbtn {
-    width: 15px; height: 13px;
-    background: var(--w98-face);
-    border: 1px solid;
-    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
-    display: flex; align-items: center; justify-content: center;
-    cursor: default;
-    font-family: var(--w98-font);
-    font-size: 9px; line-height: 1; padding: 0;
-    color: var(--w98-black);
-  }
-  /* ══ PLAYER BODY ══ */
-  .w98-player {
-    padding: 6px;
-    display: flex;
-    align-items: stretch;
-    gap: 4px;
-  }
-  /* ══ BUTTON ══ */
-  .w98-btn {
-    height: 54px;
-    min-width: 56px;
-    padding: 0 6px;
-    background: var(--w98-face);
-    border: 2px solid;
-    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
-    font-family: var(--w98-font);
-    font-size: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    user-select: none;
-    color: var(--w98-black);
-    letter-spacing: 0.2px;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-  .w98-btn:active, .w98-btn.pressed {
-    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
-    padding: 1px 5px 0 7px;
-  }
-  .w98-btn svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-  .w98-btn.play-btn {
-    background: linear-gradient(180deg, #e0e0e0, #b0b0b0);
-    min-width: 64px;
-  }
-  .w98-btn .leg {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    line-height: 1;
-  }
-  .ico-gray svg { fill: var(--w98-black); }
-  .ico-teal svg { fill: var(--w98-teal); }
-  .ico-teal .leg { color: var(--w98-teal); }
-  .ico-yellow svg { fill: #7a6c1a; }
-  .ico-yellow .leg { color: #7a6c1a; }
-  /* ══ LCD ══ */
-  .w98-lcd {
-    height: 54px;
-    min-width: 78px;
-    padding: 4px 6px;
-    background: var(--w98-face);
-    border: 2px solid;
-    border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-  }
-  .w98-lcd-screen {
-    width: 100%;
-    height: 22px;
-    background: #000;
-    border: 2px solid;
-    border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 4px;
-    position: relative;
-    overflow: hidden;
-  }
-  .w98-lcd-screen::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.2) 1px, rgba(0,0,0,0.2) 2px);
-    pointer-events: none;
-  }
-  .w98-lcd-time {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: #00ff00;
-    letter-spacing: 1.5px;
-    line-height: 1;
-    text-shadow: 0 0 3px rgba(0,255,0,0.5);
-    position: relative;
-    z-index: 1;
-  }
-  .w98-lcd-label {
-    font-family: var(--w98-font);
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: var(--w98-black);
-    line-height: 1;
-  }
-  /* ══ DARK MODE ══ */
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --w98-face: #3a3a3a;
-      --w98-dark: #1a1a1a;
-      --w98-darker: #0a0a0a;
-      --w98-white: #5a5a5a;
-      --w98-title: #000060;
-      --w98-black: #000000;
-      --w98-teal: #00a0a0;
-    }
-    html, body { color: #d0d0d0; }
-    .w98-titlebar { background: linear-gradient(90deg, #000060, #0a5090); }
-    .w98-btn { color: #d0d0d0; }
-    .ico-gray svg { fill: #d0d0d0; }
-    .ico-yellow svg { fill: #c4b44a; }
-    .ico-yellow .leg { color: #c4b44a; }
-    .w98-btn.play-btn {
-      background: linear-gradient(180deg, #484848, #2e2e2e);
-    }
-    .w98-lcd-label { color: #d0d0d0; }
-  }
-  /* ══ RESPONSIVE ══ */
-  @media (max-width: 500px) {
-    .w98-btn { min-width: 48px; height: 50px; }
-    .w98-btn.play-btn { min-width: 56px; }
-    .w98-btn svg { width: 18px; height: 18px; }
-    .w98-lcd { min-width: 68px; height: 50px; }
-    .w98-lcd-time { font-size: 12px; }
-  }
+  .w98-paper h1 { color: #000 !important; border-bottom: 1px solid #000 !important; }
+  .w98-paper h2 { color: #333 !important; }
+  .w98-paper ul { background: transparent !important; border: 0 !important; padding-left: 20px !important; }
+  .w98-paper ul li::before { background: #000 !important; }
+  mark.w98-hl { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .w98-hl-float, .w98-modal, .w98-sticky, .w98-coach-window { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 500px) {
+  .w98-btn { min-width: 44px; height: 44px; }
+  .w98-btn.play-btn { min-width: 52px; }
+  .w98-btn svg { width: 16px; height: 16px; }
+  .w98-lcd { min-width: 60px; height: 44px; }
+  .w98-lcd-time { font-size: 11px; }
+  .w98-paper { padding: 12px 12px; font-size: 13px; }
+  .w98-paper h1 { font-size: 13px; }
+  .w98-tb-btn { min-width: 0; padding: 3px 6px; font-size: 10px; }
+  .w98-portrait { width: 80px; height: 80px; }
+}
 </style>
 </head>
 <body>
-<div class="w98-window">
+
+<!-- ══════════════════════════════════════════════
+     COACH WINDOW (Card 4 — professor note dialogue)
+══════════════════════════════════════════════ -->
+<div class="w98-coach-window" id="coachWindow">
+  <div class="w98-coach-titlebar">
+    <div class="w98-coach-titlebar-icon">
+      <svg viewBox="0 0 14 14" fill="none">
+        <rect x="1" y="3" width="12" height="9" rx="1" fill="none" stroke="var(--w98-title-text)" stroke-width="1.2"/>
+        <path d="M4 3V2h6v1" stroke="var(--w98-title-text)" stroke-width="1.2"/>
+        <line x1="4" y1="6" x2="10" y2="6" stroke="var(--w98-title-text)" stroke-width="1"/>
+        <line x1="4" y1="8" x2="8" y2="8" stroke="var(--w98-title-text)" stroke-width="1"/>
+      </svg>
+    </div>
+    <span class="w98-coach-titlebar-text" id="coachTitle">coach_message.exe</span>
+    <div class="w98-coach-titlebar-btns">
+      <button class="w98-tbtn" type="button" id="coachMin" aria-label="minimize">_</button>
+      <button class="w98-tbtn" type="button">□</button>
+      <button class="w98-tbtn" type="button">✕</button>
+    </div>
+  </div>
+  <div class="w98-coach-content" id="coachContent">
+    <div class="w98-coach-body">
+      <div class="w98-portrait" id="coachPortrait" data-empty="1"></div>
+      <div class="w98-speech">
+        <div class="w98-speech-label" id="coachSpeakerLabel">Coach</div>
+        <div class="w98-speech-field" id="coachSpeechText"></div>
+        <div class="w98-continue" id="coachContinue">click to replay</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN DOCUMENT WINDOW (Cards 1 + 2 united)
+══════════════════════════════════════════════ -->
+<div class="w98-doc" id="w98Doc"
+  data-course-id="ym102"
+  data-course-name="Youth Ministry 102"
+  data-course-color="#008080"
+  data-article-id="mentoring-transcript-01"
+  data-article-title="Building a Mentoring Relationship — Video Transcript">
+
+  <!-- Title bar -->
   <div class="w98-titlebar">
     <div class="w98-titlebar-icon">
       <svg viewBox="0 0 14 14" fill="none">
@@ -221,14 +876,26 @@
         <polygon points="8,3 12,1 12,13 8,11" fill="var(--w98-title-text)"/>
       </svg>
     </div>
-    <span class="w98-titlebar-text">audio_player.exe</span>
+    <span class="w98-titlebar-text" id="docTitlebarText">audio_player.exe</span>
     <div class="w98-titlebar-btns">
       <button class="w98-tbtn" type="button">_</button>
       <button class="w98-tbtn" type="button">□</button>
       <button class="w98-tbtn" type="button">✕</button>
     </div>
   </div>
-  <div class="w98-player">
+
+  <!-- Document toolbar -->
+  <div class="w98-toolbar">
+    <button class="w98-tb-btn" data-action="print"   type="button">Print</button>
+    <button class="w98-tb-btn" data-action="viewall" type="button">My Highlights</button>
+    <button class="w98-tb-btn" data-action="copy"    type="button">Copy</button>
+    <button class="w98-tb-btn" data-action="export"  type="button">Export</button>
+    <button class="w98-tb-btn" data-action="clear"   type="button">Clear</button>
+    <span class="w98-tb-count" id="hlCount">0 highlights</span>
+  </div>
+
+  <!-- ── Audio player row ── -->
+  <div class="w98-player-row">
     <!-- Back 15s -->
     <button class="w98-btn ico-gray" id="btnBack" title="Back 15 seconds" aria-label="Back 15 seconds">
       <svg viewBox="0 0 24 24">
@@ -237,20 +904,23 @@
       </svg>
       <span class="leg">Back</span>
     </button>
+
     <!-- Play / Pause -->
     <button class="w98-btn play-btn ico-teal" id="btnPlay" title="Play" aria-label="Play">
       <svg viewBox="0 0 24 24" id="iconPlay"><polygon points="8,5 19,12 8,19"/></svg>
       <svg viewBox="0 0 24 24" id="iconPause" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       <span class="leg" id="playLabel">Play</span>
     </button>
+
     <!-- Forward 15s -->
     <button class="w98-btn ico-gray" id="btnFwd" title="Forward 15 seconds" aria-label="Forward 15 seconds">
       <svg viewBox="0 0 24 24">
         <path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/>
         <text x="12" y="16" text-anchor="middle" font-size="8" font-weight="700" font-family="Tahoma" style="fill:inherit">15</text>
       </svg>
-      <span class="leg">Forward</span>
+      <span class="leg">Fwd</span>
     </button>
+
     <!-- Speed -->
     <button class="w98-btn ico-yellow" id="btnSpeed" title="Playback speed" aria-label="Playback speed">
       <svg viewBox="0 0 24 24">
@@ -259,7 +929,8 @@
       </svg>
       <span class="leg" id="speedLabel">1×</span>
     </button>
-    <!-- LCD Time -->
+
+    <!-- LCD: Remaining time -->
     <div class="w98-lcd" title="Time remaining">
       <div class="w98-lcd-screen">
         <span class="w98-lcd-time" id="lcdTime">--:--</span>
@@ -267,71 +938,877 @@
       <span class="w98-lcd-label">Remaining</span>
     </div>
   </div>
+
+  <!-- ── Scrub bar ── -->
+  <div class="w98-scrub-row">
+    <div class="w98-scrub-inset" id="scrubTrack">
+      <div class="w98-scrub-track">
+        <div class="w98-scrub-fill" id="scrubFill"></div>
+      </div>
+    </div>
+    <div class="w98-scrub-times">
+      <span id="scrubCurrent">0:00</span>
+      <span id="scrubTotal">0:00</span>
+    </div>
+  </div>
+
+  <!-- ── Settings row ── -->
+  <div class="w98-settings-row">
+    <button class="w98-set-btn" id="btnSpacing" type="button">
+      <svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"/></svg>
+      Spacing
+    </button>
+    <button class="w98-set-btn" id="btnTheme" type="button">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0 0 18 1 1 0 0 0 0-2 7 7 0 0 1 0-14 1 1 0 0 0 0-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      Theme: Light
+    </button>
+    <button class="w98-set-btn" id="btnAdhd" type="button">ADHD</button>
+    <!-- Window chrome theme picker -->
+    <div class="w98-wtheme-wrap">
+      <button class="w98-set-btn" id="btnWTheme" type="button">
+        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        Win: <span id="wthemeLabel">Classic</span>
+      </button>
+      <div class="w98-wtheme-menu" id="wthemeMenu">
+        <div class="w98-wtheme-item active" data-wtheme=""><div class="w98-wtheme-swatch" style="background:#c0c0c0;"></div>Classic</div>
+        <div class="w98-wtheme-item" data-wtheme="navy"><div class="w98-wtheme-swatch" style="background:#c8d0e0;"></div>Navy</div>
+        <div class="w98-wtheme-item" data-wtheme="forest"><div class="w98-wtheme-swatch" style="background:#c8d8c8;"></div>Forest</div>
+        <div class="w98-wtheme-item" data-wtheme="maroon"><div class="w98-wtheme-swatch" style="background:#e0c8c8;"></div>Maroon</div>
+        <div class="w98-wtheme-item" data-wtheme="midnight"><div class="w98-wtheme-swatch" style="background:#2a2a3a;"></div>Midnight</div>
+        <div class="w98-wtheme-item" data-wtheme="rose"><div class="w98-wtheme-swatch" style="background:#e8d0d8;"></div>Rose</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Paper content ── -->
+  <div class="w98-paper" id="w98Paper">
+    <h1>Building a Mentoring Relationship &mdash; Video Transcript</h1>
+    <h2>Bible-based Mentoring &mdash; Youth Ministry 102</h2>
+    <p>Mentoring is a relational experience in which one person empowers another by sharing God-given resources. A mentor is someone who helps a person grow in their faith, wisdom, and skills. Mentoring is not just about teaching; it is about building a relationship that helps the mentee grow in all areas of their life.</p>
+    <p>A healthy mentoring relationship is built on trust, respect, and a shared commitment to growth. As a mentor, you are investing in the life of another person, and that investment requires time, patience, and intentionality.</p>
+    <p>The first step in building a mentoring relationship is to identify a potential mentee. Look for someone who is eager to learn and grow, who is open to feedback, and who is committed to their faith. You may find potential mentees in your church, your community, or your workplace.</p>
+    <p>Once you have identified a potential mentee, the next step is to initiate the relationship. This may feel awkward at first, but remember that most people are honored to be asked to be mentored. Simply reach out and express your interest in investing in their life.</p>
+    <p>You will also want to establish a relationship with the teen's parent/guardian to make sure they are comfortable with you mentoring their teen. Their approval and support will empower you to speak freely into their child's life. Depending on the relationship they share with their parent or guardian, students may also subconsciously feel safer with you knowing that you have been granted their parent or guardian's trust.</p>
+    <p>To start, you simply need to create a connection with the teen: check in with them at church, attend events they are interested in, ask questions about their life, share your own life and experiences with them.</p>
+    <p>You will also need to establish the scope of the relationship, including how often you will meet and the goals of your mentorship, as early as possible. Consider meeting in locations where you can have a private conversation, but still be around other people. For example, a coffee shop, a park, restaurant, or a home when others are home.</p>
+    <p>Each person you mentor will have unique strengths, talents, and goals. Discussing the ambitions of your mentee is important&mdash;they want to have an active role in identifying their goals and constructing a plan on how to achieve them.</p>
+    <p>Although some teens already know what they want to accomplish, others will feel more unsure. You can give their passion a direction by telling them the qualities and strengths you see within them.</p>
+    <p>Early in the relationship, you will want to discuss questions like these with your mentee:</p>
+    <ul>
+      <li>What questions do they have about God?</li>
+      <li>How do they want to grow in their relationship with God?</li>
+      <li>Do they want to be leaders?</li>
+      <li>What career are they interested in?</li>
+      <li>What are some ways they can serve?</li>
+      <li>What kinds of things do they want to learn?</li>
+      <li>What are strengths they want to develop and weaknesses they want to work on?</li>
+    </ul>
+    <p>After you have had an idea of your mentee's goals and strengths, you can begin to support them by connecting them with opportunities to lead, serve, and practice the skills they are developing.</p>
+    <p>When you invite them to serve with you in ministry, they will feel valued and capable of making a difference in their world. Simply showing them that you believe in them can be a catalyst for the growth of their self-confidence.</p>
+    <p>You may even help them to create an action plan to determine the steps they need to take to meet their goals&mdash;practical and spiritual. You can encourage and remind them of the steps they want to take.</p>
+    <p>Setting goals for a mentorship relationship may seem awkward or too practical, but remember&mdash;the purpose of mentorship is not just to form a friendship with a teen. The objective is to support them in their relationship with Christ.</p>
+  </div>
+
+  <!-- Source link -->
+  <a class="w98-source-link hidden" id="sourceLink" href="#" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h7v2H5v12h14V11h2v7a2 2 0 0 1-2 2z"/><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+    Read Original Source
+  </a>
+
+  <!-- Status bar -->
+  <div class="w98-statusbar">
+    <div class="cell grow" id="statusTitle">Building a Mentoring Relationship &mdash; Video Transcript</div>
+    <div class="cell" id="statusWords">0 words</div>
+  </div>
 </div>
+
+<!-- ── Floating Highlight button ── -->
+<div class="w98-hl-float" id="hlFloat">
+  <span class="w98-hl-color-dot active" data-color="green" style="background:rgba(134,239,172,0.7)" title="Green"></span>
+  <span class="w98-hl-color-dot" data-color="blue" style="background:rgba(147,197,253,0.7)" title="Blue"></span>
+  <span class="w98-hl-color-dot" data-color="red" style="background:rgba(252,165,165,0.7)" title="Red"></span>
+  Highlight
+</div>
+
+<!-- ── Sticky mini-player ── -->
+<div class="w98-sticky" id="stickyPlayer">
+  <button class="w98-btn ico-gray" id="stickyBack" title="Back 15s">
+    <svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+    <span class="leg">Back</span>
+  </button>
+  <button class="w98-btn play-btn ico-teal" id="stickyPlay" title="Play/Pause">
+    <svg viewBox="0 0 24 24" id="stickyIcon"><polygon points="8,5 19,12 8,19"/></svg>
+    <span class="leg" id="stickyLabel">Play</span>
+  </button>
+  <button class="w98-btn ico-gray" id="stickyFwd" title="Forward 15s">
+    <svg viewBox="0 0 24 24"><path d="M12.01 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/></svg>
+    <span class="leg">Fwd</span>
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MY HIGHLIGHTS MODAL
+══════════════════════════════════════════════ -->
+<div class="w98-modal" id="hlModal" aria-hidden="true">
+  <div class="w98-modal-window" role="dialog" aria-labelledby="hlModalTitle">
+    <div class="w98-modal-titlebar">
+      <span id="hlModalTitle">My Highlights</span>
+      <span class="spacer"></span>
+      <button class="w98-modal-close" id="hlModalClose" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="w98-modal-body">
+      <div class="w98-modal-toolbar">
+        <button class="w98-tb-btn" id="modalExportAll" type="button">Export All</button>
+        <button class="w98-tb-btn" id="modalPrintAll"  type="button">Print All</button>
+        <button class="w98-tb-btn" id="modalCopyAll"   type="button">Copy All</button>
+        <span class="w98-tb-count" id="modalTotalCount">0 total</span>
+      </div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════ -->
 <script>
-(function() {
-  var audio = null;
-  var speeds = [1, 1.25, 1.5, 1.75, 2, 0.75];
-  var speedIdx = 0;
-  var params = new URLSearchParams(window.location.search);
-  var audioSrc = '';
-  if (params.get('b')) {
-    try { audioSrc = atob(params.get('b')); } catch(e) { audioSrc = ''; }
-  } else if (params.get('src')) {
-    audioSrc = params.get('src');
+(function () {
+  "use strict";
+
+  /* ─── URL params ─────────────────────────────────────────────────── */
+  var P = new URLSearchParams(location.search);
+  var H = {};
+  location.hash.replace(/^#/, '').split('&').forEach(function (p) {
+    var k = p.split('='); if (k[0]) H[k[0]] = decodeURIComponent(k[1] || '');
+  });
+
+  function b64(param) {
+    var v = P.get(param); if (!v) return '';
+    try { return atob(v); } catch (e) { return ''; }
   }
+  function b64text(param) {
+    var v = P.get(param); if (!v) return '';
+    try { return decodeURIComponent(escape(atob(v))); }
+    catch (e) { try { return decodeURIComponent(atob(v)); } catch (_) { return ''; } }
+  }
+
+  /* ─── Document / article metadata ───────────────────────────────── */
+  var docEl   = document.getElementById('w98Doc');
+  var COURSE  = {
+    id:    P.get('courseId')    || docEl.dataset.courseId    || 'default',
+    name:  P.get('courseName')  || docEl.dataset.courseName  || 'Course',
+    color: P.get('courseColor') || docEl.dataset.courseColor || '#008080'
+  };
+  var ARTICLE = {
+    id:    P.get('articleId')    || docEl.dataset.articleId    || 'article',
+    title: P.get('articleTitle') || docEl.dataset.articleTitle || 'Article',
+    url:   window.location.href
+  };
+
+  /* ─── Audio source ───────────────────────────────────────────────── */
+  var audioSrc = '';
+  if (P.get('b'))   { try { audioSrc = atob(P.get('b')); }   catch (e) {} }
+  else if (P.get('src')) { audioSrc = P.get('src'); }
+
+  /* ─── Highlight color ────────────────────────────────────────────── */
+  var hlColor = P.get('hlcolor') || 'green';
+
+  /* ─── Source link ────────────────────────────────────────────────── */
+  var artSource = P.get('source') || '';
+  if (artSource) {
+    var sl = document.getElementById('sourceLink');
+    sl.href = artSource;
+    sl.classList.remove('hidden');
+  }
+
+  /* ─── Course color CSS vars ──────────────────────────────────────── */
+  function hexToRgb(h) {
+    h = h.replace('#', '');
+    if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join('');
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+  function mixWithWhite(hex, ratio) {
+    try {
+      var rgb = hexToRgb(hex);
+      return 'rgb(' + Math.round(rgb[0]*ratio+255*(1-ratio)) + ',' +
+                      Math.round(rgb[1]*ratio+255*(1-ratio)) + ',' +
+                      Math.round(rgb[2]*ratio+255*(1-ratio)) + ')';
+    } catch (e) { return '#dfdfdf'; }
+  }
+  document.documentElement.style.setProperty('--course-color', COURSE.color);
+  document.documentElement.style.setProperty('--hl-bg',       mixWithWhite(COURSE.color, 0.35));
+  document.documentElement.style.setProperty('--hl-bg-hover', mixWithWhite(COURSE.color, 0.55));
+
+  /* ─── Hash-fragment article injection ───────────────────────────── */
+  var paper = document.getElementById('w98Paper');
+  (function () {
+    var enc = H.text;
+    if (enc) {
+      try {
+        var b64s = enc.replace(/-/g,'+').replace(/_/g,'/');
+        while (b64s.length % 4) b64s += '=';
+        var bin = atob(b64s);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        paper.innerHTML = new TextDecoder('utf-8').decode(bytes);
+      } catch (e) { console.warn('text decode failed', e); }
+    }
+    var hTitle = H.title;
+    if (hTitle) { try { ARTICLE.title = decodeURIComponent(hTitle); } catch (e) {} }
+  })();
+
+  /* ─── Status bar & title ─────────────────────────────────────────── */
+  document.getElementById('statusTitle').textContent = ARTICLE.title;
+  document.getElementById('docTitlebarText').textContent = ARTICLE.title.toLowerCase().replace(/\s+/g, '_') + '.exe';
+  document.title = ARTICLE.title;
+  /* Word count runs after full DOM parse */
+  window.addEventListener('load', function () {
+    var words = (paper.textContent || '').trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('statusWords').textContent = words + ' words';
+  });
+
+  /* ─── Touch feedback for all buttons ────────────────────────────── */
+  document.querySelectorAll('.w98-btn, .w98-tb-btn, .w98-set-btn').forEach(function (btn) {
+    btn.addEventListener('touchstart', function () { btn.classList.add('pressed'); }, { passive: true });
+    btn.addEventListener('touchend',   function () { setTimeout(function () { btn.classList.remove('pressed'); }, 120); });
+    btn.addEventListener('touchcancel',function () { btn.classList.remove('pressed'); });
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     AUDIO PLAYER
+  ═══════════════════════════════════════════════════════════════════ */
+  var audio   = null;
+  var playing = false;
+  var speeds  = [1, 1.25, 1.5, 1.75, 2, 0.75];
+  var speedIdx = 0;
+
   function fmt(s) {
-    if (isNaN(s) || s < 0) return '--:--';
-    var m = Math.floor(s / 60);
-    var sec = Math.floor(s % 60);
+    if (!isFinite(s) || s < 0) return '0:00';
+    var m = Math.floor(s / 60), sec = Math.floor(s % 60);
     return m + ':' + (sec < 10 ? '0' : '') + sec;
   }
-  function getAudio() {
-    if (!audio) {
-      audio = new Audio();
-      audio.preload = 'metadata';
-      audio.src = audioSrc;
-      audio.addEventListener('ended', function() { setPlaying(false); });
-      audio.addEventListener('loadedmetadata', function() {
-        document.getElementById('lcdTime').textContent = fmt(audio.duration);
-      });
-      audio.addEventListener('timeupdate', function() {
-        document.getElementById('lcdTime').textContent = fmt(audio.duration - audio.currentTime);
-      });
+
+  function initAudio() {
+    if (audio || !audioSrc) return;
+    audio = new Audio();
+    audio.preload = 'metadata';
+    audio.src = audioSrc;
+    audio.addEventListener('loadedmetadata', function () {
+      document.getElementById('lcdTime').textContent    = fmt(audio.duration);
+      document.getElementById('scrubTotal').textContent = fmt(audio.duration);
+    });
+    audio.addEventListener('timeupdate', function () {
+      var rem = audio.duration - audio.currentTime;
+      document.getElementById('lcdTime').textContent       = fmt(rem);
+      document.getElementById('scrubCurrent').textContent  = fmt(audio.currentTime);
+      var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      document.getElementById('scrubFill').style.width     = pct + '%';
+    });
+    audio.addEventListener('ended', function () {
+      playing = false;
+      updatePlayUI();
+      document.getElementById('stickyPlayer').classList.remove('show');
+    });
+  }
+
+  function togglePlay() {
+    initAudio();
+    if (!audio) return;
+    if (audio.paused) {
+      audio.play(); playing = true;
+      document.getElementById('stickyPlayer').classList.add('show');
+    } else {
+      audio.pause(); playing = false;
     }
-    return audio;
+    updatePlayUI();
   }
-  function setPlaying(p) {
-    document.getElementById('iconPlay').style.display = p ? 'none' : 'block';
-    document.getElementById('iconPause').style.display = p ? 'block' : 'none';
-    document.getElementById('playLabel').textContent = p ? 'Pause' : 'Play';
-    document.getElementById('btnPlay').title = p ? 'Pause' : 'Play';
+
+  function updatePlayUI() {
+    var playIcon  = '<polygon points="8,5 19,12 8,19"/>';
+    var pauseIcon = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    var ico = playing ? pauseIcon : playIcon;
+    document.getElementById('iconPlay').style.display  = playing ? 'none'  : 'block';
+    document.getElementById('iconPause').style.display = playing ? 'block' : 'none';
+    document.getElementById('playLabel').textContent   = playing ? 'Pause' : 'Play';
+    document.getElementById('btnPlay').title           = playing ? 'Pause' : 'Play';
+    document.getElementById('stickyIcon').innerHTML    = ico;
+    document.getElementById('stickyLabel').textContent = playing ? 'Pause' : 'Play';
   }
-  document.querySelectorAll('button.w98-btn').forEach(function(btn) {
-    btn.addEventListener('touchstart', function() { btn.classList.add('pressed'); }, { passive: true });
-    btn.addEventListener('touchend', function() { setTimeout(function() { btn.classList.remove('pressed'); }, 120); });
-    btn.addEventListener('touchcancel', function() { btn.classList.remove('pressed'); });
-  });
-  document.getElementById('btnPlay').addEventListener('click', function() {
-    var a = getAudio();
-    if (a.paused) { a.play(); setPlaying(true); }
-    else { a.pause(); setPlaying(false); }
-  });
-  document.getElementById('btnBack').addEventListener('click', function() {
-    var a = getAudio();
-    a.currentTime = Math.max(0, a.currentTime - 15);
-  });
-  document.getElementById('btnFwd').addEventListener('click', function() {
-    var a = getAudio();
-    a.currentTime = Math.min(audio.duration || 0, a.currentTime + 15);
-  });
-  document.getElementById('btnSpeed').addEventListener('click', function() {
-    var a = getAudio();
+
+  function seekBack()  { initAudio(); if (audio) audio.currentTime = Math.max(0, audio.currentTime - 15); }
+  function seekFwd()   { initAudio(); if (audio) audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 15); }
+
+  document.getElementById('btnPlay').addEventListener('click', togglePlay);
+  document.getElementById('btnBack').addEventListener('click', seekBack);
+  document.getElementById('btnFwd').addEventListener('click', seekFwd);
+  document.getElementById('stickyPlay').addEventListener('click', togglePlay);
+  document.getElementById('stickyBack').addEventListener('click', seekBack);
+  document.getElementById('stickyFwd').addEventListener('click', seekFwd);
+
+  document.getElementById('btnSpeed').addEventListener('click', function () {
+    initAudio();
     speedIdx = (speedIdx + 1) % speeds.length;
-    a.playbackRate = speeds[speedIdx];
+    if (audio) audio.playbackRate = speeds[speedIdx];
     document.getElementById('speedLabel').textContent = speeds[speedIdx] + '\u00d7';
   });
-  if (audioSrc) getAudio();
+
+  /* Scrub bar */
+  var scrubDrag = false;
+  function scrubSeek(x) {
+    if (!audio) return;
+    var r = document.getElementById('scrubTrack').getBoundingClientRect();
+    audio.currentTime = Math.max(0, Math.min(1, (x - r.left) / r.width)) * (audio.duration || 0);
+  }
+  document.getElementById('scrubTrack').addEventListener('pointerdown', function (e) { initAudio(); scrubDrag = true; scrubSeek(e.clientX); });
+  document.addEventListener('pointermove', function (e) { if (scrubDrag) scrubSeek(e.clientX); });
+  document.addEventListener('pointerup',   function ()  { scrubDrag = false; });
+
+  if (audioSrc) initAudio();
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SETTINGS — Spacing
+  ═══════════════════════════════════════════════════════════════════ */
+  var spLevels = [
+    { ls: 'normal', lh: 1.6,  ws: 'normal' },
+    { ls: '0.02em', lh: 1.85, ws: '0.03em' },
+    { ls: '0.05em', lh: 2.1,  ws: '0.08em' }
+  ];
+  var spIdx = 0;
+  document.getElementById('btnSpacing').addEventListener('click', function () {
+    spIdx = (spIdx + 1) % spLevels.length;
+    var s = spLevels[spIdx];
+    document.documentElement.style.setProperty('--reading-ls', s.ls);
+    document.documentElement.style.setProperty('--reading-lh', s.lh);
+    document.documentElement.style.setProperty('--reading-ws', s.ws);
+    this.classList.toggle('active', spIdx > 0);
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SETTINGS — Theme
+  ═══════════════════════════════════════════════════════════════════ */
+  var themes   = ['light', 'dark', 'solarized', 'amber'];
+  var thLabels = ['Light', 'Dark', 'Solarized', 'Amber'];
+  var thIdx    = 0;
+  document.getElementById('btnTheme').addEventListener('click', function () {
+    thIdx = (thIdx + 1) % themes.length;
+    document.documentElement.setAttribute('data-theme', themes[thIdx] === 'light' ? '' : themes[thIdx]);
+    this.textContent = 'Theme: ' + thLabels[thIdx];
+    this.classList.toggle('active', thIdx > 0);
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SETTINGS — Window Chrome Theme
+  ═══════════════════════════════════════════════════════════════════ */
+  var WTHEME_KEY   = 'w98-audio-wtheme';
+  var wthemeNames  = { '': 'Classic', 'navy': 'Navy', 'forest': 'Forest', 'maroon': 'Maroon', 'midnight': 'Midnight', 'rose': 'Rose' };
+  var currentWTheme = localStorage.getItem(WTHEME_KEY) || '';
+
+  function applyWTheme(t) {
+    currentWTheme = t;
+    document.documentElement.setAttribute('data-wtheme', t);
+    document.getElementById('wthemeLabel').textContent = wthemeNames[t] || 'Classic';
+    localStorage.setItem(WTHEME_KEY, t);
+    document.querySelectorAll('.w98-wtheme-item').forEach(function (item) {
+      item.classList.toggle('active', item.dataset.wtheme === t);
+    });
+  }
+  applyWTheme(currentWTheme);
+
+  document.getElementById('btnWTheme').addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('wthemeMenu').classList.toggle('open');
+  });
+  document.getElementById('wthemeMenu').addEventListener('click', function (e) {
+    var item = e.target.closest('.w98-wtheme-item');
+    if (!item) return;
+    applyWTheme(item.dataset.wtheme);
+    document.getElementById('wthemeMenu').classList.remove('open');
+  });
+  document.addEventListener('click', function () {
+    document.getElementById('wthemeMenu').classList.remove('open');
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SETTINGS — ADHD / Bionic reading
+  ═══════════════════════════════════════════════════════════════════ */
+  var bionicOn  = false;
+  var origHTML  = paper.innerHTML;
+  document.getElementById('btnAdhd').addEventListener('click', function () {
+    bionicOn = !bionicOn;
+    this.classList.toggle('active', bionicOn);
+    if (bionicOn) {
+      paper.classList.add('w98-bionic');
+      paper.querySelectorAll('p, li').forEach(function (el) {
+        el.innerHTML = el.textContent.replace(/\b(\w)(\w*)/g, function (m, a, b) {
+          var word = a + b;
+          var bold = Math.ceil(word.length * 0.4) || 1;
+          return '<b>' + word.slice(0, bold) + '</b>' + word.slice(bold);
+        });
+      });
+    } else {
+      paper.classList.remove('w98-bionic');
+      paper.innerHTML = origHTML;
+      renderHL();
+    }
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     HIGHLIGHTS
+  ═══════════════════════════════════════════════════════════════════ */
+  var GLOBAL_KEY = 'w98-highlights-v2';
+  function loadAll()        { try { return JSON.parse(localStorage.getItem(GLOBAL_KEY) || '[]'); } catch (e) { return []; } }
+  function saveAll(arr)     { try { localStorage.setItem(GLOBAL_KEY, JSON.stringify(arr)); } catch (e) {} }
+  function loadForArticle() { return loadAll().filter(function (h) { return h.courseId === COURSE.id && h.articleId === ARTICLE.id; }); }
+
+  function getBlocks() { return paper.querySelectorAll('p, li, blockquote, h2, h3'); }
+
+  function renderHL() {
+    /* Remove existing marks */
+    paper.querySelectorAll('mark.w98-hl').forEach(function (m) {
+      var p = m.parentNode;
+      while (m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m);
+      p.normalize();
+    });
+    var hls    = loadForArticle();
+    var blocks = getBlocks();
+    var byB    = {};
+    hls.forEach(function (h) { if (!byB[h.blockIndex]) byB[h.blockIndex] = []; byB[h.blockIndex].push(h); });
+    Object.keys(byB).forEach(function (bi) {
+      var block = blocks[parseInt(bi)]; if (!block) return;
+      byB[bi].sort(function (a, b) { return b.start - a.start; }).forEach(function (h) {
+        var w = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null, false);
+        var off = 0, n;
+        while ((n = w.nextNode())) {
+          var l = n.length;
+          if (off + l <= h.start) { off += l; continue; }
+          var ls = Math.max(0, h.start - off), le = Math.min(l, h.end - off);
+          if (ls >= le) { off += l; continue; }
+          var r = document.createRange();
+          r.setStart(n, ls); r.setEnd(n, le);
+          var mk = document.createElement('mark');
+          mk.className = 'w98-hl w98-hl-' + (h.color || 'green');
+          mk.dataset.hlId = h.id;
+          try { r.surroundContents(mk); } catch (e) { var c = r.extractContents(); mk.appendChild(c); r.insertNode(mk); }
+          mk.addEventListener('click', function () {
+            if (confirm('Remove this highlight?')) {
+              saveAll(loadAll().filter(function (x) { return x.id !== h.id; }));
+              renderHL();
+              updateHlCount();
+            }
+          });
+          break;
+        }
+      });
+    });
+    updateHlCount();
+  }
+
+  function updateHlCount() {
+    var n = loadForArticle().length;
+    document.getElementById('hlCount').textContent = n + (n === 1 ? ' highlight' : ' highlights');
+  }
+
+  /* Active highlight color selection */
+  var activeColor = hlColor;
+  document.querySelectorAll('.w98-hl-color-dot').forEach(function (dot) {
+    dot.addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.querySelectorAll('.w98-hl-color-dot').forEach(function (d) { d.classList.remove('active'); });
+      dot.classList.add('active');
+      activeColor = dot.dataset.color;
+    });
+  });
+
+  /* Floating highlight button */
+  var floatEl = document.getElementById('hlFloat');
+
+  function showFloat() {
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) { floatEl.classList.remove('show'); return; }
+    var r = sel.getRangeAt(0);
+    var t = sel.toString().trim();
+    if (!t || !paper.contains(r.commonAncestorContainer)) { floatEl.classList.remove('show'); return; }
+    var rect = r.getBoundingClientRect();
+    floatEl.style.top  = (rect.top  + window.scrollY - 36) + 'px';
+    floatEl.style.left = (rect.left + window.scrollX + rect.width / 2 - 60) + 'px';
+    floatEl.classList.add('show');
+  }
+
+  paper.addEventListener('mouseup',  showFloat);
+  paper.addEventListener('touchend', function () { setTimeout(showFloat, 100); });
+  document.addEventListener('mousedown', function (e) { if (!floatEl.contains(e.target)) floatEl.classList.remove('show'); });
+
+  floatEl.addEventListener('click', function (e) {
+    if (e.target.classList.contains('w98-hl-color-dot')) return;
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed) return;
+    var r = sel.getRangeAt(0);
+    var t = sel.toString().trim(); if (!t) return;
+    var blocks = getBlocks();
+    var c  = r.startContainer;
+    var bl = c.nodeType === 3 ? c.parentElement : c;
+    while (bl && !bl.matches('p,li,blockquote,h2,h3')) bl = bl.parentElement;
+    if (!bl) return;
+    var bi = -1;
+    blocks.forEach(function (b, i) { if (b === bl) bi = i; });
+    if (bi === -1) return;
+    var w = document.createTreeWalker(bl, NodeFilter.SHOW_TEXT, null, false);
+    var co = 0, n, so = -1, eo = -1;
+    while ((n = w.nextNode())) {
+      if (n === r.startContainer) so = co + r.startOffset;
+      if (n === r.endContainer)   eo = co + r.endOffset;
+      co += n.length;
+    }
+    if (so === -1 || eo === -1) return;
+    var all = loadAll();
+    all.push({
+      id:           'hl-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+      courseId:     COURSE.id,
+      courseName:   COURSE.name,
+      courseColor:  COURSE.color,
+      articleId:    ARTICLE.id,
+      articleTitle: ARTICLE.title,
+      articleUrl:   ARTICLE.url,
+      blockIndex:   bi,
+      start:        so,
+      end:          eo,
+      text:         t,
+      color:        activeColor,
+      timestamp:    new Date().toISOString()
+    });
+    saveAll(all);
+    sel.removeAllRanges();
+    floatEl.classList.remove('show');
+    renderHL();
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     TOOLBAR ACTIONS
+  ═══════════════════════════════════════════════════════════════════ */
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }); }
+    catch (e) { return iso; }
+  }
+  function formatArticleText(hls, title) {
+    var out = title + '\n' + new Array(title.length + 1).join('=') + '\n\n';
+    hls.sort(function (a, b) { return a.blockIndex - b.blockIndex || a.start - b.start; });
+    hls.forEach(function (h, i) { out += (i + 1) + '. ' + h.text + '\n   [' + fmtDate(h.timestamp) + ']\n\n'; });
+    if (!hls.length) out += '(No highlights yet.)\n';
+    return out;
+  }
+  function formatAllText(allHls) {
+    var out = 'All Highlights\n==============\n\n';
+    var byCourse = {};
+    allHls.forEach(function (h) {
+      var k = h.courseId || 'd';
+      byCourse[k] = byCourse[k] || { name: h.courseName || 'Course', articles: {} };
+      byCourse[k].articles[h.articleId] = byCourse[k].articles[h.articleId] || { title: h.articleTitle || 'Article', hls: [] };
+      byCourse[k].articles[h.articleId].hls.push(h);
+    });
+    Object.keys(byCourse).sort().forEach(function (cid) {
+      var c = byCourse[cid];
+      out += '\n## ' + c.name + '\n' + new Array(c.name.length + 4).join('-') + '\n';
+      Object.keys(c.articles).forEach(function (aid) {
+        var a = c.articles[aid];
+        out += '\n  ' + a.title + '\n';
+        a.hls.sort(function (x, y) { return new Date(x.timestamp) - new Date(y.timestamp); })
+              .forEach(function (h) { out += '    - "' + h.text + '"\n      [' + fmtDate(h.timestamp) + ']\n'; });
+      });
+    });
+    if (!allHls.length) out += '(No highlights saved yet.)\n';
+    return out;
+  }
+  function copyText(text, btn) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        if (btn) { var o = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = o; }, 1500); }
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+  function downloadText(text, name) {
+    var blob = new Blob([text], { type: 'text/plain' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  document.querySelectorAll('.w98-tb-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var action = btn.getAttribute('data-action');
+      if (action === 'print') {
+        window.print();
+      } else if (action === 'copy') {
+        copyText(formatArticleText(loadForArticle(), ARTICLE.title), btn);
+      } else if (action === 'export') {
+        downloadText(formatArticleText(loadForArticle(), ARTICLE.title), 'highlights-' + ARTICLE.id + '.txt');
+      } else if (action === 'clear') {
+        if (!confirm('Remove all highlights from this article?')) return;
+        saveAll(loadAll().filter(function (h) { return !(h.courseId === COURSE.id && h.articleId === ARTICLE.id); }));
+        renderHL();
+      } else if (action === 'viewall') {
+        openModal();
+      }
+    });
+  });
+
+  /* ═══════════════════════════════════════════════════════════════════
+     HIGHLIGHTS MODAL
+  ═══════════════════════════════════════════════════════════════════ */
+  var modal        = document.getElementById('hlModal');
+  var modalContent = document.getElementById('modalContent');
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function renderModal() {
+    var all = loadAll();
+    document.getElementById('modalTotalCount').textContent = all.length + ' total';
+    if (!all.length) {
+      modalContent.innerHTML = '<div class="w98-empty">No highlights saved yet. Select text in the transcript and click Highlight to save one.</div>';
+      return;
+    }
+    var byCourse = {};
+    all.forEach(function (h) {
+      var k = h.courseId || 'd';
+      byCourse[k] = byCourse[k] || { name: h.courseName || 'Course', color: h.courseColor || '#008080', articles: {} };
+      byCourse[k].articles[h.articleId] = byCourse[k].articles[h.articleId] || { title: h.articleTitle || 'Article', hls: [] };
+      byCourse[k].articles[h.articleId].hls.push(h);
+    });
+    var html = '';
+    Object.keys(byCourse).sort(function (a, b) { return byCourse[a].name.localeCompare(byCourse[b].name); }).forEach(function (cid) {
+      var c = byCourse[cid];
+      var total = 0;
+      Object.keys(c.articles).forEach(function (aid) { total += c.articles[aid].hls.length; });
+      html += '<div class="w98-course-block">';
+      html += '<div class="w98-course-header">';
+      html += '<span class="w98-course-swatch" style="background:' + escapeHtml(c.color) + '"></span>';
+      html += '<span>' + escapeHtml(c.name) + '</span>';
+      html += '<span style="margin-left:auto;font-weight:400;font-size:11px;">' + total + ' highlights</span>';
+      html += '</div>';
+      Object.keys(c.articles).forEach(function (aid) {
+        var a = c.articles[aid];
+        a.hls.sort(function (x, y) { return new Date(y.timestamp) - new Date(x.timestamp); });
+        html += '<div class="w98-article-group">';
+        html += '<div class="w98-article-title">' + escapeHtml(a.title) + '</div>';
+        a.hls.forEach(function (h) {
+          var tint = mixWithWhite(c.color, 0.35);
+          html += '<div class="w98-hl-item" style="background:' + tint + ';border-left-color:' + escapeHtml(c.color) + ';">';
+          html += escapeHtml(h.text);
+          html += '<span class="meta">' + fmtDate(h.timestamp) + '</span>';
+          html += '<button class="remove-btn" data-remove="' + escapeHtml(h.id) + '" title="Remove">&times;</button>';
+          html += '</div>';
+        });
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    modalContent.innerHTML = html;
+  }
+
+  function openModal()  { renderModal(); modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+  function closeModal() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+
+  document.getElementById('hlModalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+  modalContent.addEventListener('click', function (e) {
+    var rb = e.target.closest && e.target.closest('[data-remove]');
+    if (!rb) return;
+    var id = rb.getAttribute('data-remove');
+    if (!confirm('Remove this highlight?')) return;
+    saveAll(loadAll().filter(function (h) { return h.id !== id; }));
+    renderModal(); renderHL();
+  });
+
+  document.getElementById('modalExportAll').addEventListener('click', function () {
+    downloadText(formatAllText(loadAll()), 'all-highlights.txt');
+  });
+  document.getElementById('modalCopyAll').addEventListener('click', function () {
+    copyText(formatAllText(loadAll()), this);
+  });
+  document.getElementById('modalPrintAll').addEventListener('click', function () {
+    var w = window.open('', '_blank');
+    var html = '<html><head><title>All Highlights</title>';
+    html += '<style>body{font-family:Georgia,serif;max-width:720px;margin:30px auto;padding:0 20px;color:#000;}';
+    html += 'h1{font-size:18pt;}h2{font-size:13pt;margin-top:20px;border-bottom:1px solid #888;padding-bottom:3px;}';
+    html += 'h3{font-size:11pt;margin-top:12px;}';
+    html += '.q{margin:8px 0 8px 16px;padding:6px 10px;background:#f2f2f2;border-left:3px solid #888;}';
+    html += '.d{font-size:9pt;color:#666;font-style:italic;display:block;margin-top:3px;}';
+    html += '@media print{body{margin:0;}.q{background:#eee!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}}';
+    html += '</style></head><body><h1>My Highlights</h1>';
+    var all = loadAll();
+    if (!all.length) html += '<p><em>No highlights saved.</em></p>';
+    var byCourse = {};
+    all.forEach(function (h) {
+      var k = h.courseId || 'd';
+      byCourse[k] = byCourse[k] || { name: h.courseName || 'Course', color: h.courseColor || '#008080', articles: {} };
+      byCourse[k].articles[h.articleId] = byCourse[k].articles[h.articleId] || { title: h.articleTitle || 'Article', hls: [] };
+      byCourse[k].articles[h.articleId].hls.push(h);
+    });
+    Object.keys(byCourse).sort(function (a, b) { return byCourse[a].name.localeCompare(byCourse[b].name); }).forEach(function (cid) {
+      var c = byCourse[cid];
+      html += '<h2 style="border-bottom-color:' + escapeHtml(c.color) + '">' + escapeHtml(c.name) + '</h2>';
+      Object.keys(c.articles).forEach(function (aid) {
+        var a = c.articles[aid];
+        a.hls.sort(function (x, y) { return new Date(y.timestamp) - new Date(x.timestamp); });
+        html += '<h3>' + escapeHtml(a.title) + '</h3>';
+        a.hls.forEach(function (h) {
+          var tint = mixWithWhite(c.color, 0.35);
+          html += '<div class="q" style="background:' + tint + ';border-left-color:' + escapeHtml(c.color) + ';">' + escapeHtml(h.text);
+          html += '<span class="d">' + fmtDate(h.timestamp) + '</span></div>';
+        });
+      });
+    });
+    html += '</body></html>';
+    w.document.write(html); w.document.close();
+    setTimeout(function () { w.print(); }, 250);
+  });
+
+  /* Initial render */
+  renderHL();
+
+  /* ═══════════════════════════════════════════════════════════════════
+     COACH / DIALOGUE WINDOW (Card 4)
+  ═══════════════════════════════════════════════════════════════════ */
+  (function () {
+    /* ─── Char defaults ─────────────────────────────────────────── */
+    var charNum = parseInt(P.get('char') || '1', 10);
+    if ([1,2,3].indexOf(charNum) === -1) charNum = 1;
+    var defaults = {
+      1: { name: 'COACH MARA',
+           img:  'https://pathway.training/wp-content/uploads/2026/04/Untitled-design-1.png',
+           imgFallback: 'characters/course1.png',
+           text: 'Watch her plant foot on the strike. Non-kicking foot next to the ball, toes pointed at target. That\'s where accuracy comes from.' },
+      2: { name: 'UMP BUCK',  img: 'characters/course2.png', imgFallback: '',
+           text: 'Keep your eyes on the runner\'s foot AND the base. Don\'t commit to the call until you see both in the same frame.' },
+      3: { name: 'COACH DEE', img: 'characters/course3.png', imgFallback: '',
+           text: 'His hands stay glued to his cheeks between combos. That\'s the habit you\'re building this week — hands up, always.' }
+    };
+    var d = defaults[charNum] || defaults[1];
+
+    var imgUrl      = b64('img')  || P.get('imgSrc')  || d.img;
+    var imgFallback = d.imgFallback || '';
+    var coachName   = b64text('name') || P.get('name') || d.name;
+    var coachText   = b64text('text') || P.get('text') || d.text;
+    var coachSpeed  = parseInt(P.get('speed')  || '30',  10);
+    var startDelay  = parseInt(P.get('delay')  || '400', 10);
+    var coachLoop   = P.get('loop') === '1' || P.get('loop') === 'true';
+    var coachTitle  = b64text('title') || ('coach_message_' + charNum + '.exe');
+
+    /* ─── DOM refs ──────────────────────────────────────────────── */
+    var portraitEl = document.getElementById('coachPortrait');
+    var labelEl    = document.getElementById('coachSpeakerLabel');
+    var textEl     = document.getElementById('coachSpeechText');
+    var contEl     = document.getElementById('coachContinue');
+    var minBtn     = document.getElementById('coachMin');
+    var windowEl   = document.getElementById('coachWindow');
+    var titleEl    = document.getElementById('coachTitle');
+
+    labelEl.textContent = coachName;
+    titleEl.textContent = coachTitle;
+
+    /* ─── Portrait image ────────────────────────────────────────── */
+    if (imgUrl) {
+      var img = document.createElement('img');
+      img.alt = coachName;
+      var triedFallback = false;
+      img.onload  = function () { portraitEl.removeAttribute('data-empty'); };
+      img.onerror = function () {
+        if (!triedFallback && imgFallback && img.src !== imgFallback) {
+          triedFallback = true; img.src = imgFallback;
+        }
+      };
+      img.src = imgUrl;
+      portraitEl.appendChild(img);
+    }
+
+    /* ─── Typewriter ────────────────────────────────────────────── */
+    var cancelFn = null;
+    function typewrite(fullText) {
+      if (cancelFn) cancelFn();
+      textEl.textContent = '';
+      contEl.classList.remove('is-visible');
+      portraitEl.classList.add('is-talking');
+      var cursor = document.createElement('span');
+      cursor.className = 'w98-cursor';
+      textEl.appendChild(cursor);
+      var i = 0, cancelled = false;
+      function step() {
+        if (cancelled) return;
+        if (i >= fullText.length) {
+          portraitEl.classList.remove('is-talking');
+          contEl.classList.add('is-visible');
+          notifyHeight();
+          return;
+        }
+        var ch = fullText.charAt(i++);
+        cursor.remove();
+        textEl.appendChild(document.createTextNode(ch));
+        textEl.appendChild(cursor);
+        var pause = ',.!?;:'.indexOf(ch) >= 0 ? coachSpeed * 5 : coachSpeed;
+        setTimeout(step, pause);
+        notifyHeight();
+      }
+      setTimeout(step, startDelay);
+      cancelFn = function () { cancelled = true; };
+    }
+
+    /* ─── Minimize ──────────────────────────────────────────────── */
+    minBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      windowEl.classList.toggle('minimized');
+      notifyHeight();
+    });
+
+    /* ─── Click to replay ───────────────────────────────────────── */
+    textEl.parentElement.addEventListener('click', function () {
+      if (coachLoop || contEl.classList.contains('is-visible')) typewrite(coachText);
+    });
+
+    /* ─── Auto-start on intersection (with 1s fallback) ─────────── */
+    var coachStarted = false;
+    function startCoach() {
+      if (coachStarted) return;
+      coachStarted = true;
+      typewrite(coachText);
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { startCoach(); io.disconnect(); }
+        });
+      }, { threshold: 0.1 });
+      io.observe(windowEl);
+    }
+    /* Fallback: start after 1s regardless */
+    setTimeout(startCoach, 1000);
+
+    /* ─── Height notification ───────────────────────────────────── */
+    var lastH = 0;
+    function notifyHeight() {
+      var h = document.documentElement.scrollHeight;
+      if (h === lastH) return;
+      lastH = h;
+      try {
+        window.parent.postMessage({ type: 'pathway-coach-height', height: h, charNum: charNum }, '*');
+      } catch (e) {}
+    }
+    window.addEventListener('load',   notifyHeight);
+    window.addEventListener('resize', notifyHeight);
+  })();
+
 })();
 </script>
 </body>
