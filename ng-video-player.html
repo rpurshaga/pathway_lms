@@ -21,7 +21,6 @@
   --w98-field-text: #000000;
   --w98-font:       Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
 }
-
 /* ── Window chrome themes ── */
 [data-wtheme="navy"] {
   --w98-face:    #c8d0e0;
@@ -72,7 +71,6 @@
 [data-wtheme="bgmc"] body,
 html[data-wtheme="bgmc"],
 html[data-wtheme="bgmc"] body { color: #f0f0f0; }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   background: transparent;
@@ -84,9 +82,8 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 12px 8px 24px;
-  gap: 8px;
+  gap: 6px;
 }
-
 /* ═══════════════════════════════════════════════════════════════════
    SHARED W98 CHROME
 ═══════════════════════════════════════════════════════════════════ */
@@ -99,7 +96,6 @@ body {
   max-width: 680px;
 }
 .w98-window.minimized .w98-window-body { display: none; }
-
 .w98-titlebar {
   height: 20px;
   background: linear-gradient(90deg, var(--w98-title), #1084d0);
@@ -132,19 +128,17 @@ body {
 .w98-tbtn:active {
   border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
 }
-
 /* ═══════════════════════════════════════════════════════════════════
-   COACH WINDOW — identical to audio player
+   COACH WINDOW
 ═══════════════════════════════════════════════════════════════════ */
 #coachWindow { position: relative; }
-.w98-coach-content { padding: 8px 10px 10px; }
+.w98-coach-content { padding: 6px 8px 8px; }
 .w98-coach-body {
   display: flex;
   gap: 8px;
   align-items: stretch;
 }
-
-/* Portrait — pixel-art style, 100×100, bobbing animation */
+/* Portrait — 90s RPG style with idle animation */
 .w98-portrait {
   flex: 0 0 auto;
   width: 100px; height: 100px;
@@ -159,15 +153,28 @@ body {
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: center 18%;
-  image-rendering: pixelated;
   display: block;
+  /* 90s idle breathing animation — always active */
+  animation: w98-idle 2.4s ease-in-out infinite;
+  transform-origin: center bottom;
 }
+/* Idle breathing — subtle scale pulse like 90s RPG portraits */
+@keyframes w98-idle {
+  0%, 100% { transform: scale(1.0) translateY(0); }
+  35%      { transform: scale(1.012) translateY(-1px); }
+  65%      { transform: scale(1.005) translateY(0px); }
+}
+/* Talking — faster bobbing + slight horizontal sway like SNES dialogue */
 .w98-portrait.is-talking img {
-  animation: w98-bob 0.32s steps(2) infinite;
+  animation: w98-talk 0.28s steps(2) infinite, w98-sway 0.7s ease-in-out infinite;
 }
-@keyframes w98-bob {
+@keyframes w98-talk {
   0%   { transform: translateY(0); }
-  100% { transform: translateY(-2px); }
+  100% { transform: translateY(-3px); }
+}
+@keyframes w98-sway {
+  0%, 100% { margin-left: 0; }
+  50%      { margin-left: 1px; }
 }
 /* Silhouette placeholder when no image provided */
 .w98-portrait[data-empty="1"] {
@@ -180,18 +187,31 @@ body {
   background: rgba(255,255,255,0.15);
   clip-path: polygon(30% 0, 70% 0, 78% 28%, 85% 65%, 70% 100%, 30% 100%, 15% 65%, 22% 28%);
 }
-
+/* CRT scanline overlay on portrait */
+.w98-portrait::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.12) 2px,
+    rgba(0,0,0,0.12) 3px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
 /* Speech bubble */
 .w98-speech { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
 .w98-speech-label {
   font-size: 11px; font-weight: 700;
   color: var(--w98-black);
-  margin-bottom: 4px;
-  padding-bottom: 3px;
+  margin-bottom: 3px;
+  padding-bottom: 2px;
   border-bottom: 1px solid var(--w98-dark);
   display: flex; align-items: center; gap: 5px;
 }
-.w98-speech-label::before { content: "💬"; font-size: 11px; line-height: 1; }
+.w98-speech-label::before { content: "\25B6"; font-size: 8px; line-height: 1; color: var(--w98-teal); }
 .w98-speech-field {
   flex: 1;
   font-size: 12px; line-height: 1.5;
@@ -229,12 +249,10 @@ body {
   opacity: 1;
   animation: w98-blink 1.1s step-end infinite;
 }
-
 /* ═══════════════════════════════════════════════════════════════════
    VIDEO WINDOW
 ═══════════════════════════════════════════════════════════════════ */
 .w98-video-body { padding: 6px; }
-
 /* Video container — 16:9 */
 .w98-video-wrap {
   position: relative;
@@ -251,6 +269,18 @@ body {
   width: 100%; height: 100%;
   border: none;
 }
+/* Hide CF controls by pushing iframe larger + pointer-events overlay */
+.w98-video-wrap iframe {
+  /* Slightly oversized to clip bottom control bar */
+  height: calc(100% + 46px);
+  pointer-events: none;
+}
+/* Clickable overlay to capture play/pause from our buttons only */
+.w98-video-overlay {
+  position: absolute; inset: 0;
+  z-index: 5;
+  cursor: default;
+}
 .w98-fs-btn {
   position: absolute;
   bottom: 8px; right: 8px;
@@ -266,14 +296,17 @@ body {
 }
 .w98-fs-btn svg { width: 12px; height: 12px; fill: #fff; }
 .w98-fs-btn:hover { background: rgba(0,0,0,0.8); }
-
-/* Controls toolbar */
+/* ─── Controls toolbar — CENTERED ─── */
 .w98-ctrl-bar {
-  display: flex; align-items: stretch; gap: 4px;
-  margin-top: 6px; flex-wrap: wrap;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 5px;
+  flex-wrap: wrap;
 }
 .w98-btn {
-  height: 54px; min-width: 56px; padding: 0 6px;
+  height: 50px; min-width: 52px; padding: 0 5px;
   background: var(--w98-face);
   border: 2px solid;
   border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
@@ -282,7 +315,7 @@ body {
   cursor: pointer;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 3px;
+  gap: 2px;
   user-select: none;
   color: var(--w98-black);
   letter-spacing: 0.2px;
@@ -290,14 +323,17 @@ body {
   touch-action: manipulation;
   position: relative;
 }
+.w98-btn:hover {
+  background: linear-gradient(180deg, #d8d8d8, var(--w98-face));
+}
 .w98-btn:active, .w98-btn.pressed {
   border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
-  padding: 1px 5px 0 7px;
+  padding: 1px 4px 0 6px;
 }
-.w98-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.w98-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 .w98-btn.play-btn {
   background: linear-gradient(180deg, #e0e0e0, #b0b0b0);
-  min-width: 64px;
+  min-width: 60px;
 }
 .w98-btn .leg {
   font-size: 9px; font-weight: 700;
@@ -313,19 +349,18 @@ body {
 .ico-green .leg { color: #1a6c1a; }
 .ico-blue svg  { fill: #1a3a8c; }
 .ico-blue .leg { color: #1a3a8c; }
-
 /* LCD */
 .w98-lcd {
-  height: 54px; min-width: 78px; padding: 4px 6px;
+  height: 50px; min-width: 72px; padding: 3px 5px;
   background: var(--w98-face);
   border: 2px solid;
   border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 4px;
+  gap: 3px;
 }
 .w98-lcd-screen {
-  width: 100%; height: 22px;
+  width: 100%; height: 20px;
   background: #000;
   border: 2px solid;
   border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
@@ -350,7 +385,6 @@ body {
   text-transform: uppercase; letter-spacing: 0.3px;
   color: var(--w98-black); line-height: 1;
 }
-
 /* Subtitles dropdown */
 .w98-cc-wrap { position: relative; }
 .w98-cc-menu {
@@ -370,11 +404,16 @@ body {
 }
 .w98-cc-item:hover { background: var(--w98-title); color: var(--w98-title-text); }
 .w98-cc-item.active { font-weight: 700; }
-
-/* Bottom bar */
+/* ─── Bottom bar — CENTERED with original link always prominent ─── */
 .w98-bottom-bar {
-  display: flex; align-items: center; gap: 4px;
-  margin-top: 6px; flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+  padding: 2px 0;
+  border-top: 1px solid var(--w98-dark);
 }
 .w98-tb-btn {
   height: 22px; padding: 0 8px;
@@ -389,6 +428,9 @@ body {
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
 }
+.w98-tb-btn:hover {
+  background: linear-gradient(180deg, #d8d8d8, var(--w98-face));
+}
 .w98-tb-btn:active, .w98-tb-btn.pressed {
   border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
 }
@@ -396,10 +438,9 @@ body {
 .w98-tb-btn.accent { color: var(--w98-teal); }
 .w98-tb-btn.accent svg { fill: var(--w98-teal); }
 .w98-spacer { flex: 1; }
-
 /* Status bar */
 .w98-status {
-  height: 20px;
+  height: 18px;
   border-top: 1px solid var(--w98-darker);
   display: flex; align-items: center;
   padding: 0 6px; gap: 8px;
@@ -412,7 +453,6 @@ body {
   display: flex; align-items: center;
   font-size: 10px;
 }
-
 /* Theme picker dropdown */
 .w98-theme-wrap { position: relative; }
 .w98-theme-menu {
@@ -438,13 +478,12 @@ body {
   width: 12px; height: 12px;
   border: 1px solid var(--w98-darker); flex-shrink: 0;
 }
-
 /* ═══════════════════════════════════════════════════════════════════
    NOTES WINDOW
 ═══════════════════════════════════════════════════════════════════ */
 .w98-notes-body { padding: 6px; }
 .w98-notes-area {
-  width: 100%; min-height: 80px;
+  width: 100%; min-height: 72px;
   background: var(--w98-field);
   border: 2px solid;
   border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
@@ -458,7 +497,6 @@ body {
   display: flex; align-items: center; gap: 4px;
   margin-top: 4px; flex-wrap: wrap;
 }
-
 /* ═══════════════════════════════════════════════════════════════════
    MODAL — My Notes & Highlights
 ═══════════════════════════════════════════════════════════════════ */
@@ -514,22 +552,20 @@ body {
   cursor: pointer; text-decoration: underline;
   margin-left: 8px;
 }
-
 /* Responsive */
 @media (max-width: 500px) {
-  .w98-btn { min-width: 48px; height: 50px; }
-  .w98-btn.play-btn { min-width: 56px; }
-  .w98-btn svg { width: 18px; height: 18px; }
-  .w98-lcd { min-width: 68px; height: 50px; }
+  .w98-btn { min-width: 44px; height: 46px; }
+  .w98-btn.play-btn { min-width: 52px; }
+  .w98-btn svg { width: 16px; height: 16px; }
+  .w98-lcd { min-width: 64px; height: 46px; }
   .w98-lcd-time { font-size: 12px; }
   .w98-portrait { width: 80px; height: 80px; }
 }
 </style>
 </head>
 <body>
-
 <!-- ══════════════════════════════════════════════════════════════════
-     COACH WINDOW — identical to audio player
+     COACH WINDOW
 ══════════════════════════════════════════════════════════════════ -->
 <div class="w98-window" id="coachWindow">
   <div class="w98-titlebar">
@@ -544,8 +580,8 @@ body {
     <span class="w98-titlebar-text" id="coachTitle">coach_message.exe</span>
     <div class="w98-titlebar-btns">
       <button class="w98-tbtn" id="coachMin" type="button" aria-label="minimize">_</button>
-      <button class="w98-tbtn" type="button">□</button>
-      <button class="w98-tbtn" type="button">✕</button>
+      <button class="w98-tbtn" type="button">&#9633;</button>
+      <button class="w98-tbtn" type="button">&#10005;</button>
     </div>
   </div>
   <div class="w98-window-body w98-coach-content" id="coachContent">
@@ -559,7 +595,6 @@ body {
     </div>
   </div>
 </div>
-
 <!-- ══════════════════════════════════════════════════════════════════
      VIDEO PLAYER WINDOW
 ══════════════════════════════════════════════════════════════════ -->
@@ -574,13 +609,11 @@ body {
     <span class="w98-titlebar-text" id="videoTitle">Pathway Media Player 2.0</span>
     <div class="w98-titlebar-btns">
       <button class="w98-tbtn" type="button">_</button>
-      <button class="w98-tbtn" type="button">□</button>
-      <button class="w98-tbtn" type="button">✕</button>
+      <button class="w98-tbtn" type="button">&#9633;</button>
+      <button class="w98-tbtn" type="button">&#10005;</button>
     </div>
   </div>
-
   <div class="w98-window-body w98-video-body">
-
     <!-- Video embed area -->
     <div class="w98-video-wrap" id="videoWrap">
       <div id="videoPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#888;font-size:11px;font-family:Tahoma,sans-serif;gap:4px;text-align:center;padding:16px;">
@@ -588,13 +621,14 @@ body {
         No video source provided.<br>
         <span style="font-size:10px;color:#666;">Add <code>?vid=CLOUDFLARE_ID</code> or <code>?mp4=URL</code></span>
       </div>
+      <!-- Overlay blocks direct interaction with CF player controls -->
+      <div class="w98-video-overlay" id="videoOverlay"></div>
       <button class="w98-fs-btn" id="btnFullscreen" title="Enter fullscreen" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
         Fullscreen
       </button>
     </div>
-
-    <!-- Controls toolbar -->
+    <!-- Controls toolbar — centered -->
     <div class="w98-ctrl-bar">
       <button class="w98-btn ico-gray" id="btnBack" title="Back 15 seconds">
         <svg viewBox="0 0 24 24">
@@ -620,7 +654,7 @@ body {
           <path d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44z"/>
           <path d="M10.59 15.41a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"/>
         </svg>
-        <span class="leg" id="speedLabel">1×</span>
+        <span class="leg" id="speedLabel">1&times;</span>
       </button>
       <!-- Subtitles / CC -->
       <div class="w98-cc-wrap" id="ccWrap">
@@ -643,14 +677,12 @@ body {
         <span class="leg">Save</span>
       </button>
     </div>
-
-    <!-- Bottom bar -->
+    <!-- Bottom bar — centered, original link always visible -->
     <div class="w98-bottom-bar">
       <button class="w98-tb-btn accent" id="btnOriginal" title="Watch original video" style="display:none;">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
         Watch Original
       </button>
-      <div class="w98-spacer"></div>
       <!-- Window theme picker -->
       <div class="w98-theme-wrap">
         <button class="w98-tb-btn" id="btnTheme" title="Change window theme">
@@ -668,11 +700,8 @@ body {
         </div>
       </div>
     </div>
-
-
   </div>
 </div>
-
 <!-- ══════════════════════════════════════════════════════════════════
      NOTES WINDOW
 ══════════════════════════════════════════════════════════════════ -->
@@ -689,14 +718,13 @@ body {
     <span class="w98-titlebar-text">notes.txt</span>
     <div class="w98-titlebar-btns">
       <button class="w98-tbtn" id="notesMin" type="button" aria-label="minimize">_</button>
-      <button class="w98-tbtn" type="button">□</button>
-      <button class="w98-tbtn" type="button">✕</button>
+      <button class="w98-tbtn" type="button">&#9633;</button>
+      <button class="w98-tbtn" type="button">&#10005;</button>
     </div>
   </div>
   <div class="w98-window-body w98-notes-body" id="notesBody">
-    <textarea class="w98-notes-area" id="notesArea" placeholder="Type your notes here…" rows="4" spellcheck="true"></textarea>
+    <textarea class="w98-notes-area" id="notesArea" placeholder="Type your notes here..." rows="4" spellcheck="true"></textarea>
     <div class="w98-notes-toolbar">
-      <!-- Only: My Notes (save+open) and Copy -->
       <button class="w98-tb-btn" id="btnMyNotes" title="Save note and view all notes &amp; highlights">
         <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
         My Notes
@@ -709,7 +737,6 @@ body {
     </div>
   </div>
 </div>
-
 <!-- ══════════════════════════════════════════════════════════════════
      MY NOTES & HIGHLIGHTS MODAL
 ══════════════════════════════════════════════════════════════════ -->
@@ -723,7 +750,7 @@ body {
       </div>
       <span class="w98-titlebar-text">my_notes_and_highlights.txt</span>
       <div class="w98-titlebar-btns">
-        <button class="w98-tbtn" id="notesModalClose" type="button">✕</button>
+        <button class="w98-tbtn" id="notesModalClose" type="button">&#10005;</button>
       </div>
     </div>
     <div class="w98-modal-content" id="notesModalContent">
@@ -748,14 +775,12 @@ body {
     </div>
   </div>
 </div>
-
 <!-- ══════════════════════════════════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════════════════════════════════ -->
 <script>
 (function () {
   'use strict';
-
   /* ─── URL params ──────────────────────────────────────────────── */
   var P = new URLSearchParams(location.search);
   function p(k)     { return P.get(k) || ''; }
@@ -766,7 +791,6 @@ body {
       try { return decodeURIComponent(atob(v)); } catch(_) { return ''; }
     }
   }
-
   /* ─── Course / article metadata ──────────────────────────────── */
   var COURSE = {
     id:   p('courseId')   || 'default',
@@ -776,37 +800,46 @@ body {
     id:    p('articleId')    || 'video',
     title: p('articleTitle') || 'Video'
   };
-
   /* ─── Video sources ───────────────────────────────────────────── */
   var cfVideoId   = p('vid');
   var mp4Src      = b64('mp4')  || p('mp4src');
   var originalUrl = b64('orig') || p('orig');
   var downloadUrl = b64('dl')   || p('dl');
-
   /* ─── Title ───────────────────────────────────────────────────── */
   var titleText = b64text('articleTitle') || ARTICLE.title;
   document.title = titleText || 'Pathway Media Player 2.0';
-
   /* ─── Inject video ────────────────────────────────────────────── */
   var wrap = document.getElementById('videoWrap');
   var isNativeVideo = false;
   var videoEl = null;
   var cfIframe = null;
-
+  var cfPlaying = false;  /* track CF play state for our buttons */
   if (cfVideoId) {
     var ph = document.getElementById('videoPlaceholder');
     if (ph) ph.remove();
     cfIframe = document.createElement('iframe');
+    /* ── controls=false — hides Cloudflare's built-in UI ── */
     cfIframe.src = 'https://iframe.cloudflarestream.com/' + cfVideoId +
-      '?autoplay=false&loop=false&controls=true&playsinline=true';
+      '?autoplay=false&loop=false&controls=false&playsinline=true&muted=false';
     cfIframe.allow = 'accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture';
     cfIframe.allowFullscreen = true;
     cfIframe.setAttribute('playsinline', '');
     cfIframe.setAttribute('webkit-playsinline', '');
-    wrap.appendChild(cfIframe);
+    wrap.insertBefore(cfIframe, document.getElementById('videoOverlay'));
     document.getElementById('btnFullscreen').style.display = 'flex';
     fetchCFCaptions(cfVideoId);
-
+    /* Listen for CF Stream postMessage events to sync our UI */
+    window.addEventListener('message', function (e) {
+      var data;
+      try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(_) { return; }
+      if (!data || !data.type) return;
+      if (data.type === 'play')  { cfPlaying = true;  setPlaying(true); }
+      if (data.type === 'pause') { cfPlaying = false; setPlaying(false); }
+      if (data.type === 'ended') { cfPlaying = false; setPlaying(false); }
+      if (data.type === 'timeupdate' && typeof data.currentTime === 'number' && typeof data.duration === 'number') {
+        document.getElementById('lcdTime').textContent = fmt(data.duration - data.currentTime);
+      }
+    });
   } else if (mp4Src) {
     var ph = document.getElementById('videoPlaceholder');
     if (ph) ph.remove();
@@ -818,7 +851,7 @@ body {
     videoEl.setAttribute('webkit-playsinline', '');
     videoEl.setAttribute('x-webkit-airplay', 'allow');
     isNativeVideo = true;
-    wrap.appendChild(videoEl);
+    wrap.insertBefore(videoEl, document.getElementById('videoOverlay'));
     document.getElementById('btnFullscreen').style.display = 'flex';
     videoEl.addEventListener('loadedmetadata', function () {
       document.getElementById('lcdTime').textContent = fmt(videoEl.duration);
@@ -828,7 +861,11 @@ body {
     });
     videoEl.addEventListener('ended', function () { setPlaying(false); });
   }
-
+  /* ─── CF Stream helper: send command via postMessage ──────────── */
+  function cfCommand(cmd) {
+    if (!cfIframe) return;
+    try { cfIframe.contentWindow.postMessage(JSON.stringify({ event: cmd }), '*'); } catch(e) {}
+  }
   /* ─── Cloudflare captions ─────────────────────────────────────── */
   function fetchCFCaptions(uid) {
     fetch('https://videodelivery.net/' + uid + '/captions')
@@ -859,9 +896,7 @@ body {
       menu.querySelectorAll('.w98-cc-item').forEach(function (i) { i.classList.remove('active'); });
       item.classList.add('active');
       document.getElementById('ccLabel').textContent = item.dataset.lang ? item.dataset.lang.toUpperCase() : 'CC';
-      if (cfIframe) {
-        try { cfIframe.contentWindow.postMessage(JSON.stringify({ event: 'setCaptionLanguage', data: item.dataset.lang }), '*'); } catch(e) {}
-      }
+      cfCommand('setCaptionLanguage');
       menu.classList.remove('open');
     });
   }
@@ -869,7 +904,6 @@ body {
     e.stopPropagation();
     document.getElementById('ccMenu').classList.toggle('open');
   });
-
   /* ─── Download ────────────────────────────────────────────────── */
   if (downloadUrl || mp4Src) {
     var dlBtn = document.getElementById('btnDownload');
@@ -882,8 +916,7 @@ body {
       a.click();
     });
   }
-
-  /* ─── Watch Original ──────────────────────────────────────────── */
+  /* ─── Watch Original — visible when orig param present ─────── */
   if (originalUrl) {
     var origBtn = document.getElementById('btnOriginal');
     origBtn.style.display = 'flex';
@@ -891,7 +924,6 @@ body {
       window.open(originalUrl, '_blank', 'noopener');
     });
   }
-
   /* ─── Fullscreen ──────────────────────────────────────────────── */
   document.getElementById('btnFullscreen').addEventListener('click', function () {
     var el = wrap;
@@ -900,11 +932,9 @@ body {
     else if (el.mozRequestFullScreen)    el.mozRequestFullScreen();
     else if (el.msRequestFullscreen)     el.msRequestFullscreen();
   });
-
-  /* ─── Playback controls (native video) ───────────────────────── */
+  /* ─── Playback controls ──────────────────────────────────────── */
   var speeds   = [1, 1.25, 1.5, 1.75, 2, 0.75];
   var speedIdx = 0;
-
   function fmt(s) {
     if (!isFinite(s) || s < 0) return '--:--';
     var m = Math.floor(s / 60), sec = Math.floor(s % 60);
@@ -916,45 +946,53 @@ body {
     document.getElementById('playLabel').textContent   = playing ? 'Pause' : 'Play';
     document.getElementById('btnPlay').title           = playing ? 'Pause' : 'Play';
   }
-
+  /* Play / Pause — works for both native video AND Cloudflare Stream */
   document.getElementById('btnPlay').addEventListener('click', function () {
-    if (!isNativeVideo) {
-      if (cfIframe) {
-        try { cfIframe.contentWindow.postMessage(JSON.stringify({ event: 'toggle' }), '*'); } catch(e) {}
-      }
-      return;
+    if (isNativeVideo && videoEl) {
+      if (videoEl.paused) { videoEl.play(); setPlaying(true); }
+      else { videoEl.pause(); setPlaying(false); }
+    } else if (cfIframe) {
+      if (cfPlaying) { cfCommand('pause'); }
+      else           { cfCommand('play'); }
     }
-    if (!videoEl) return;
-    if (videoEl.paused) { videoEl.play(); setPlaying(true); }
-    else { videoEl.pause(); setPlaying(false); }
   });
+  /* Back 15s */
   document.getElementById('btnBack').addEventListener('click', function () {
-    if (!isNativeVideo || !videoEl) return;
-    videoEl.currentTime = Math.max(0, videoEl.currentTime - 15);
+    if (isNativeVideo && videoEl) {
+      videoEl.currentTime = Math.max(0, videoEl.currentTime - 15);
+    } else if (cfIframe) {
+      cfCommand('seekBack15');
+    }
   });
+  /* Forward 15s */
   document.getElementById('btnFwd').addEventListener('click', function () {
-    if (!isNativeVideo || !videoEl) return;
-    videoEl.currentTime = Math.min(videoEl.duration || 0, videoEl.currentTime + 15);
+    if (isNativeVideo && videoEl) {
+      videoEl.currentTime = Math.min(videoEl.duration || 0, videoEl.currentTime + 15);
+    } else if (cfIframe) {
+      cfCommand('seekForward15');
+    }
   });
+  /* Speed */
   document.getElementById('btnSpeed').addEventListener('click', function () {
-    if (!isNativeVideo || !videoEl) return;
     speedIdx = (speedIdx + 1) % speeds.length;
-    videoEl.playbackRate = speeds[speedIdx];
-    document.getElementById('speedLabel').textContent = speeds[speedIdx] + '\u00d7';
+    var spd = speeds[speedIdx];
+    document.getElementById('speedLabel').textContent = spd + '\u00d7';
+    if (isNativeVideo && videoEl) {
+      videoEl.playbackRate = spd;
+    } else if (cfIframe) {
+      try { cfIframe.contentWindow.postMessage(JSON.stringify({ event: 'playbackRate', data: spd }), '*'); } catch(e) {}
+    }
   });
-
   /* Touch feedback */
   document.querySelectorAll('.w98-btn, .w98-tb-btn').forEach(function (btn) {
     btn.addEventListener('touchstart', function () { btn.classList.add('pressed'); }, { passive: true });
     btn.addEventListener('touchend',   function () { setTimeout(function () { btn.classList.remove('pressed'); }, 120); });
     btn.addEventListener('touchcancel',function () { btn.classList.remove('pressed'); });
   });
-
   /* ─── Window chrome theme ─────────────────────────────────────── */
   var WTHEME_KEY = 'w98-video-wtheme';
   var wthemeNames = { '': 'Classic', 'navy': 'Navy', 'forest': 'Forest', 'maroon': 'Maroon', 'midnight': 'Midnight', 'rose': 'Rose', 'bgmc': 'BGMC' };
   var currentWTheme = localStorage.getItem(WTHEME_KEY) || '';
-
   function applyWTheme(t) {
     currentWTheme = t;
     document.documentElement.setAttribute('data-wtheme', t);
@@ -965,7 +1003,6 @@ body {
     });
   }
   applyWTheme(currentWTheme);
-
   document.getElementById('btnTheme').addEventListener('click', function (e) {
     e.stopPropagation();
     document.getElementById('themeMenu').classList.toggle('open');
@@ -980,26 +1017,23 @@ body {
     document.getElementById('themeMenu').classList.remove('open');
     document.getElementById('ccMenu').classList.remove('open');
   });
-
-  /* ─── COACH WINDOW — identical to audio player ────────────────── */
+  /* ─── COACH WINDOW ────────────────────────────────────────────── */
   (function () {
-    /* Character presets (same as audio player) */
+    /* Character presets — real athlete portraits */
     var CHARS = {
-      1: { name: 'Coach Mara', img: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Mara&backgroundColor=b6e3f4', imgFallback: '' },
-      2: { name: 'Coach Eli',  img: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Eli&backgroundColor=d1f4cc',  imgFallback: '' },
-      3: { name: 'Coach Sam',  img: 'https://api.dicebear.com/7.x/pixel-art/svg?seed=Sam&backgroundColor=ffd5dc',  imgFallback: '' }
+      1: { name: 'Coach Mara',  img: 'https://pathway.training/wp-content/uploads/2026/04/1-1.png' },
+      2: { name: 'Coach Clint', img: 'https://pathway.training/wp-content/uploads/2026/04/2.png'   },
+      3: { name: 'Coach Ray',   img: 'https://pathway.training/wp-content/uploads/2026/04/3.png'   }
     };
     var charNum    = parseInt(p('char') || '1', 10);
     var d          = CHARS[charNum] || CHARS[1];
     var imgUrl     = b64('img') || p('imgSrc') || d.img;
-    var imgFallback = d.imgFallback || '';
     var coachName  = b64text('name') || p('name') || d.name;
     var coachText  = b64text('text') || p('text') || b64text('msg') || p('msg') || '';
     var coachSpeed = parseInt(p('speed') || '30', 10);
     var startDelay = parseInt(p('delay') || '400', 10);
     var coachLoop  = p('loop') === '1' || p('loop') === 'true';
     var coachTitle = b64text('title') || ('coach_message_' + charNum + '.exe');
-
     /* DOM refs */
     var portraitEl = document.getElementById('coachPortrait');
     var labelEl    = document.getElementById('coachSpeakerLabel');
@@ -1008,26 +1042,18 @@ body {
     var minBtn     = document.getElementById('coachMin');
     var windowEl   = document.getElementById('coachWindow');
     var titleEl    = document.getElementById('coachTitle');
-
     labelEl.textContent = coachName;
     titleEl.textContent = coachTitle;
-
     /* Portrait image */
     if (imgUrl) {
       var img = document.createElement('img');
       img.alt = coachName;
-      var triedFallback = false;
       img.onload  = function () { portraitEl.removeAttribute('data-empty'); };
-      img.onerror = function () {
-        if (!triedFallback && imgFallback && img.src !== imgFallback) {
-          triedFallback = true; img.src = imgFallback;
-        }
-      };
+      img.onerror = function () {};
       img.src = imgUrl;
       portraitEl.appendChild(img);
     }
-
-    /* Typewriter — identical to audio player */
+    /* Typewriter */
     var cancelFn = null;
     function typewrite(fullText) {
       if (cancelFn) cancelFn();
@@ -1057,19 +1083,16 @@ body {
       setTimeout(step, startDelay);
       cancelFn = function () { cancelled = true; };
     }
-
     /* Minimize */
     minBtn.addEventListener('click', function (e) {
       e.stopPropagation();
       windowEl.classList.toggle('minimized');
       notifyHeight();
     });
-
     /* Click to replay */
     textEl.parentElement.addEventListener('click', function () {
       if (coachLoop || contEl.classList.contains('is-visible')) typewrite(coachText);
     });
-
     /* Auto-start on intersection (with 1s fallback) */
     var coachStarted = false;
     function startCoach() {
@@ -1086,7 +1109,6 @@ body {
       io.observe(windowEl);
     }
     setTimeout(startCoach, 1000);
-
     /* Height notification for iframe embedding */
     var lastH = 0;
     function notifyHeight() {
@@ -1098,11 +1120,9 @@ body {
     window.addEventListener('load',   notifyHeight);
     window.addEventListener('resize', notifyHeight);
   })();
-
   /* ─── Notes system ────────────────────────────────────────────── */
   var NOTES_KEY = 'w98-notes-v1';
   var HL_KEY    = 'w98-highlights-v2';
-
   function loadNotes() {
     try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '[]'); } catch(e) { return []; }
   }
@@ -1112,15 +1132,12 @@ body {
   function loadHLs() {
     try { return JSON.parse(localStorage.getItem(HL_KEY) || '[]'); } catch(e) { return []; }
   }
-
   var notesArea = document.getElementById('notesArea');
-
   /* Minimize notes */
   document.getElementById('notesMin').addEventListener('click', function () {
     document.getElementById('notesWindow').classList.toggle('minimized');
   });
-
-  /* My Notes button: save current text (if any) then open modal */
+  /* My Notes button */
   document.getElementById('btnMyNotes').addEventListener('click', function () {
     var txt = notesArea.value.trim();
     if (txt) {
@@ -1140,7 +1157,6 @@ body {
     buildModalContent();
     document.getElementById('notesModal').classList.add('open');
   });
-
   /* Copy current note text */
   document.getElementById('btnCopyNote').addEventListener('click', function () {
     var txt = notesArea.value;
@@ -1153,13 +1169,11 @@ body {
       alert('Copied!');
     }
   });
-
   /* ─── My Notes & Highlights modal ────────────────────────────── */
   function fmtDate(iso) {
     try { return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }); }
     catch(e) { return iso; }
   }
-
   function buildModalContent() {
     var notes = loadNotes().filter(function (n) { return n.courseId === COURSE.id; });
     var hls   = loadHLs().filter(function (h)   { return h.courseId === COURSE.id; });
@@ -1167,25 +1181,21 @@ body {
     notes.forEach(function (n) { entries.push({ type: 'note', data: n, ts: n.timestamp }); });
     hls.forEach(function (h)   { entries.push({ type: 'hl',   data: h, ts: h.timestamp }); });
     entries.sort(function (a, b) { return a.ts < b.ts ? -1 : 1; });
-
     var container = document.getElementById('notesModalContent');
     container.innerHTML = '';
     document.getElementById('modalTotalCount').textContent = entries.length + ' entr' + (entries.length === 1 ? 'y' : 'ies');
-
     if (entries.length === 0) {
       container.innerHTML = '<div style="color:var(--w98-dark);font-size:11px;">No notes or highlights yet.</div>';
       return;
     }
-
     entries.forEach(function (entry) {
       var div = document.createElement('div');
       div.className = 'w98-modal-entry';
-
       var meta = document.createElement('div');
       meta.className = 'w98-modal-entry-meta';
       var typeTag = document.createElement('span');
       typeTag.className = entry.type === 'note' ? 'tag-note' : 'tag-hl';
-      typeTag.textContent = entry.type === 'note' ? '📝 NOTE' : '🖍 HIGHLIGHT';
+      typeTag.textContent = entry.type === 'note' ? 'NOTE' : 'HIGHLIGHT';
       var courseTag = document.createElement('span');
       courseTag.textContent = entry.data.courseName || COURSE.name;
       var sectionTag = document.createElement('span');
@@ -1194,7 +1204,6 @@ body {
       dateTag.textContent = fmtDate(entry.ts);
       meta.appendChild(typeTag); meta.appendChild(courseTag);
       meta.appendChild(sectionTag); meta.appendChild(dateTag);
-
       var text = document.createElement('div');
       text.className = 'w98-modal-entry-text';
       if (entry.type === 'hl') {
@@ -1205,7 +1214,6 @@ body {
       } else {
         text.textContent = entry.data.text;
       }
-
       var del = document.createElement('span');
       del.className = 'w98-modal-entry-del';
       del.textContent = '[remove]';
@@ -1219,12 +1227,10 @@ body {
         }
         buildModalContent();
       });
-
       div.appendChild(meta); div.appendChild(text); div.appendChild(del);
       container.appendChild(div);
     });
   }
-
   document.getElementById('notesModalClose').addEventListener('click', function () {
     document.getElementById('notesModal').classList.remove('open');
   });
@@ -1235,7 +1241,6 @@ body {
     if (e.target === document.getElementById('notesModal'))
       document.getElementById('notesModal').classList.remove('open');
   });
-
   /* Export .txt */
   document.getElementById('modalExportAll').addEventListener('click', function () {
     var notes = loadNotes().filter(function (n) { return n.courseId === COURSE.id; });
@@ -1258,7 +1263,6 @@ body {
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
-
   /* Copy all */
   document.getElementById('modalCopyAll').addEventListener('click', function () {
     var notes = loadNotes().filter(function (n) { return n.courseId === COURSE.id; });
@@ -1283,7 +1287,6 @@ body {
       alert('Copied!');
     }
   });
-
   /* Print */
   document.getElementById('modalPrintAll').addEventListener('click', function () {
     var notes = loadNotes().filter(function (n) { return n.courseId === COURSE.id; });
@@ -1315,7 +1318,6 @@ body {
     w.document.write(html); w.document.close();
     setTimeout(function () { w.print(); }, 250);
   });
-
 })();
 </script>
 </body>
