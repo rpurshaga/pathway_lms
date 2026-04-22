@@ -138,11 +138,19 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
 .w98-continue { align-self:flex-end; font-size:10px; color:var(--w98-dark); margin-top:3px; opacity:0; transition:opacity 0.2s; }
 .w98-continue.is-visible { opacity:1; animation:w98-blink 1.1s step-end infinite; }
 
-/* Fake fullscreen (fallback when real fullscreen is blocked by iframe) */
-.w98-video-frame.fake-fullscreen {
+/* Fullscreen — entire player window so controls stay visible */
+.w98-window.is-fullscreen {
   position:fixed !important; inset:0 !important;
-  width:100vw !important; height:100vh !important; aspect-ratio:unset !important;
-  z-index:99999 !important; border:none !important; margin:0 !important;
+  width:100vw !important; height:100vh !important; max-width:100vw !important;
+  z-index:99999 !important; display:flex !important; flex-direction:column !important;
+  overflow:hidden !important; box-shadow:none !important; border:none !important;
+}
+.w98-window.is-fullscreen .w98-window-body {
+  flex:1 1 0 !important; min-height:0 !important; overflow:hidden !important;
+  display:flex !important; flex-direction:column !important;
+}
+.w98-window.is-fullscreen .w98-video-frame {
+  flex:1 1 0 !important; aspect-ratio:unset !important; min-height:0 !important;
 }
 /* ═══════════════════════ VIDEO WINDOW ══════════════════════════════ */
 .w98-video-body { padding:4px; }
@@ -173,8 +181,13 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
   position:absolute; inset:0; z-index:1; pointer-events:none;
   background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
 }
-/* Click overlay (blocks native controls) */
-.w98-video-overlay { position:absolute; inset:0; z-index:2; cursor:pointer; }
+/* Click overlay — needs a tiny background to be a real pointer hit-target */
+.w98-video-overlay {
+  position:absolute; inset:0; z-index:2; cursor:pointer;
+  background:rgba(0,0,0,0.001); /* invisible but makes div clickable in all browsers */
+}
+/* Prevent native <video> element from ever eating pointer events */
+.w98-video-el { pointer-events:none; }
 /* Big centered play button */
 .w98-big-play {
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -1009,8 +1022,9 @@ function createVideo(){
   video.setAttribute('x5-playsinline','');
 
   /* ── Set up ALL event listeners BEFORE assigning src so cached metadata fires ── */
-  /* volume */
+  /* volume — explicitly unmute; some browsers default to muted in iframes */
   var sv=parseInt(ls(VK)||'70',10);
+  video.muted=false;
   video.volume=sv/100;
   document.getElementById('volFill').style.width=sv+'%';
   document.getElementById('volPct').textContent=sv+'%';
@@ -1118,30 +1132,33 @@ if(cfVideoId){
 
 /* ═══════════════════════════════════════════════════ FULLSCREEN */
 var fakeFs=false;
+var winEl=document.getElementById('videoWindow');
 function enterFakeFs(){
-  fakeFs=true;
-  document.getElementById('videoFrame').classList.add('fake-fullscreen');
-  document.getElementById('fsBtn').title='Exit Fullscreen (Esc)';
+  fakeFs=true; winEl.classList.add('is-fullscreen');
+  document.getElementById('fsBtn').setAttribute('title','Exit Fullscreen (Esc)');
 }
 function exitFakeFs(){
-  fakeFs=false;
-  document.getElementById('videoFrame').classList.remove('fake-fullscreen');
-  document.getElementById('fsBtn').title='Fullscreen';
+  fakeFs=false; winEl.classList.remove('is-fullscreen');
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+    try{(document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document);}catch(_){}
+  }
+  document.getElementById('fsBtn').setAttribute('title','Fullscreen');
 }
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&fakeFs) exitFakeFs(); });
-document.addEventListener('fullscreenchange',function(){ if(!document.fullscreenElement&&!document.webkitFullscreenElement) exitFakeFs(); });
+document.addEventListener('fullscreenchange',function(){
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement&&fakeFs) exitFakeFs();
+});
 
 document.getElementById('fsBtn').addEventListener('click',function(e){
   e.stopPropagation();
-  /* Exit fake-fs if already in it */
   if(fakeFs){ exitFakeFs(); return; }
-  /* Try native fullscreen on the video frame div */
-  var el=document.getElementById('videoFrame');
-  var req=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
+  /* Try real fullscreen on entire player window so controls are visible */
+  var req=winEl.requestFullscreen||winEl.webkitRequestFullscreen||winEl.mozRequestFullScreen||winEl.msRequestFullscreen;
   if(req){
     try{
-      var p=req.call(el);
-      if(p&&p.catch) p.catch(function(){ enterFakeFs(); });
+      var prom=req.call(winEl);
+      if(prom&&prom.then) prom.then(function(){ enterFakeFs(); }).catch(function(){ enterFakeFs(); });
+      else enterFakeFs(); /* older API — no promise */
     }catch(_){ enterFakeFs(); }
   } else {
     enterFakeFs();
@@ -1168,7 +1185,12 @@ function togglePlay(){
   }
 }
 document.getElementById('bigPlay').addEventListener('click',function(e){ e.stopPropagation(); togglePlay(); });
-document.getElementById('videoOverlay').addEventListener('click',togglePlay);
+document.getElementById('videoOverlay').addEventListener('click',function(e){ e.stopPropagation(); togglePlay(); });
+/* Catch-all: clicking anywhere on the video frame toggles play/pause */
+document.getElementById('videoFrame').addEventListener('click',function(e){
+  if(e.target.id==='fsBtn'||e.target.closest('#fsBtn')) return; /* ignore fullscreen btn */
+  togglePlay();
+});
 document.getElementById('btnPlay').addEventListener('click',togglePlay);
 
 document.getElementById('btnBack').addEventListener('click',function(){
