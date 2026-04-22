@@ -594,6 +594,7 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
   </div><!-- /window-body -->
   <div class="w98-statusbar">
     <div class="w98-status-panel" id="statusPanel">Ready</div>
+    <div class="w98-status-panel" style="flex:0 0 auto;white-space:nowrap;padding:0 8px;border-left:1px solid var(--w98-darker);">Pathway Media Player 2.0</div>
   </div>
 </div><!-- /video window -->
 
@@ -624,7 +625,7 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
       <div class="w98-fmt-sep"></div>
       <button class="w98-fmt-btn wide" data-cmd="insertUnorderedList" title="Bullet list">• ≡</button>
       <div class="w98-fmt-sep"></div>
-      <button class="w98-fmt-btn wide" data-cmd="removeFormat" title="Clear formatting">Aa</button>
+      <button class="w98-fmt-btn wide" data-cmd="removeFormat" title="Clear Formatting — removes bold/italic/underline from selected text">Aa</button>
     </div>
     <!-- Contenteditable notes area -->
     <div class="w98-notes-editor" id="notesEditor" contenteditable="true"
@@ -643,7 +644,7 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
         <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" fill="var(--w98-black)"/></svg>
         View Source
       </button>
-      <label class="w98-incl-link" title="Attach original video link when saving note">
+      <label class="w98-incl-link" title="When checked, the original video URL is appended to your note when you click My Notes to save it — useful for referencing the source later">
         <input type="checkbox" id="chkIncludeLink"> Include video link
       </label>
       <span class="w98-saved-ind" id="savedInd">✓ Saved</span>
@@ -748,7 +749,8 @@ var NK   = 'pw-notes-all-v1';  /* unified across ALL lessons */
 var DraftK = 'pw-notes-draft';
 var WThK = 'pw98-wtheme';
 
-document.title = lessonTitle;
+document.title = lessonTitle || 'Pathway Media Player';
+if(lessonTitle) document.getElementById('videoTitle').textContent = lessonTitle;
 
 /* ═══════════════════════════════════════════════════ HELPERS */
 function ls(k,v) { try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} return null; }
@@ -943,7 +945,8 @@ function updatePlayUI(playing){
   document.getElementById('iconPause').style.display = playing?'block':'none';
   document.getElementById('playLabel').textContent   = playing?'Pause':'Play';
   document.getElementById('bigPlay').classList.toggle('hidden', playing);
-  setStatus(playing ? 'Playing…' : 'Pause');
+  document.getElementById('fsBtn').classList.toggle('visible', playing||videoReady);
+  setStatus(playing ? 'Playing…' : 'Paused');
 }
 
 /* ═══════════════════════════════════════════════════ SCRUB / PROGRESS */
@@ -1060,12 +1063,14 @@ if(cfVideoId){
   /* CF postMessages */
   window.addEventListener('message',function(e){
     var d; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(_){return;}
-    if(!d||!d.type) return;
-    if(d.type==='play')  { cfPlaying=true;  updatePlayUI(true); }
-    if(d.type==='pause') { cfPlaying=false; updatePlayUI(false); }
-    if(d.type==='ended') { cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓'); }
-    if(d.type==='timeupdate'&&typeof d.currentTime==='number'&&typeof d.duration==='number'){
-      cfTime=d.currentTime; cfDur=d.duration; updateBar();
+    /* CF Stream sends {event:'play'} and {event:'timeupdate',data:{currentTime,duration}} */
+    var evt=d&&(d.event||d.type); if(!evt) return;
+    if(evt==='play')  { cfPlaying=true;  updatePlayUI(true); }
+    if(evt==='pause') { cfPlaying=false; updatePlayUI(false); }
+    if(evt==='ended') { cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓'); }
+    var td=d&&(d.data||d);
+    if(evt==='timeupdate'&&td&&typeof td.currentTime==='number'&&typeof td.duration==='number'){
+      cfTime=td.currentTime; cfDur=td.duration; updateBar();
     }
   });
   /* CF captions */
@@ -1099,9 +1104,22 @@ document.getElementById('fsBtn').addEventListener('click',function(e){
 
 /* ═══════════════════════════════════════════════════ TRANSPORT BUTTONS */
 function togglePlay(){
-  if(!videoReady&&!cfVideoId) { if(videoSrc||hasVariants) createVideo(); return; }
-  if(video){ if(video.paused) video.play().catch(function(){}); else video.pause(); }
-  else if(cfIframe){ if(cfPlaying) cfCmd('pause'); else cfCmd('play'); }
+  if(!videoReady&&!cfVideoId) {
+    if(videoSrc||hasVariants) {
+      /* Hide big play immediately for responsiveness; play event will confirm */
+      document.getElementById('bigPlay').classList.add('hidden');
+      setStatus('Loading…');
+      createVideo();
+    }
+    return;
+  }
+  if(video){
+    if(video.paused) video.play().catch(function(){});
+    else video.pause();
+  } else if(cfIframe){
+    if(cfPlaying) cfCmd('pause');
+    else { cfCmd('play'); document.getElementById('bigPlay').classList.add('hidden'); }
+  }
 }
 document.getElementById('bigPlay').addEventListener('click',function(e){ e.stopPropagation(); togglePlay(); });
 document.getElementById('videoOverlay').addEventListener('click',togglePlay);
@@ -1248,35 +1266,64 @@ document.getElementById('notesModal').addEventListener('click',function(e){
 
 /* ═══════════════════════════════════════════════════ PRINT */
 var LOGO='https://drive.google.com/uc?export=view&id=1eX4PUcohuQJZzPq-kSQVHvclLwdNuESu';
-document.getElementById('btnPrint').addEventListener('click',function(){
+var logoDataUrl=null;
+/* Pre-fetch logo → data URL so it works inside the print popup window */
+(function(){
+  var img=new Image(); img.crossOrigin='anonymous';
+  img.onload=function(){
+    try{
+      var c=document.createElement('canvas');
+      c.width=img.naturalWidth||200; c.height=img.naturalHeight||60;
+      c.getContext('2d').drawImage(img,0,0);
+      logoDataUrl=c.toDataURL('image/png');
+    }catch(e){ logoDataUrl=LOGO; }
+  };
+  img.onerror=function(){ logoDataUrl=LOGO; };
+  img.src=LOGO;
+})();
+
+function doPrint(logoSrc){
   var all=loadAllNotes();
   if(!all.length){ alert('No notes to print.'); return; }
   var sorted=all.slice().sort(function(a,b){ return a.timestamp<b.timestamp?1:-1; });
   var rows=sorted.map(function(note){
     var linkRow=note.origUrl?'<tr><td colspan="2" style="padding:2px 8px;font-size:10px;color:#555;">📎 <a href="'+note.origUrl+'">'+note.origUrl+'</a></td></tr>':'';
-    return '<tr><td style="padding:6px 8px;border-bottom:1px solid #ccc;vertical-align:top;min-width:130px;font-size:10px;color:#666;">'+
+    return '<tr><td style="padding:6px 8px;border-bottom:1px solid #ccc;vertical-align:top;min-width:140px;font-size:10px;color:#666;">'+
       (note.lessonTitle||'Video')+'<br><span style="font-size:9px;">'+fmtDate(note.timestamp)+'</span></td>'+
       '<td style="padding:6px 8px;border-bottom:1px solid #ccc;font-size:12px;line-height:1.5;">'+
       (note.html||'').replace(/<a /g,'<a target="_blank" ')+'</td></tr>'+linkRow;
   }).join('');
+  var logoHtml=logoSrc
+    ? '<img src="'+logoSrc+'" style="height:36px;object-fit:contain;" alt="Pathway">'
+    : '<span style="font-family:Tahoma,sans-serif;font-size:18px;font-weight:700;color:#000080;letter-spacing:2px;">PATHWAY</span>';
+  var wmHtml=logoSrc
+    ? '<img src="'+logoSrc+'" style="width:150px;" alt="Pathway">'
+    : '<span style="font-size:42px;font-weight:700;letter-spacing:4px;color:#000080;">PATHWAY</span>';
   var html='<!DOCTYPE html><html><head><title>My Notes — Pathway</title>'+
-    '<style>@media print{.no-print{display:none}.watermark{opacity:0.08!important}}'+
-    'body{font-family:Tahoma,"Segoe UI",sans-serif;font-size:12px;padding:24px;position:relative;}'+
-    '.watermark{position:fixed;bottom:30px;right:30px;opacity:0.07;pointer-events:none;}'+
-    '.watermark img{width:120px;}'+
-    'table{border-collapse:collapse;width:100%;}'+
-    'h1{font-size:16px;margin-bottom:4px;}'+
-    '.subtitle{font-size:11px;color:#666;margin-bottom:16px;}'+
+    '<style>'+
+    '@media print{.no-print{display:none!important}.watermark{opacity:0.07!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}}'+
+    'body{font-family:Tahoma,"Segoe UI",sans-serif;font-size:12px;padding:24px;margin:0;position:relative;}'+
+    '.watermark{position:fixed;bottom:40px;right:40px;opacity:0.08;pointer-events:none;z-index:0;transform:rotate(-10deg);}'+
+    'table{border-collapse:collapse;width:100%;position:relative;z-index:1;}'+
+    'h1{font-size:16px;margin:0 0 2px;}'+
+    '.subtitle{font-size:11px;color:#666;}'+
+    '.hdr{display:flex;align-items:center;gap:14px;margin-bottom:18px;border-bottom:2px solid #000080;padding-bottom:12px;}'+
     '</style></head><body>'+
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;border-bottom:2px solid #000080;padding-bottom:10px;">'+
-    '<img src="'+LOGO+'" style="height:36px;object-fit:contain;" onerror="this.style.display=\'none\'">'+
-    '<div><h1 style="margin:0;">My Notes</h1><div class="subtitle">Pathway LMS — Exported '+new Date().toLocaleString()+'</div></div></div>'+
+    '<div class="hdr">'+logoHtml+
+    '<div><h1>My Notes</h1><div class="subtitle">Pathway LMS — Exported '+new Date().toLocaleString()+'</div></div></div>'+
     '<table><tbody>'+rows+'</tbody></table>'+
-    '<div class="watermark"><img src="'+LOGO+'" alt="Pathway"></div>'+
+    '<div class="watermark">'+wmHtml+'</div>'+
     '</body></html>';
   var w=window.open('','_blank');
+  if(!w){ alert('Please allow popups to print notes.'); return; }
   w.document.write(html); w.document.close();
-  setTimeout(function(){ w.print(); },350);
+  setTimeout(function(){ w.focus(); w.print(); },500);
+}
+
+document.getElementById('btnPrint').addEventListener('click',function(){
+  var all=loadAllNotes();
+  if(!all.length){ alert('No notes to print.'); return; }
+  doPrint(logoDataUrl||LOGO);
 });
 
 /* ═══════════════════════════════════════════════════ EXPORT .TXT */
