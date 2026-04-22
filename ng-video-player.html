@@ -31,16 +31,7 @@
   --w98-teal:#F5A800; --w98-field:#1e1e1e; --w98-field-text:#F5A800;
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --w98-face:#3a3a3a; --w98-dark:#1a1a1a; --w98-darker:#0a0a0a; --w98-white:#5a5a5a;
-    --w98-black:#d0d0d0; --w98-title:#000060; --w98-teal:#00a0a0;
-    --w98-field:#1e1e1e; --w98-field-text:#d0d0d0;
-  }
-  html,body { color:#d0d0d0; }
-  .w98-btn.play-btn { background: linear-gradient(180deg,#484848,#2e2e2e); }
-}
+/* Dark mode: handled in JS → applies bgmc theme. No CSS override here. */
 
 /* ═══════════════════════ BASE ════════════════════════════════════════ */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
@@ -818,15 +809,30 @@ function setDone(v){ ls(DK, v?'true':'false'); }
 
 /* ═══════════════════════════════════════════════════ THEME */
 var themeNames = {'':'Classic','navy':'Navy','forest':'Forest','maroon':'Maroon','midnight':'Midnight','rose':'Rose','bgmc':'BGMC'};
-function applyTheme(t) {
+var ThManualK = 'pw98-wtheme-manual'; /* set only when user picks from menu */
+
+function applyTheme(t, manual) {
   document.documentElement.setAttribute('data-wtheme', t);
   document.getElementById('themeLabel').textContent = themeNames[t] || 'Classic';
   ls(WThK, t);
+  if(manual) ls(ThManualK, '1');
   document.querySelectorAll('.w98-theme-item').forEach(function(el){
     el.classList.toggle('active', el.dataset.wtheme === t);
   });
 }
-applyTheme(ls(WThK) || '');
+
+/* On load: honour manual choice; otherwise follow OS dark/light */
+var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+var hasManual   = ls(ThManualK) === '1';
+applyTheme(hasManual ? (ls(WThK)||'') : (prefersDark ? 'bgmc' : ''));
+
+/* React to live OS dark/light switch — only when user hasn't manually picked */
+if(window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e){
+    if(ls(ThManualK) === '1') return; /* user set manually — respect their choice */
+    applyTheme(e.matches ? 'bgmc' : '');
+  });
+}
 document.getElementById('btnTheme').addEventListener('click', function(e){
   e.stopPropagation();
   document.getElementById('themeMenu').classList.toggle('open');
@@ -834,7 +840,7 @@ document.getElementById('btnTheme').addEventListener('click', function(e){
 document.getElementById('themeMenu').addEventListener('click', function(e){
   var item = e.target.closest('.w98-theme-item');
   if(!item) return;
-  applyTheme(item.dataset.wtheme);
+  applyTheme(item.dataset.wtheme, true); /* true = user manually chose */
   document.getElementById('themeMenu').classList.remove('open');
 });
 document.addEventListener('click', function(){
