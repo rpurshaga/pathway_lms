@@ -365,6 +365,41 @@ body {
   flex-wrap: wrap;
 }
 
+/* ── Variant tabs ── */
+.w98-var-tabs { display: none; padding: 4px 6px 0; gap: 2px; }
+.w98-var-tabs.visible { display: flex; }
+.w98-var-tab {
+  padding: 3px 14px 5px; font-family: var(--w98-font); font-size: 11px; cursor: pointer;
+  background: #a8a8a8; color: var(--w98-black);
+  border: 2px solid; border-color: var(--w98-white) var(--w98-darker) transparent var(--w98-white);
+  border-bottom: none; position: relative; top: 2px; user-select: none;
+}
+.w98-var-tab.active { background: var(--w98-face); font-weight: 700; top: 0; padding-bottom: 7px; z-index: 1; }
+
+/* ── Choice overlay ── */
+.w98-choice-overlay {
+  position: absolute; inset: 0; z-index: 20; background: rgba(0,0,0,0.72);
+  display: none; align-items: center; justify-content: center; padding: 12px;
+}
+.w98-choice-overlay.visible { display: flex; }
+.w98-choice-dialog {
+  background: var(--w98-face); max-width: 340px; width: 100%;
+  border: 2px solid; border-color: var(--w98-white) var(--w98-black) var(--w98-black) var(--w98-white);
+  box-shadow: 2px 2px 0 var(--w98-darker);
+}
+.w98-choice-body { padding: 12px 14px 10px; }
+.w98-choice-prompt { font-size: 12px; color: var(--w98-black); margin-bottom: 10px; line-height: 1.5; }
+.w98-choice-btns { display: flex; flex-direction: column; gap: 4px; }
+.w98-choice-btn {
+  background: var(--w98-face); padding: 7px 10px;
+  border: 2px solid; border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  font-family: var(--w98-font); font-size: 12px; color: var(--w98-black);
+  cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+.w98-choice-btn:hover { background: #d4d4d4; }
+.w98-choice-btn:active { border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker); }
+
 /* Buttons */
 .w98-btn {
   height: 50px;
@@ -911,6 +946,12 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
     <span class="w98-tb-count" id="hlCount">0 highlights</span>
   </div>
 
+  <!-- Variant tabs -->
+  <div class="w98-var-tabs" id="varTabs">
+    <button class="w98-var-tab" id="varTabA" type="button">Version A</button>
+    <button class="w98-var-tab" id="varTabB" type="button">Version B</button>
+  </div>
+
   <!-- ── Audio player row ── -->
   <div class="w98-player-row">
     <!-- Back 15s -->
@@ -1038,6 +1079,28 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
     <div class="cell grow" id="statusTitle">Building a Mentoring Relationship &mdash; Video Transcript</div>
     <div class="cell" id="statusWords">0 words</div>
   </div>
+
+  <!-- Choice overlay (first visit, dual variant) -->
+  <div class="w98-choice-overlay" id="choiceOverlay">
+    <div class="w98-choice-dialog">
+      <div class="w98-titlebar">
+        <span class="w98-titlebar-text">Choose your version</span>
+      </div>
+      <div class="w98-choice-body">
+        <div class="w98-choice-prompt">This lesson has multiple versions. Which would you like to listen to?</div>
+        <div class="w98-choice-btns">
+          <button class="w98-choice-btn" id="choiceBtnA" type="button">
+            <svg viewBox="0 0 14 14" style="width:12px;height:12px;fill:var(--w98-teal);flex-shrink:0;"><polygon points="2,1 12,7 2,13"/></svg>
+            <span id="choiceLabelA">Version A</span>
+          </button>
+          <button class="w98-choice-btn" id="choiceBtnB" type="button">
+            <svg viewBox="0 0 14 14" style="width:12px;height:12px;fill:var(--w98-teal);flex-shrink:0;"><polygon points="2,1 12,7 2,13"/></svg>
+            <span id="choiceLabelB">Version B</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ── Floating Highlight button ── -->
@@ -1127,6 +1190,18 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
   var audioSrc = '';
   if (P.get('b'))   { try { audioSrc = atob(P.get('b')); }   catch (e) {} }
   else if (P.get('src')) { audioSrc = P.get('src'); }
+
+  /* ─── Variant A / B sources ─────────────────────────────────────── */
+  var varASrc    = b64('va')       || P.get('va')       || '';
+  var varBSrc    = b64('vb')       || P.get('vb')       || '';
+  var vaLabel    = b64text('vaLabel') || P.get('vaLabel') || 'Version A';
+  var vbLabel    = b64text('vbLabel') || P.get('vbLabel') || 'Version B';
+  var hasVariants = !!(varASrc && varBSrc);
+  if (hasVariants) { audioSrc = varASrc; }
+
+  /* ─── localStorage helper + variant storage key ─────────────────── */
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} return null; }
+  var SelK = 'pw-sel-' + ARTICLE.id;
 
   /* ─── Highlight color ────────────────────────────────────────────── */
   var hlColor = P.get('hlcolor') || 'green';
@@ -1282,6 +1357,50 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
   document.addEventListener('pointerup',   function ()  { scrubDrag = false; });
 
   if (audioSrc) initAudio();
+
+  /* ─── Variant switching ──────────────────────────────────────────── */
+  var varTabsEl  = document.getElementById('varTabs');
+  var varTabA    = document.getElementById('varTabA');
+  var varTabB    = document.getElementById('varTabB');
+  var choiceEl   = document.getElementById('choiceOverlay');
+  var choiceBtnA = document.getElementById('choiceBtnA');
+  var choiceBtnB = document.getElementById('choiceBtnB');
+  document.getElementById('choiceLabelA').textContent = vaLabel;
+  document.getElementById('choiceLabelB').textContent = vbLabel;
+  varTabA.textContent = vaLabel;
+  varTabB.textContent = vbLabel;
+
+  function setVariant(which, fromChoice) {
+    ls(SelK, which);
+    varTabA.classList.toggle('active', which === 'a');
+    varTabB.classList.toggle('active', which === 'b');
+    var newSrc = which === 'a' ? varASrc : varBSrc;
+    if (audio) {
+      var wasPlaying = !audio.paused, wasTime = audio.currentTime;
+      audio.pause();
+      audio.src = newSrc;
+      audioSrc = newSrc;
+      audio.load();
+      if (!fromChoice && wasPlaying) { audio.currentTime = wasTime; audio.play(); }
+    } else {
+      audioSrc = newSrc;
+    }
+    choiceEl.classList.remove('visible');
+  }
+
+  if (hasVariants) {
+    varTabsEl.classList.add('visible');
+    var savedSel = ls(SelK);
+    if (savedSel === 'a' || savedSel === 'b') {
+      setVariant(savedSel, false);
+    } else {
+      choiceEl.classList.add('visible');
+    }
+    choiceBtnA.addEventListener('click', function () { setVariant('a', true); });
+    choiceBtnB.addEventListener('click', function () { setVariant('b', true); });
+    varTabA.addEventListener('click',    function () { setVariant('a', false); });
+    varTabB.addEventListener('click',    function () { setVariant('b', false); });
+  }
 
   /* ═══════════════════════════════════════════════════════════════════
      SETTINGS — Spacing
