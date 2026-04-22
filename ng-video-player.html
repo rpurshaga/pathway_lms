@@ -529,6 +529,11 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
       <button class="w98-fs-btn" id="fsBtn" type="button" aria-label="Fullscreen">
         <svg viewBox="0 0 16 16"><path d="M2 2h5v1H3v4H2V2zm7 0h5v5h-1V3H9V2zM2 9h1v4h4v1H2V9zm12 0v5H9v-1h4V9h1z"/></svg>
       </button>
+      <!-- Unmute overlay: shown when browser blocks audio in iframe context -->
+      <div id="unmuteOverlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.72);z-index:10;align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:10px;">
+        <svg viewBox="0 0 24 24" style="width:44px;height:44px;fill:#fff;"><path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 19l1.27 1.27L20.27 19 5.27 4 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+        <div style="color:#fff;font-size:12px;font-family:var(--w98-font);text-align:center;line-height:1.6;">Browser blocked audio<br><b>Click here to enable sound</b></div>
+      </div>
       <!-- Choice overlay (first visit, dual variant) -->
       <div class="w98-choice-overlay" id="choiceOverlay">
         <div class="w98-choice-dialog">
@@ -597,7 +602,15 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
 
       <!-- Volume -->
       <div class="w98-vol-row">
-        <span class="w98-vol-label">Vol:</span>
+        <!-- Mute/unmute toggle -->
+        <button class="w98-btn" id="btnMute" type="button" title="Mute / Unmute" style="min-width:30px;padding:0 4px;">
+          <svg id="iconVol" viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--w98-black);">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+          </svg>
+          <svg id="iconMute" viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--w98-black);display:none;">
+            <path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06A8.99 8.99 0 0 0 17.73 19l1.27 1.27L20.27 19 5.27 4 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+          </svg>
+        </button>
         <div class="w98-vol-track" id="volTrack"><div class="w98-vol-fill" id="volFill"></div></div>
         <span class="w98-vol-pct" id="volPct">70%</span>
       </div>
@@ -1067,8 +1080,8 @@ function createVideo(){
   video.setAttribute('x5-playsinline','');
 
   /* ── Set up ALL event listeners BEFORE assigning src so cached metadata fires ── */
-  /* Volume UI init — actual muted/volume applied in startPlay() right before play() */
-  var sv=parseInt(ls(VK)||'70',10);
+  /* Volume UI init — use || 70 so stored '0' never shows 0% bar */
+  var sv=parseInt(ls(VK)||'70',10)||70;
   document.getElementById('volFill').style.width=sv+'%';
   document.getElementById('volPct').textContent=sv+'%';
 
@@ -1220,13 +1233,72 @@ document.getElementById('fsBtn').addEventListener('click',function(e){
 });
 
 /* ═══════════════════════════════════════════════════ TRANSPORT BUTTONS */
+function applyVolume(){
+  /* parseInt('0',...) = 0, which is falsy → falls back to 70 so stored 0 never silences */
+  var sv = parseInt(ls(VK)||'70',10) || 70;
+  if(video){ video.muted=false; video.volume=sv/100; }
+  document.getElementById('volFill').style.width  = sv+'%';
+  document.getElementById('volPct').textContent   = sv+'%';
+  document.getElementById('iconVol').style.display  = '';
+  document.getElementById('iconMute').style.display = 'none';
+}
+
+function showUnmuteOverlay(){
+  var ov=document.getElementById('unmuteOverlay'); if(ov) ov.style.display='flex';
+  document.getElementById('iconVol').style.display  = 'none';
+  document.getElementById('iconMute').style.display = '';
+  setStatus('⚠ Browser blocked audio — click video to enable');
+}
+function hideUnmuteOverlay(){
+  var ov=document.getElementById('unmuteOverlay'); if(ov) ov.style.display='none';
+  document.getElementById('iconVol').style.display  = '';
+  document.getElementById('iconMute').style.display = 'none';
+}
+
+document.getElementById('unmuteOverlay').addEventListener('click',function(){
+  var sv=parseInt(ls(VK)||'70',10)||70;
+  if(video){ video.muted=false; video.volume=sv/100; }
+  if(cfIframe){ cfCmd('volume',{volume:sv/100}); }
+  hideUnmuteOverlay();
+  setStatus('Playing…');
+});
+
 function startPlay(){
-  /* Re-apply volume/unmute right before play — within the user gesture */
-  var sv=parseInt(ls(VK)||'70',10);
-  video.muted=false;
-  video.volume=sv/100;
-  video.play().catch(function(){ updatePlayUI(false); });
+  var sv = parseInt(ls(VK)||'70',10)||70;
+  /* ── Apply volume BEFORE play() ── */
+  video.muted  = false;
+  video.volume = sv/100;
+  document.getElementById('volFill').style.width  = sv+'%';
+  document.getElementById('volPct').textContent   = sv+'%';
+  document.getElementById('iconVol').style.display  = '';
+  document.getElementById('iconMute').style.display = 'none';
+
+  var prom = video.play();
+  if(prom && typeof prom.then === 'function'){
+    prom.then(function(){
+      /* ── Apply volume AFTER play() resolves too ── */
+      video.muted  = false;
+      video.volume = sv/100;
+      hideUnmuteOverlay();
+    }).catch(function(err){
+      console.warn('[Pathway] play() blocked:', err && err.message || err);
+      updatePlayUI(false);
+    });
+  }
   updatePlayUI(true);
+
+  /* ── Poll to detect browser-forced mute (fires ~300ms after play starts) ── */
+  var checks=0;
+  var chkId=setInterval(function(){
+    checks++;
+    if(checks>20||!video||video.paused){ clearInterval(chkId); return; }
+    if(video.muted||video.volume<0.05){
+      clearInterval(chkId);
+      showUnmuteOverlay();
+    } else {
+      clearInterval(chkId); /* audio is fine */
+    }
+  },300);
 }
 
 function togglePlay(){
@@ -1239,7 +1311,13 @@ function togglePlay(){
   /* ── Cloudflare Stream ── */
   if(cfIframe){
     if(isPlaying){ cfCmd('pause'); updatePlayUI(false); }
-    else          { cfCmd('play');  updatePlayUI(true);  }
+    else {
+      /* Send volume before play so CF Stream doesn't start muted */
+      var svCF=parseInt(ls(VK)||'70',10)||70;
+      cfCmd('volume',{volume:svCF/100});
+      cfCmd('play');
+      updatePlayUI(true);
+    }
     return;
   }
   /* ── First click: create then play ── */
@@ -1283,8 +1361,34 @@ document.getElementById('volTrack').addEventListener('pointerdown',function(e){ 
 document.addEventListener('pointermove',function(e){ if(dragging) seekToX(e.clientX); if(volDragging) setVol(e.clientX); });
 document.addEventListener('pointerup',function(){ dragging=false; volDragging=false; });
 
-/* Init volume display */
-(function(){ var sv=parseInt(ls(VK)||'70',10); document.getElementById('volFill').style.width=sv+'%'; document.getElementById('volPct').textContent=sv+'%'; })();
+/* Mute/unmute button */
+document.getElementById('btnMute').addEventListener('click',function(){
+  if(!video&&!cfIframe) return;
+  if(video){
+    if(video.muted||video.volume<0.05){
+      /* Currently muted/silent → unmute and restore volume */
+      applyVolume();
+      hideUnmuteOverlay();
+      if(isPlaying) setStatus('Playing…');
+    } else {
+      /* Currently audible → mute */
+      video.muted=true;
+      document.getElementById('iconVol').style.display  = 'none';
+      document.getElementById('iconMute').style.display = '';
+    }
+  }
+  if(cfIframe){
+    var sv2=parseInt(ls(VK)||'70',10)||70;
+    cfCmd('volume',{volume:(video&&video.muted)||false ? sv2/100 : 0});
+  }
+});
+
+/* Init volume display — use || 70 so stored '0' never silences on init */
+(function(){
+  var sv = parseInt(ls(VK)||'70',10) || 70;
+  document.getElementById('volFill').style.width  = sv+'%';
+  document.getElementById('volPct').textContent   = sv+'%';
+})();
 
 /* ═══════════════════════════════════════════════════ NOTES MINIMIZE */
 document.getElementById('notesMin').addEventListener('click',function(){
