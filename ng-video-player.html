@@ -1140,30 +1140,101 @@ function createVideo(){
 }
 
 /* ═══════════════════════════════════════════════════ CF STREAM */
+var cfPlayer = null; /* Cloudflare Stream SDK player instance (if SDK loads) */
+
+/* Low-level postMessage command — sends BOTH event and type keys for max compat */
+function cfCmd(cmd, data){
+  if(!cfIframe) return;
+  /* CF Stream accepts either {event:'play'} or {type:'play'} — send both to be safe */
+  var msg = {event: cmd, type: cmd};
+  if(data !== undefined){
+    /* Flatten data props onto message root (CF doesn't expect nested .data) */
+    Object.keys(data).forEach(function(k){ msg[k]=data[k]; });
+  }
+  try{ cfIframe.contentWindow.postMessage(JSON.stringify(msg), '*'); }catch(e){}
+}
+
+/* Seek helper: CF uses 'seek' + currentTime at root level */
+function cfSeek(delta){
+  var target = Math.max(0, Math.min(cfDur||9999, cfTime+delta));
+  if(cfPlayer){ try{ cfPlayer.currentTime = target; }catch(e){} }
+  else { cfCmd('seek', {currentTime: target, time: target}); }
+}
+
 if(cfVideoId){
   var ph=document.getElementById('videoPlaceholder');
   cfIframe=document.createElement('iframe');
+  cfIframe.id='cfStreamIframe';
   cfIframe.className='w98-video-el';
   cfIframe.style.pointerEvents='none';
-  cfIframe.src='https://iframe.cloudflarestream.com/'+cfVideoId+'?autoplay=false&loop=false&controls=false&playsinline=true&muted=false';
-  cfIframe.allow='accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture';
+  /* muted=0 tells CF not to start muted; autoplay=0 so we control play timing */
+  cfIframe.src='https://iframe.cloudflarestream.com/'+cfVideoId+
+               '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
+  cfIframe.allow='autoplay;fullscreen;picture-in-picture;accelerometer;gyroscope;encrypted-media';
   cfIframe.allowFullscreen=true;
   if(ph) ph.parentNode.replaceChild(cfIframe,ph);
   document.getElementById('fsBtn').classList.add('visible');
   videoReady=true;
-  /* CF postMessages */
+
+  /* ── Raw postMessage listener (works even without SDK) ── */
   window.addEventListener('message',function(e){
     var d; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(_){return;}
-    /* CF Stream sends {event:'play'} and {event:'timeupdate',data:{currentTime,duration}} */
-    var evt=d&&(d.event||d.type); if(!evt) return;
+    if(!d) return;
+    var evt = d.event || d.type; if(!evt) return;
     if(evt==='play')  { cfPlaying=true;  updatePlayUI(true); }
     if(evt==='pause') { cfPlaying=false; updatePlayUI(false); }
-    if(evt==='ended') { cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓'); }
-    var td=d&&(d.data||d);
-    if(evt==='timeupdate'&&td&&typeof td.currentTime==='number'&&typeof td.duration==='number'){
-      cfTime=td.currentTime; cfDur=td.duration; updateBar();
+    if(evt==='ended') { cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
+                        maxWatched=cfDur||maxWatched; setDone(true); updateBar(); }
+    /* timeupdate — currentTime/duration may be at root OR inside .data */
+    if(evt==='timeupdate'){
+      var src = (d.data && typeof d.data.currentTime==='number') ? d.data : d;
+      if(typeof src.currentTime==='number' && typeof src.duration==='number'){
+        cfTime = src.currentTime; cfDur = src.duration;
+        /* Skip-protection for CF */
+        if(!getDone() && cfTime > maxWatched+2){ cfCmd('seek',{currentTime:maxWatched,time:maxWatched}); showSkip(); return; }
+        if(cfTime > maxWatched) maxWatched = cfTime;
+        updateBar();
+      }
+    }
+    if(evt==='durationchange' || evt==='loadedmetadata'){
+      if(typeof d.duration==='number' && d.duration>0) cfDur=d.duration;
     }
   });
+
+  /* ── Load official CF Stream SDK for reliable control ── */
+  (function(){
+    var sdk = document.createElement('script');
+    sdk.src = 'https://embed.cloudflarestream.com/embed/sdk.latest.min.js';
+    sdk.onload = function(){
+      try{
+        cfPlayer = window.Stream(cfIframe);
+        /* SDK events — more reliable than postMessage */
+        cfPlayer.addEventListener('play',  function(){ cfPlaying=true;  updatePlayUI(true); });
+        cfPlayer.addEventListener('pause', function(){ cfPlaying=false; updatePlayUI(false); });
+        cfPlayer.addEventListener('ended', function(){
+          cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
+          maxWatched=cfPlayer.duration||maxWatched; setDone(true); updateBar();
+        });
+        cfPlayer.addEventListener('timeupdate', function(){
+          cfTime = cfPlayer.currentTime||0;
+          cfDur  = cfPlayer.duration||0;
+          if(!getDone() && cfTime > maxWatched+2){
+            cfPlayer.currentTime = maxWatched; showSkip(); return;
+          }
+          if(cfTime > maxWatched) maxWatched = cfTime;
+          updateBar();
+        });
+        cfPlayer.addEventListener('durationchange', function(){
+          cfDur = cfPlayer.duration||0;
+          if(cfDur>0) document.getElementById('timeTotal').textContent = fmt(cfDur);
+          updateBar();
+        });
+      }catch(err){ console.warn('[Pathway] CF Stream SDK error:', err); }
+    };
+    sdk.onerror = function(){ console.warn('[Pathway] CF Stream SDK failed to load — falling back to postMessage'); };
+    document.head.appendChild(sdk);
+  })();
+
   /* CF captions */
   fetch('https://videodelivery.net/'+cfVideoId+'/captions')
     .then(function(r){return r.json();})
@@ -1179,13 +1250,14 @@ if(cfVideoId){
 }
 document.getElementById('btnCC').addEventListener('click',function(e){ e.stopPropagation(); document.getElementById('ccMenu').classList.toggle('open'); });
 
-function cfCmd(cmd,data){ if(!cfIframe) return; var msg={event:cmd}; if(data!==undefined) msg.data=data; try{cfIframe.contentWindow.postMessage(JSON.stringify(msg),'*');}catch(e){} }
-function cfSeek(delta){ cfCmd('seekTo',{time:Math.max(0,Math.min(cfDur||9999,cfTime+delta))}); }
-
-/* CF polling fallback — keep bar moving even if timeupdate postMessages are sparse */
+/* CF polling fallback — keep bar moving and capture duration via postMessage probe */
 if(cfVideoId){
   setInterval(function(){
-    if(cfPlaying&&cfDur>0) updateBar();
+    if(!cfPlaying) return;
+    /* If SDK is active, it fires timeupdate itself — updateBar() only needed for postMessage path */
+    if(!cfPlayer && cfDur>0) updateBar();
+    /* Probe current state via postMessage (CF responds with timeupdate) */
+    if(!cfPlayer) cfCmd('getCurrentTime',{});
   },500);
 }
 
@@ -1310,12 +1382,18 @@ function togglePlay(){
   }
   /* ── Cloudflare Stream ── */
   if(cfIframe){
-    if(isPlaying){ cfCmd('pause'); updatePlayUI(false); }
-    else {
-      /* Send volume before play so CF Stream doesn't start muted */
-      var svCF=parseInt(ls(VK)||'70',10)||70;
-      cfCmd('volume',{volume:svCF/100});
-      cfCmd('play');
+    var svCF=parseInt(ls(VK)||'70',10)||70;
+    if(isPlaying){
+      if(cfPlayer){ try{cfPlayer.pause();}catch(e){} } else cfCmd('pause');
+      updatePlayUI(false);
+    } else {
+      /* Apply volume before play */
+      if(cfPlayer){
+        try{ cfPlayer.volume=svCF/100; cfPlayer.muted=false; cfPlayer.play().catch(function(){}); }catch(e){}
+      } else {
+        cfCmd('volume',{volume:svCF/100, level:svCF/100});
+        cfCmd('play');
+      }
       updatePlayUI(true);
     }
     return;
@@ -1352,7 +1430,8 @@ document.getElementById('btnSpeed').addEventListener('click',function(){
   var spd=speeds[speedIdx];
   document.getElementById('speedLabel').textContent=spd+'×';
   if(video) video.playbackRate=spd;
-  else if(cfIframe) cfCmd('playbackRate',{rate:spd});
+  else if(cfPlayer){ try{cfPlayer.playbackRate=spd;}catch(e){} }
+  else if(cfIframe) cfCmd('playbackRate',{rate:spd, playbackRate:spd});
 });
 
 /* ═══════════════════════════════════════════════════ SCRUB & VOL DRAG */
