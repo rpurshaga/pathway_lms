@@ -274,10 +274,9 @@ body {
   object-fit: contain;
   background: #000;
 }
-/* Hide CF controls by pushing iframe larger + pointer-events overlay */
+/* CF iframe — controls=false already hides CF UI, so full height is correct */
 .w98-video-wrap iframe {
-  /* Slightly oversized to clip bottom control bar */
-  height: calc(100% + 46px);
+  height: 100%;
   pointer-events: none;
 }
 /* Clickable overlay to capture play/pause from our buttons only */
@@ -880,7 +879,8 @@ body {
   };
   /* ─── Video sources ───────────────────────────────────────────── */
   var cfVideoId   = p('vid');
-  var mp4Src      = b64('mp4')  || p('mp4src');
+  /* Support both old param names (b=/src=) and new (mp4=/mp4src=) */
+  var mp4Src      = b64('mp4') || p('mp4src') || b64('b') || p('src');
   var originalUrl = b64('orig') || p('orig');
   var downloadUrl = b64('dl')   || p('dl');
   /* Fix 1 — Dual-variant (A/B) sources */
@@ -898,7 +898,9 @@ body {
   var isNativeVideo = false;
   var videoEl = null;
   var cfIframe = null;
-  var cfPlaying = false;  /* track CF play state for our buttons */
+  var cfPlaying = false;      /* track CF play state for our buttons */
+  var cfCurrentTime = 0;      /* track CF position for seeking */
+  var cfDuration = 0;
 
   /* ─── Fix 1 — Variant tab system ─────────────────────────────── */
   if (hasVariants) {
@@ -992,6 +994,8 @@ body {
       if (data.type === 'pause') { cfPlaying = false; setPlaying(false); }
       if (data.type === 'ended') { cfPlaying = false; setPlaying(false); }
       if (data.type === 'timeupdate' && typeof data.currentTime === 'number' && typeof data.duration === 'number') {
+        cfCurrentTime = data.currentTime;
+        cfDuration    = data.duration;
         document.getElementById('lcdTime').textContent = fmt(data.duration - data.currentTime);
       }
     });
@@ -1017,9 +1021,15 @@ body {
     videoEl.addEventListener('ended', function () { setPlaying(false); });
   }
   /* ─── CF Stream helper: send command via postMessage ──────────── */
-  function cfCommand(cmd) {
+  function cfCommand(cmd, data) {
     if (!cfIframe) return;
-    try { cfIframe.contentWindow.postMessage(JSON.stringify({ event: cmd }), '*'); } catch(e) {}
+    var msg = { event: cmd };
+    if (data !== undefined) msg.data = data;
+    try { cfIframe.contentWindow.postMessage(JSON.stringify(msg), '*'); } catch(e) {}
+  }
+  function cfSeek(secs) {
+    /* CF Stream postMessage API: seekTo with absolute time */
+    cfCommand('seekTo', { time: Math.max(0, Math.min(cfDuration || 9999, cfCurrentTime + secs)) });
   }
   /* ─── Cloudflare captions ─────────────────────────────────────── */
   function fetchCFCaptions(uid) {
@@ -1121,7 +1131,7 @@ body {
     if (isNativeVideo && videoEl) {
       videoEl.currentTime = Math.max(0, videoEl.currentTime - 15);
     } else if (cfIframe) {
-      cfCommand('seekBack15');
+      cfSeek(-15);
     }
   });
   /* Forward 15s */
@@ -1129,7 +1139,7 @@ body {
     if (isNativeVideo && videoEl) {
       videoEl.currentTime = Math.min(videoEl.duration || 0, videoEl.currentTime + 15);
     } else if (cfIframe) {
-      cfCommand('seekForward15');
+      cfSeek(+15);
     }
   });
   /* Speed */
@@ -1140,7 +1150,7 @@ body {
     if (isNativeVideo && videoEl) {
       videoEl.playbackRate = spd;
     } else if (cfIframe) {
-      try { cfIframe.contentWindow.postMessage(JSON.stringify({ event: 'playbackRate', data: spd }), '*'); } catch(e) {}
+      cfCommand('playbackRate', { rate: spd });
     }
   });
   /* Touch feedback */
