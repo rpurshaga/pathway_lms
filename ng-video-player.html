@@ -291,11 +291,11 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
   border:2px solid; border-color:var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
   display:flex; align-items:center; padding:0 2px;
 }
-.w98-track-inner { width:100%; height:10px; position:relative; background:#111; border:1px solid #333; }
-.w98-track-fill { position:absolute; top:0; left:0; bottom:0; width:0%; background:linear-gradient(180deg,#00b0b0,#006060); }
-.w98-track-blocked {
-  position:absolute; top:0; bottom:0; right:0; display:none; pointer-events:none;
-  background:repeating-linear-gradient(45deg,transparent,transparent 3px,rgba(255,0,0,0.2) 3px,rgba(255,0,0,0.2) 6px);
+/* Single gradient bar — no z-index fights, always visible */
+.w98-track-inner {
+  width:100%; height:10px; position:relative; border:1px solid #333;
+  background:#222; /* filled via JS inline gradient */
+  overflow:hidden;
 }
 
 /* Volume */
@@ -590,10 +590,7 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
       <div class="w98-scrub-row">
         <div class="w98-time" id="timeCur">0:00</div>
         <div class="w98-track-wrap" id="scrubTrack">
-          <div class="w98-track-inner">
-            <div class="w98-track-fill" id="trackFill"></div>
-            <div class="w98-track-blocked" id="trackBlocked"></div>
-          </div>
+          <div class="w98-track-inner" id="trackInner"></div>
         </div>
         <div class="w98-time" id="timeTotal">0:00</div>
       </div>
@@ -693,18 +690,26 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
 
 <!-- ══════════════════════════════ SKIP WARNING DIALOG ═══════════════ -->
 <div class="w98-skip-warn" id="skipWarn">
-  <div class="w98-titlebar" style="background:linear-gradient(90deg,#800000,#c00)">
-    <span class="w98-titlebar-text" style="font-size:11px">⚠ pathway_player.exe — Error</span>
+  <div class="w98-titlebar" style="background:linear-gradient(90deg,#800000,#cc0000)">
+    <span class="w98-titlebar-text">pathway_player.exe</span>
     <div class="w98-titlebar-btns">
       <button class="w98-tbtn" id="warnClose" type="button">&#10005;</button>
     </div>
   </div>
   <div class="w98-skip-warn-body">
-    <span class="w98-warn-icon">⚠️</span>
-    <span class="w98-warn-text">Error 0x004D:<br>You cannot skip ahead.<br>Complete the video to unlock full seek.</span>
+    <!-- Classic W98 stop icon -->
+    <svg viewBox="0 0 32 32" style="width:32px;height:32px;flex-shrink:0;" aria-hidden="true">
+      <circle cx="16" cy="16" r="15" fill="#cc0000" stroke="#800000" stroke-width="1.5"/>
+      <line x1="10" y1="10" x2="22" y2="22" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="22" y1="10" x2="10" y2="22" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--w98-black);">Cannot Skip Ahead</div>
+      <span class="w98-warn-text">You must watch the video in order.<br>Skipping ahead is not allowed until<br>you have reached that point.</span>
+    </div>
   </div>
   <div class="w98-skip-warn-foot">
-    <button class="w98-btn" id="warnOK" type="button">OK</button>
+    <button class="w98-btn" id="warnOK" type="button" style="min-width:75px;">OK</button>
   </div>
 </div>
 
@@ -990,31 +995,50 @@ function updatePlayUI(playing){
 }
 
 /* ═══════════════════════════════════════════════════ SCRUB / PROGRESS */
+var knownDur=0; /* cache valid duration the moment we learn it */
+
 function saveProgress(){
   if(!video) return;
-  var dur=video.duration||0;
+  var dur=knownDur||video.duration||0;
   lsJS(PK,{time:video.currentTime||0,maxWatched:maxWatched,duration:dur,percent:dur>0?(video.currentTime/dur)*100:0,updatedAt:new Date().toISOString()});
 }
 
 function updateBar(){
-  var dur  = video?(video.duration||0):(cfDur||0);
-  var cur  = video?(video.currentTime||0):(cfTime||0);
-  var pct  = dur>0?(cur/dur)*100:0;
-  var mPct = dur>0?Math.min((maxWatched/dur)*100,100):0;
-  document.getElementById('trackFill').style.width = pct+'%';
+  /* Prefer cached duration; fall back to live value */
+  var dur = video ? (knownDur||(isFinite(video.duration)&&video.duration>0?video.duration:0)) : (cfDur||0);
+  var cur = video ? (isFinite(video.currentTime)?video.currentTime:0)                         : (cfTime||0);
+
   document.getElementById('timeCur').textContent   = fmt(cur);
-  document.getElementById('timeTotal').textContent = fmt(dur);
-  var blk = document.getElementById('trackBlocked');
-  if(getDone()){ blk.style.display='none'; }
-  else { blk.style.display='block'; blk.style.left=mPct+'%'; }
-  if(!getDone() && dur>0 && (cur/dur)*100 >= reqPct){ setDone(true); blk.style.display='none'; }
+  if(dur>0) document.getElementById('timeTotal').textContent = fmt(dur);
+
+  if(dur<=0){ return; } /* nothing to draw yet */
+
+  var pct  = Math.min((cur/dur)*100, 100);
+  var mPct = Math.min((maxWatched/dur)*100, 100);
+  var done = getDone();
+
+  /* Single-gradient track: teal played | grey watched-not-current | red-hatch blocked */
+  var f=pct.toFixed(2), m=mPct.toFixed(2);
+  var grad;
+  if(done){
+    grad='linear-gradient(90deg,#007878 0 '+f+'%,#444 '+f+'% 100%)';
+  } else {
+    grad='linear-gradient(90deg,'+
+         '#008080 0 '+f+'%,'+            /* teal  — current position  */
+         '#404040 '+f+'% '+m+'%,'+       /* grey  — already watched   */
+         '#5a0000 '+m+'% 100%)';         /* dark red — blocked zone   */
+  }
+  document.getElementById('trackInner').style.background=grad;
+
+  if(!done && (cur/dur)*100 >= reqPct){ setDone(true); updateBar(); }
 }
 
 function seekToX(clientX){
   if(!video) return;
+  var dur=knownDur||video.duration||0; if(!dur) return;
   var rect=document.getElementById('scrubTrack').getBoundingClientRect();
   var pct=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width));
-  var target=pct*(video.duration||0);
+  var target=pct*dur;
   if(!getDone() && target>maxWatched+2){ showSkip(); return; }
   video.currentTime=target; updateBar();
 }
@@ -1050,8 +1074,9 @@ function createVideo(){
 
   function onMeta(){
     if(isFinite(video.duration)&&video.duration>0){
-      document.getElementById('timeTotal').textContent=fmt(video.duration);
-      if(saved&&saved.time>0) video.currentTime=Math.min(saved.time,Math.max(video.duration-2,0));
+      knownDur=video.duration;  /* cache it — used by updateBar() even if video.duration later flickers */
+      document.getElementById('timeTotal').textContent=fmt(knownDur);
+      if(saved&&saved.time>0) video.currentTime=Math.min(saved.time,Math.max(knownDur-2,0));
       updateBar();
     }
     setStatus('Ready');
@@ -1237,8 +1262,12 @@ document.getElementById('btnFwd').addEventListener('click',function(){
   if(video){
     var t=(video.currentTime||0)+15;
     if(!getDone()&&t>maxWatched+2){ showSkip(); return; }
-    video.currentTime=Math.min(video.duration||0,t);
-  } else if(cfIframe) cfSeek(+15);
+    video.currentTime=Math.min(knownDur||video.duration||0,t);
+  } else if(cfIframe){
+    var t2=cfTime+15;
+    if(!getDone()&&t2>maxWatched+2){ showSkip(); return; }
+    cfSeek(+15);
+  }
 });
 document.getElementById('btnSpeed').addEventListener('click',function(){
   speedIdx=(speedIdx+1)%speeds.length;
