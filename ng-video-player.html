@@ -1043,10 +1043,8 @@ function createVideo(){
   video.setAttribute('x5-playsinline','');
 
   /* ── Set up ALL event listeners BEFORE assigning src so cached metadata fires ── */
-  /* volume — explicitly unmute; some browsers default to muted in iframes */
+  /* Volume UI init — actual muted/volume applied in startPlay() right before play() */
   var sv=parseInt(ls(VK)||'70',10);
-  video.muted=false;
-  video.volume=sv/100;
   document.getElementById('volFill').style.width=sv+'%';
   document.getElementById('volPct').textContent=sv+'%';
 
@@ -1100,10 +1098,7 @@ function createVideo(){
     if(!video||video.ended){ clearInterval(barPoll); return; }
     if(!video.paused) updateBar();
   },500);
-
-  /* NOTE: play() is called by togglePlay() — not here — because togglePlay()
-     already sets the optimistic UI state before calling createVideo(). */
-  video.play().catch(function(){ updatePlayUI(false); }); /* autoplay may fail; correct UI if so */
+  /* NO video.play() here — playback is started only by togglePlay() via user click */
 }
 
 /* ═══════════════════════════════════════════════════ CF STREAM */
@@ -1200,16 +1195,20 @@ document.getElementById('fsBtn').addEventListener('click',function(e){
 });
 
 /* ═══════════════════════════════════════════════════ TRANSPORT BUTTONS */
+function startPlay(){
+  /* Re-apply volume/unmute right before play — within the user gesture */
+  var sv=parseInt(ls(VK)||'70',10);
+  video.muted=false;
+  video.volume=sv/100;
+  video.play().catch(function(){ updatePlayUI(false); });
+  updatePlayUI(true);
+}
+
 function togglePlay(){
-  /* ── Native video ── */
+  /* ── Native video already created ── */
   if(video){
-    if(video.paused||video.ended){
-      video.play().catch(function(){ updatePlayUI(false); }); /* reset UI if play rejected */
-      updatePlayUI(true);  /* optimistic: update UI immediately, don't wait for 'play' event */
-    } else {
-      video.pause();
-      updatePlayUI(false); /* optimistic */
-    }
+    if(isPlaying){ video.pause(); updatePlayUI(false); }
+    else          { startPlay(); }
     return;
   }
   /* ── Cloudflare Stream ── */
@@ -1218,18 +1217,16 @@ function togglePlay(){
     else          { cfCmd('play');  updatePlayUI(true);  }
     return;
   }
-  /* ── First click: create video ── */
+  /* ── First click: create then play ── */
   if(videoSrc||hasVariants){
-    createVideo();
-    updatePlayUI(true); /* optimistic while loading */
+    createVideo();   /* sets up video element — no autoplay inside */
+    startPlay();     /* play immediately — this IS the user gesture */
   }
 }
-document.getElementById('bigPlay').addEventListener('click',   function(e){ e.stopPropagation(); togglePlay(); });
+
+/* Single source of truth for click-to-play/pause — overlay covers entire frame */
+document.getElementById('bigPlay').addEventListener('click',    function(e){ e.stopPropagation(); togglePlay(); });
 document.getElementById('videoOverlay').addEventListener('click',function(e){ e.stopPropagation(); togglePlay(); });
-document.getElementById('videoFrame').addEventListener('click', function(e){
-  if(e.target.closest('#fsBtn')) return;
-  togglePlay();
-});
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
 
 document.getElementById('btnBack').addEventListener('click',function(){
