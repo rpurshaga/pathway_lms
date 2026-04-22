@@ -269,6 +269,11 @@ body {
   width: 100%; height: 100%;
   border: none;
 }
+/* Fix 4 — video centering: letterbox instead of stretch/crop */
+.w98-video-wrap video {
+  object-fit: contain;
+  background: #000;
+}
 /* Hide CF controls by pushing iframe larger + pointer-events overlay */
 .w98-video-wrap iframe {
   /* Slightly oversized to clip bottom control bar */
@@ -296,6 +301,66 @@ body {
 }
 .w98-fs-btn svg { width: 12px; height: 12px; fill: #fff; }
 .w98-fs-btn:hover { background: rgba(0,0,0,0.8); }
+/* Fix 3 — fullscreen button always visible (not hover-gated) */
+.w98-fs-btn.visible { display: flex; }
+/* ─── Variant tabs (shown when va= + vb= both present) ─── */
+.w98-var-tabs {
+  display: none;
+  gap: 2px;
+  padding: 4px 6px 0;
+  border-bottom: 2px solid var(--w98-dark);
+  background: var(--w98-face);
+}
+.w98-var-tabs.visible { display: flex; }
+.w98-var-tab {
+  height: 20px; padding: 0 14px;
+  background: #a0a0a0;
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) transparent var(--w98-white);
+  border-bottom: none;
+  font-family: var(--w98-font);
+  font-size: 10px; font-weight: 700;
+  cursor: pointer;
+  color: var(--w98-black);
+  position: relative;
+}
+.w98-var-tab.active {
+  background: var(--w98-face);
+  z-index: 1;
+  margin-bottom: -2px;
+}
+.w98-var-tab + .w98-var-tab { margin-left: 2px; }
+/* ─── Choice overlay (first-visit variant picker) ─── */
+.w98-choice-overlay {
+  display: none;
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 20;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  padding: 16px;
+}
+.w98-choice-overlay.visible { display: flex; }
+.w98-choice-title {
+  color: #fff; font-size: 12px; font-weight: 700;
+  font-family: var(--w98-font); text-align: center;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+.w98-choice-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.w98-choice-btn {
+  height: 30px; padding: 0 18px;
+  background: var(--w98-face);
+  border: 2px solid;
+  border-color: var(--w98-white) var(--w98-darker) var(--w98-darker) var(--w98-white);
+  font-family: var(--w98-font);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; color: var(--w98-black);
+  -webkit-tap-highlight-color: transparent;
+}
+.w98-choice-btn:active {
+  border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
+}
 /* ─── Controls toolbar — CENTERED ─── */
 .w98-ctrl-bar {
   display: flex;
@@ -614,8 +679,21 @@ body {
     </div>
   </div>
   <div class="w98-window-body w98-video-body">
+    <!-- Fix 1 — Variant A/B tabs (hidden until dual-video params detected) -->
+    <div class="w98-var-tabs" id="varTabs">
+      <button class="w98-var-tab active" id="varTabA" type="button">Version A</button>
+      <button class="w98-var-tab"        id="varTabB" type="button">Version B</button>
+    </div>
     <!-- Video embed area -->
     <div class="w98-video-wrap" id="videoWrap">
+      <!-- Fix 1 — Choice overlay: shown on first visit when dual-video present -->
+      <div class="w98-choice-overlay" id="choiceOverlay">
+        <div class="w98-choice-title" id="choiceTitle">Choose a version to watch:</div>
+        <div class="w98-choice-btns">
+          <button class="w98-choice-btn" id="choiceBtnA" type="button">Version A</button>
+          <button class="w98-choice-btn" id="choiceBtnB" type="button">Version B</button>
+        </div>
+      </div>
       <div id="videoPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#888;font-size:11px;font-family:Tahoma,sans-serif;gap:4px;text-align:center;padding:16px;">
         <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:#555;"><path d="M8 5v14l11-7z"/></svg>
         No video source provided.<br>
@@ -805,6 +883,13 @@ body {
   var mp4Src      = b64('mp4')  || p('mp4src');
   var originalUrl = b64('orig') || p('orig');
   var downloadUrl = b64('dl')   || p('dl');
+  /* Fix 1 — Dual-variant (A/B) sources */
+  var varASrc    = b64('va')      || p('va');      /* base64 or direct URL for variant A */
+  var varBSrc    = b64('vb')      || p('vb');      /* base64 or direct URL for variant B */
+  var vaLabel    = b64text('vaLabel') || p('vaLabel') || 'Version A';
+  var vbLabel    = b64text('vbLabel') || p('vbLabel') || 'Version B';
+  var hasVariants = !!(varASrc && varBSrc);
+  var SEL_KEY    = 'w98-variant-sel-' + (p('id') || p('articleId') || 'default');
   /* ─── Title ───────────────────────────────────────────────────── */
   var titleText = b64text('articleTitle') || ARTICLE.title;
   document.title = titleText || 'Pathway Media Player 2.0';
@@ -814,6 +899,76 @@ body {
   var videoEl = null;
   var cfIframe = null;
   var cfPlaying = false;  /* track CF play state for our buttons */
+
+  /* ─── Fix 1 — Variant tab system ─────────────────────────────── */
+  if (hasVariants) {
+    var tabsEl    = document.getElementById('varTabs');
+    var tabA      = document.getElementById('varTabA');
+    var tabB      = document.getElementById('varTabB');
+    var choiceEl  = document.getElementById('choiceOverlay');
+    var choiceTA  = document.getElementById('choiceTitle');
+    var cBtnA     = document.getElementById('choiceBtnA');
+    var cBtnB     = document.getElementById('choiceBtnB');
+
+    /* Label the tabs */
+    tabA.textContent   = vaLabel;
+    tabB.textContent   = vbLabel;
+    cBtnA.textContent  = vaLabel;
+    cBtnB.textContent  = vbLabel;
+    tabsEl.classList.add('visible');
+
+    /* Resolve which variant URL is active */
+    function variantSrc(v) { return v === 'b' ? varBSrc : varASrc; }
+
+    /* If first visit for this lesson, show choice overlay; else restore last pick */
+    var savedSel = localStorage.getItem(SEL_KEY);
+
+    function setVariant(v, fromChoice) {
+      /* Persist selection */
+      localStorage.setItem(SEL_KEY, v);
+      /* Tab UI */
+      tabA.classList.toggle('active', v !== 'b');
+      tabB.classList.toggle('active', v === 'b');
+      /* Swap video source */
+      var newSrc = variantSrc(v);
+      if (videoEl) {
+        var wasPlaying = !videoEl.paused;
+        var wasTime    = videoEl.currentTime;
+        videoEl.pause();
+        videoEl.src = newSrc;
+        videoEl.load();
+        if (fromChoice) {
+          /* First pick: just start from 0 */
+        } else if (wasPlaying) {
+          videoEl.currentTime = wasTime;
+          videoEl.play();
+        }
+      } else {
+        /* Bootstrap the first video element with this src */
+        mp4Src = newSrc;
+      }
+      /* Hide choice overlay */
+      choiceEl.classList.remove('visible');
+    }
+
+    if (!savedSel) {
+      /* First visit — show the choice overlay */
+      choiceEl.classList.add('visible');
+    } else {
+      setVariant(savedSel, false);
+    }
+
+    cBtnA.addEventListener('click', function () { setVariant('a', true); });
+    cBtnB.addEventListener('click', function () { setVariant('b', true); });
+    tabA.addEventListener('click',  function () { setVariant('a', false); });
+    tabB.addEventListener('click',  function () { setVariant('b', false); });
+
+    /* If no single source was given, prime mp4Src with the chosen variant */
+    if (!cfVideoId && !mp4Src) {
+      mp4Src = savedSel ? variantSrc(savedSel) : null;
+    }
+  }
+
   if (cfVideoId) {
     var ph = document.getElementById('videoPlaceholder');
     if (ph) ph.remove();
@@ -924,8 +1079,13 @@ body {
       window.open(originalUrl, '_blank', 'noopener');
     });
   }
-  /* ─── Fullscreen ──────────────────────────────────────────────── */
+  /* ─── Fix 3 — Fullscreen (works on iOS too) ──────────────────── */
   document.getElementById('btnFullscreen').addEventListener('click', function () {
+    /* iOS Safari requires webkitEnterFullscreen on the <video> element itself */
+    if (videoEl && videoEl.webkitEnterFullscreen) {
+      videoEl.webkitEnterFullscreen();
+      return;
+    }
     var el = wrap;
     if (el.requestFullscreen)            el.requestFullscreen();
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
