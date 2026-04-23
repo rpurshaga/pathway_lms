@@ -769,6 +769,7 @@ function b64t(k) {
 
 /* Video source — accept old (b=/src=) and new (mp4=/mp4src=) param names */
 var cfVideoId  = p('vid');
+var cfVideoId2 = p('vid2');   /* second CF Stream ID — dual-video variant mode */
 var videoSrc   = b64('b') || p('src') || b64('mp4') || p('mp4src');
 var origUrl    = b64('orig') || p('orig');
 var downloadUrl= b64('dl')   || p('dl');
@@ -780,7 +781,8 @@ var vaOrigUrl  = b64('vaOrig')  || p('vaOrig');
 var vbOrigUrl  = b64('vbOrig')  || p('vbOrig');
 var vaLabel    = b64t('vaLabel') || p('vaLabel') || 'Version A';
 var vbLabel    = b64t('vbLabel') || p('vbLabel') || 'Version B';
-var hasVariants= !!(varASrc && varBSrc);
+var isCFVariant = !!(cfVideoId && cfVideoId2);  /* true = dual CF Stream, not native video */
+var hasVariants = !!(varASrc && varBSrc) || isCFVariant;
 
 /* Lesson metadata */
 var lessonId   = p('id') || p('articleId') || 'default';
@@ -945,6 +947,21 @@ function setVariant(which, fromChoice) {
   ls(SelK, which);
   varTabA.classList.toggle('active', which==='a');
   varTabB.classList.toggle('active', which==='b');
+
+  /* ── CF Stream dual-video mode: swap iframe src ── */
+  if(isCFVariant) {
+    var newCFId = which==='a' ? cfVideoId : cfVideoId2;
+    if(cfIframe) {
+      cfPlaying = false; cfTime = 0; cfDur = 0; cfPlayer = null;
+      updatePlayUI(false);
+      cfIframe.src = 'https://iframe.cloudflarestream.com/'+newCFId+
+                     '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
+    }
+    choiceEl.classList.remove('visible');
+    return;
+  }
+
+  /* ── Native video mode ── */
   var newSrc = which==='a' ? varASrc : varBSrc;
   var newOrig = which==='a' ? (vaOrigUrl||origUrl) : (vbOrigUrl||origUrl);
   origUrl = newOrig;
@@ -1053,13 +1070,16 @@ function updateBar(){
 }
 
 function seekToX(clientX){
-  if(!video) return;
-  var dur=knownDur||video.duration||0; if(!dur) return;
+  var dur = video ? (knownDur||video.duration||0) : (cfDur||0);
+  if(!dur) return;
   var rect=document.getElementById('scrubTrack').getBoundingClientRect();
   var pct=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width));
   var target=pct*dur;
   if(!getDone() && target>maxWatched+2){ showSkip(); return; }
-  video.currentTime=target; updateBar();
+  if(video){ video.currentTime=target; }
+  else if(cfPlayer){ try{ cfPlayer.currentTime=target; }catch(e){ cfCmd('seek',{currentTime:target,time:target}); } }
+  else if(cfIframe){ cfCmd('seek',{currentTime:target,time:target}); }
+  updateBar();
 }
 
 function setVol(clientX){
@@ -1223,7 +1243,7 @@ if(cfVideoId){
         });
         cfPlayer.addEventListener('timeupdate', function(){
           cfTime = cfPlayer.currentTime||0;
-          cfDur  = cfPlayer.duration||0;
+          cfDur  = cfPlayer.duration||cfDur||0;
           if(!getDone() && cfTime > maxWatched+2){
             cfPlayer.currentTime = maxWatched; showSkip(); return;
           }
@@ -1231,10 +1251,29 @@ if(cfVideoId){
           updateBar();
         });
         cfPlayer.addEventListener('durationchange', function(){
-          cfDur = cfPlayer.duration||0;
-          if(cfDur>0) document.getElementById('timeTotal').textContent = fmt(cfDur);
-          updateBar();
+          var d = cfPlayer.duration||0;
+          if(d>0){ cfDur=d; document.getElementById('timeTotal').textContent = fmt(cfDur); updateBar(); }
         });
+        /* Detect browser-forced mute so we can show the unmute overlay */
+        cfPlayer.addEventListener('volumechange', function(){
+          try{
+            if(cfPlayer.muted || cfPlayer.volume < 0.05){ showUnmuteOverlay(); }
+            else { hideUnmuteOverlay(); }
+          }catch(e){}
+        });
+        /* Duration probe: poll until we read a valid duration (some browsers miss durationchange) */
+        var durProbeId = setInterval(function(){
+          if(cfDur > 0){ clearInterval(durProbeId); return; }
+          try{
+            var d = cfPlayer.duration;
+            if(d && isFinite(d) && d > 0){
+              cfDur = d;
+              document.getElementById('timeTotal').textContent = fmt(cfDur);
+              updateBar();
+              clearInterval(durProbeId);
+            }
+          }catch(e){}
+        }, 800);
       }catch(err){ console.warn('[Pathway] CF Stream SDK error:', err); }
     };
     sdk.onerror = function(){ console.warn('[Pathway] CF Stream SDK failed to load — falling back to postMessage'); };
@@ -1256,13 +1295,14 @@ if(cfVideoId){
 }
 document.getElementById('btnCC').addEventListener('click',function(e){ e.stopPropagation(); document.getElementById('ccMenu').classList.toggle('open'); });
 
-/* CF polling fallback — keep bar moving and capture duration via postMessage probe */
+/* CF polling fallback — keep bar moving and probe duration even when paused */
 if(cfVideoId){
   setInterval(function(){
+    /* Always try to capture duration via postMessage if we still don't have it */
+    if(cfDur <= 0 && !cfPlayer) cfCmd('getDuration',{});
     if(!cfPlaying) return;
-    /* If SDK is active, it fires timeupdate itself — updateBar() only needed for postMessage path */
+    /* Keep bar in sync on postMessage path (SDK fires timeupdate itself) */
     if(!cfPlayer && cfDur>0) updateBar();
-    /* Probe current state via postMessage (CF responds with timeupdate) */
     if(!cfPlayer) cfCmd('getCurrentTime',{});
   },500);
 }
@@ -1336,7 +1376,8 @@ function hideUnmuteOverlay(){
 document.getElementById('unmuteOverlay').addEventListener('click',function(){
   var sv=parseInt(ls(VK)||'70',10)||70;
   if(video){ video.muted=false; video.volume=sv/100; }
-  if(cfIframe){ cfCmd('volume',{volume:sv/100}); }
+  if(cfPlayer){ try{ cfPlayer.muted=false; cfPlayer.volume=sv/100; }catch(e){} }
+  else if(cfIframe){ cfCmd('volume',{volume:sv/100,level:sv/100}); cfCmd('unmute'); }
   hideUnmuteOverlay();
   setStatus('Playing…');
 });
@@ -1390,12 +1431,23 @@ function togglePlay(){
   if(cfIframe){
     var svCF=parseInt(ls(VK)||'70',10)||70;
     if(isPlaying){
-      if(cfPlayer){ try{cfPlayer.pause();}catch(e){} } else cfCmd('pause');
+      /* Update UI immediately — before the async SDK call */
       updatePlayUI(false);
-    } else {
-      /* Apply volume before play */
       if(cfPlayer){
-        try{ cfPlayer.volume=svCF/100; cfPlayer.muted=false; cfPlayer.play().catch(function(){}); }catch(e){}
+        try{ cfPlayer.pause(); }catch(e){ cfCmd('pause'); } /* SDK first, postMessage fallback */
+      } else {
+        cfCmd('pause');
+      }
+    } else {
+      /* Apply volume then play */
+      if(cfPlayer){
+        try{
+          cfPlayer.volume=svCF/100; cfPlayer.muted=false;
+          cfPlayer.play().catch(function(err){
+            console.warn('[Pathway] CF play() blocked:', err&&err.message||err);
+            updatePlayUI(false);
+          });
+        }catch(e){ updatePlayUI(false); }
       } else {
         cfCmd('volume',{volume:svCF/100, level:svCF/100});
         cfCmd('play');
@@ -1464,7 +1516,19 @@ document.getElementById('btnMute').addEventListener('click',function(){
   }
   if(cfIframe){
     var sv2=parseInt(ls(VK)||'70',10)||70;
-    cfCmd('volume',{volume:(video&&video.muted)||false ? sv2/100 : 0});
+    var nowMuted = cfPlayer ? (function(){ try{ return cfPlayer.muted||cfPlayer.volume<0.05; }catch(e){ return false; } }()) : false;
+    if(nowMuted){
+      if(cfPlayer){ try{ cfPlayer.muted=false; cfPlayer.volume=sv2/100; }catch(e){} }
+      else { cfCmd('volume',{volume:sv2/100,level:sv2/100}); cfCmd('unmute'); }
+      hideUnmuteOverlay();
+      document.getElementById('iconVol').style.display  = '';
+      document.getElementById('iconMute').style.display = 'none';
+    } else {
+      if(cfPlayer){ try{ cfPlayer.muted=true; }catch(e){} }
+      else { cfCmd('volume',{volume:0}); }
+      document.getElementById('iconVol').style.display  = 'none';
+      document.getElementById('iconMute').style.display = '';
+    }
   }
 });
 
