@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextGen Ministry Philosophy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root,html[data-theme="light"]{
+--win-bg:#008080;--silver:#c0c0c0;--dark:#808080;--white:#dfdfdf;--black:#000;
+--blue:#000080;--blue-light:#1084d0;--highlight:#0a246a;--border-dark:#404040;--inset-t:#808080;
+--yellow-note:#fffde8;--green-good:#e8f5e8;--red-weak:#fdecea;
+--content-bg:#fff;--text-color:#000;--text-muted:#555;--text-hint:#777;
+--commentary-bg:#f0f4ff;--commentary-border:#c0ccee;--commentary-text:#444;
+--doc-area-bg:#808080;--page-bg:#fff;--input-bg:#fff;
+--toc-border:#eee;--req-bg:#f5f5f5;--req-border:#ddd;--note-border:#cca;--hr-color:#ccc;
+--btn-active-bg:#acacac;--scrollbar-alt:#e8e8e8;
+--titlebar-from:#000080;--titlebar-to:#1084d0;
+--wiz-from:#000080;--wiz-to:#000050;
+--remind-from:#cc6600;--remind-to:#ff9933;
+--strong-label:#2e7d32;--weak-label:#c62828;
+}
+html[data-theme="dark"]{
+--win-bg:#1a1a2e;--silver:#3a3a4a;--dark:#555;--white:#4a4a5a;--black:#111;
+--blue:#4466aa;--blue-light:#6699dd;--highlight:#334466;--border-dark:#222;--inset-t:#2a2a3a;
+--yellow-note:#2a2820;--green-good:#1a2e1a;--red-weak:#2e1a1a;
+--content-bg:#1e1e2e;--text-color:#d0d0e0;--text-muted:#999;--text-hint:#888;
+--commentary-bg:#1e2030;--commentary-border:#333355;--commentary-text:#aab;
+--doc-area-bg:#111;--page-bg:#1a1a2a;--input-bg:#252535;
+--toc-border:#333;--req-bg:#252535;--req-border:#444;--note-border:#555;--hr-color:#444;
+--btn-active-bg:#2e2e3e;--scrollbar-alt:#333;
+--titlebar-from:#333355;--titlebar-to:#4a5580;
+--wiz-from:#222244;--wiz-to:#111122;
+--remind-from:#885520;--remind-to:#aa7733;
+--strong-label:#6cb;--weak-label:#c88;
+}
+body{background:var(--win-bg);font-family:'Segoe UI',Tahoma,Geneva,sans-serif;font-size:11px;color:var(--text-color);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:8px}
+.outset{border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);box-shadow:1px 1px 0 var(--black)}
+.titlebar{background:linear-gradient(90deg,var(--titlebar-from),var(--titlebar-to));padding:3px 4px;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.titlebar-text{color:#fff;font-size:11px;font-weight:bold;display:flex;align-items:center;gap:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:0}
+.titlebar-text .icon{font-size:13px;flex-shrink:0}
+.title-buttons{display:flex;gap:2px;flex-shrink:0}
+.tbtn{width:16px;height:14px;background:var(--silver);border:1px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:9px;font-weight:bold;padding:0}
+.win-btn{min-width:60px;height:23px;background:var(--silver);border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);font-family:inherit;font-size:11px;cursor:pointer;padding:0 10px;color:var(--text-color)}
+.win-btn:active{border-color:var(--border-dark) var(--white) var(--white) var(--border-dark)}
+.win-btn.primary{font-weight:bold}
+.app{width:780px;max-width:100%}
+.utility-bar{display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap}
+.mode-bar{background:var(--silver);padding:3px;display:flex;gap:3px;border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);flex:1;min-width:0}
+.mode-btn{height:26px;background:var(--silver);border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);font-family:inherit;font-size:11px;cursor:pointer;padding:0 8px;display:flex;align-items:center;gap:4px;flex:1;justify-content:center;white-space:nowrap;overflow:hidden;color:var(--text-color)}
+.mode-btn.active{border-color:var(--border-dark) var(--white) var(--white) var(--border-dark);background:var(--btn-active-bg);font-weight:bold}
+.mode-btn .mi{font-size:13px;flex-shrink:0}
+.mode-btn .ml{overflow:hidden;text-overflow:ellipsis}
+.tool-bar{background:var(--silver);padding:3px;display:flex;gap:3px;border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);flex-shrink:0}
+.tool-btn{width:26px;height:26px;background:var(--silver);border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;padding:0}
+.tool-btn:active,.tool-btn.toggled{border-color:var(--border-dark) var(--white) var(--white) var(--border-dark);background:var(--btn-active-bg)}
+.panel{display:none;background:var(--silver)}.panel.visible{display:block}
+.help-body{display:flex;height:520px}
+.help-sidebar{width:180px;min-width:180px;background:var(--content-bg);border-right:2px solid var(--dark);overflow-y:auto}
+.help-sidebar-header{background:var(--silver);padding:3px 6px;font-size:10px;font-weight:bold;border-bottom:1px solid var(--dark);font-family:'VT323',monospace;color:var(--blue)}
+.toc-item{padding:5px 8px 5px 12px;cursor:pointer;font-size:11px;border-bottom:1px solid var(--toc-border);display:flex;align-items:center;gap:4px;color:var(--text-color)}
+.toc-item::before{content:'📄';font-size:10px}
+.toc-item:hover{background:var(--highlight);color:#fff}
+.toc-item.active{background:var(--blue);color:#fff;font-weight:bold}
+.toc-item.overview::before{content:'📋'}
+.help-content{flex:1;overflow-y:auto;padding:14px 16px;background:var(--content-bg);line-height:1.65;color:var(--text-color)}
+.help-content h2{font-family:'VT323',monospace;font-size:18px;color:var(--blue);margin-bottom:4px;border-bottom:2px solid var(--blue);padding-bottom:4px}
+.help-content h3{font-family:'VT323',monospace;font-size:14px;color:var(--blue-light);margin:12px 0 4px 0}
+.help-content p{margin-bottom:8px;font-size:11.5px}
+.purpose-box{background:var(--yellow-note);border:1px solid var(--note-border);padding:8px 10px;margin-bottom:10px;font-size:11px;line-height:1.6}
+.example-box{margin:8px 0;padding:10px 12px;font-size:11px;line-height:1.7;border-left:4px solid}
+.example-box.strong{background:var(--green-good);border-color:#4caf50}
+.example-box.weak{background:var(--red-weak);border-color:#e53935}
+.example-label{font-family:'VT323',monospace;font-size:12px;font-weight:bold;margin-bottom:4px}
+.example-box.strong .example-label{color:var(--strong-label)}
+.example-box.weak .example-label{color:var(--weak-label)}
+.commentary{background:var(--commentary-bg);border:1px solid var(--commentary-border);padding:8px 10px;margin:8px 0;font-size:10.5px;font-style:italic;color:var(--commentary-text)}
+.key-questions{background:var(--yellow-note);border:1px solid var(--note-border);padding:8px 10px;margin:8px 0 10px 0;font-size:11px}
+.key-questions strong{font-family:'VT323',monospace;color:var(--blue);font-size:12px}
+.key-questions ul{margin:4px 0 0 16px;padding:0}
+.key-questions li{margin-bottom:3px}
+.requirements-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.req-card{background:var(--req-bg);border:1px solid var(--req-border);padding:6px 8px;font-size:10.5px}
+.req-card strong{font-family:'VT323',monospace;color:var(--blue);font-size:11px;display:block;margin-bottom:2px}
+.wizard-body{display:flex;min-height:460px}
+.wizard-sidebar{width:155px;min-width:155px;background:linear-gradient(180deg,var(--wiz-from),var(--wiz-to));padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.wizard-sidebar-title{font-family:'VT323',monospace;font-size:16px;color:#fff;margin-bottom:8px;line-height:1.2}
+.wizard-step-indicator{font-size:9px;color:rgba(255,255,255,0.4);padding:3px 4px;font-family:'VT323',monospace;display:flex;align-items:center;gap:3px}
+.wizard-step-indicator.active{color:#fff;background:rgba(255,255,255,0.12);font-weight:bold}
+.wizard-step-indicator.completed{color:rgba(255,255,255,0.6)}
+.wizard-step-indicator.completed::after{content:'✓';margin-left:auto;color:#8f8}
+.step-num{width:14px;height:14px;border:1px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0}
+.wizard-step-indicator.active .step-num{background:#fff;color:var(--blue);border-color:#fff}
+.wizard-main{flex:1;padding:14px 18px;display:flex;flex-direction:column;overflow-y:auto;background:var(--content-bg);color:var(--text-color)}
+.wizard-main h2{font-family:'VT323',monospace;font-size:16px;color:var(--blue);margin-bottom:4px}
+.wizard-main .step-desc{font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.4}
+.wizard-main .prompt-group{margin-bottom:10px}
+.wizard-main .prompt-label{font-family:'VT323',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;display:block}
+.wizard-main textarea{width:100%;min-height:50px;background:var(--input-bg);border:2px solid;border-color:var(--inset-t) var(--white) var(--white) var(--inset-t);font-family:inherit;font-size:11px;padding:5px 6px;resize:vertical;line-height:1.4;color:var(--text-color)}
+.wizard-main textarea:focus{outline:none;box-shadow:inset 0 0 0 1px var(--blue)}
+.wizard-main textarea::placeholder{color:var(--text-hint);font-style:italic}
+.wizard-hint{font-size:9px;color:var(--text-hint);margin-top:2px;font-style:italic}
+.wizard-footer{background:var(--silver);border-top:1px solid var(--dark);padding:5px 10px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.wizard-footer-left{flex:1;min-width:0}
+.wizard-footer-right{display:flex;gap:4px;flex-shrink:0}
+.pbar-outer{height:10px;background:var(--content-bg);border:1px solid;border-color:var(--inset-t) var(--white) var(--white) var(--inset-t)}
+.pbar-inner{height:100%;background:repeating-linear-gradient(90deg,var(--blue) 0px,var(--blue) 8px,var(--blue-light) 8px,var(--blue-light) 10px);transition:width 0.3s}
+.instruction-panel{background:var(--yellow-note);border:2px solid var(--note-border);padding:10px 12px;margin-bottom:12px;line-height:1.6}
+.instruction-panel h3{font-family:'VT323',monospace;font-size:14px;color:var(--blue);margin-bottom:4px}
+.instruction-panel ol{margin:4px 0 0 16px;padding:0}
+.instruction-panel li{margin-bottom:3px;font-size:11px}
+.instruction-panel .note{margin-top:6px;font-size:10px;color:var(--text-hint);font-style:italic;border-top:1px dashed var(--note-border);padding-top:4px}
+.doc-toolbar{background:var(--silver);padding:4px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--dark);flex-wrap:wrap;gap:4px}
+.doc-toolbar-info{font-size:11px;color:var(--text-muted)}
+.doc-toolbar-info strong{font-family:'VT323',monospace;color:var(--blue)}
+.doc-preview-area{background:var(--doc-area-bg);padding:10px 16px;min-height:300px;max-height:460px;overflow-y:auto}
+.doc-page{background:var(--page-bg);width:100%;min-height:400px;padding:28px 32px 24px 32px;box-shadow:2px 2px 4px rgba(0,0,0,0.3);position:relative}
+.doc-page-title{font-family:'Times New Roman',serif;font-size:14pt;font-weight:bold;text-align:center;color:var(--text-color);margin-bottom:2px}
+.doc-page-subtitle{font-family:'Times New Roman',serif;font-size:10pt;text-align:center;color:var(--text-muted);margin-bottom:2px}
+.doc-page-meta{font-family:'Times New Roman',serif;font-size:9pt;text-align:center;color:var(--text-hint);margin-bottom:10px;font-style:italic}
+.doc-page hr{border:none;border-top:1px solid var(--hr-color);margin:8px 0}
+.doc-section-heading{font-family:'Times New Roman',serif;font-size:12pt;font-weight:bold;color:var(--text-color);margin:10px 0 3px 0}
+.doc-body-text{font-family:'Times New Roman',serif;font-size:12pt;line-height:2;color:var(--text-color)}
+.doc-empty-placeholder{font-family:'Times New Roman',serif;font-size:12pt;line-height:2;color:var(--text-hint);font-style:italic}
+.doc-page-number{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:'Times New Roman',serif;font-size:9px;color:var(--text-hint)}
+.empty-state{text-align:center;padding:40px 16px;color:var(--text-hint)}
+.empty-state .ei{font-size:32px;margin-bottom:6px;opacity:0.5}
+.empty-state h3{font-family:'VT323',monospace;font-size:14px;color:var(--dark);margin-bottom:4px}
+.empty-state p{font-size:11px;line-height:1.4;max-width:280px;margin:0 auto}
+.statusbar{background:var(--silver);border-top:1px solid var(--dark);padding:2px 4px;display:flex;font-size:10px;color:var(--text-color)}
+.status-section{border:1px solid;border-color:var(--inset-t) var(--white) var(--white) var(--inset-t);padding:1px 4px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.status-section.sm{flex:0 0 auto;min-width:40px;text-align:center}
+.below-window-area{display:none;margin-top:6px}
+.below-window-area.visible{display:block}
+.download-btn-large{width:100%;padding:10px 12px;background:var(--silver);border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white);box-shadow:1px 1px 0 var(--black);cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;text-align:left;color:var(--text-color)}
+.download-btn-large:active{border-color:var(--border-dark) var(--white) var(--white) var(--border-dark);box-shadow:none}
+.dl-icon{font-size:22px;flex-shrink:0}
+.dl-text{display:flex;flex-direction:column;gap:1px}
+.dl-text strong{font-size:12px;font-family:'VT323',monospace;color:var(--blue)}
+.dl-text span{font-size:10px;color:var(--text-muted)}
+.arrows-container{display:flex;flex-direction:column;align-items:center;padding:4px 0 2px 0}
+.arrow-down{font-family:'VT323',monospace;font-size:16px;color:var(--blue);line-height:0.8;animation:ap 1.5s ease-in-out infinite}
+.arrow-down.a2{animation-delay:0.2s;opacity:0.6}
+.arrow-down.a3{animation-delay:0.4s;opacity:0.3}
+@keyframes ap{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+.reminder-card{background:var(--silver);box-shadow:1px 1px 0 var(--black);border:2px solid;border-color:var(--white) var(--border-dark) var(--border-dark) var(--white)}
+.reminder-titlebar{background:linear-gradient(90deg,var(--remind-from),var(--remind-to));padding:3px 8px;font-size:11px;font-weight:bold;color:#fff}
+.reminder-body{padding:8px 10px;display:flex;gap:8px;align-items:flex-start}
+.reminder-icon{font-size:22px;flex-shrink:0}
+.reminder-text{flex:1}
+.reminder-text strong{font-family:'VT323',monospace;font-size:12px;color:var(--blue);display:block;margin-bottom:2px}
+.reminder-text p{font-size:10px;line-height:1.5;color:var(--text-color);margin:0}
+.help-sidebar::-webkit-scrollbar,.help-content::-webkit-scrollbar,.wizard-main::-webkit-scrollbar,.doc-preview-area::-webkit-scrollbar{width:14px}
+.help-sidebar::-webkit-scrollbar-track,.help-content::-webkit-scrollbar-track,.wizard-main::-webkit-scrollbar-track,.doc-preview-area::-webkit-scrollbar-track{background:var(--scrollbar-alt)}
+.help-sidebar::-webkit-scrollbar-thumb,.help-content::-webkit-scrollbar-thumb,.wizard-main::-webkit-scrollbar-thumb,.doc-preview-area::-webkit-scrollbar-thumb{background:var(--silver);border:1px outset var(--silver)}
+@media(max-width:640px){
+body{padding:2px}
+.mode-btn .ml{display:none}
+.mode-btn .mi{font-size:15px}
+.mode-btn{height:28px;padding:0 6px}
+.tool-btn{width:28px;height:28px}
+.help-body{flex-direction:column;height:auto;max-height:80vh}
+.help-sidebar{width:100%;min-width:unset;max-height:100px;border-right:none;border-bottom:2px solid var(--dark)}
+.toc-item{padding:3px 6px 3px 8px;font-size:10px}
+.help-content{padding:10px;min-height:250px}
+.wizard-sidebar{display:none}
+.wizard-main{padding:10px 8px}
+.doc-preview-area{padding:6px;max-height:55vh}
+.doc-page{padding:14px 10px 16px 10px;min-height:300px}
+.doc-page-title{font-size:12pt}
+.doc-toolbar{flex-direction:column;align-items:flex-start}
+.download-btn-large{padding:8px}
+.reminder-body{flex-direction:column;gap:4px}
+.requirements-grid{grid-template-columns:1fr}
+.statusbar{font-size:9px}
+}
+@media(max-width:400px){
+.help-sidebar{max-height:80px}
+.toc-item{font-size:9px;padding:2px 4px 2px 6px}
+.doc-page{padding:8px 6px 12px 6px}
+}
+@media print{
+body{background:#fff!important;padding:0;display:block;color:#000}
+.app{width:100%}
+.utility-bar,.titlebar,.statusbar,.wizard-footer,.doc-toolbar,.below-window-area{display:none!important}
+.panel{display:block!important;background:none!important;border:none!important;box-shadow:none!important}
+.panel:not(.print-target){display:none!important}
+.panel.print-target{display:block!important}
+.outset{border:none!important;box-shadow:none!important}
+.help-body{display:block;height:auto}
+.help-sidebar{display:none}
+.help-content{padding:0;background:none;overflow:visible;color:#000}
+.wizard-body{display:block}
+.wizard-sidebar{display:none}
+.wizard-main{padding:0;background:none;overflow:visible;color:#000}
+.doc-preview-area{background:none;padding:0;max-height:none;overflow:visible}
+.doc-page{box-shadow:none;padding:0;min-height:auto;background:none}
+.doc-page-title,.doc-section-heading,.doc-body-text{color:#000}
+.example-box{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="utility-bar">
+    <div class="mode-bar">
+      <button class="mode-btn active" onclick="switchMode('help')" id="helpModeBtn"><span class="mi">📖</span> <span class="ml">Guide</span></button>
+      <button class="mode-btn" onclick="switchMode('wizard')" id="wizardModeBtn"><span class="mi">🧙</span> <span class="ml">Wizard</span></button>
+      <button class="mode-btn" onclick="switchMode('doc')" id="docModeBtn"><span class="mi">💾</span> <span class="ml">Download</span></button>
+    </div>
+    <div class="tool-bar">
+      <button class="tool-btn" onclick="toggleDark()" id="darkBtn" title="Dark mode">🌙</button>
+      <button class="tool-btn" onclick="printTab()" title="Print">🖨️</button>
+    </div>
+  </div>
+  <div class="panel outset visible" id="helpPanel">
+    <div class="titlebar"><span class="titlebar-text"><span class="icon">❓</span> Section Guide</span><div class="title-buttons"><button class="tbtn">_</button><button class="tbtn">□</button><button class="tbtn">✕</button></div></div>
+    <div class="help-body">
+      <div class="help-sidebar">
+        <div class="help-sidebar-header">📁 Contents</div>
+        <div class="toc-item overview active" data-section="overview">Overview</div>
+        <div class="toc-item" data-section="calling">Calling</div>
+        <div class="toc-item" data-section="theology">Theology</div>
+        <div class="toc-item" data-section="win">Win</div>
+        <div class="toc-item" data-section="discipleship">Discipleship</div>
+        <div class="toc-item" data-section="developmental">Development</div>
+        <div class="toc-item" data-section="teaching">Teaching</div>
+        <div class="toc-item" data-section="pentecostal">Pentecostal</div>
+        <div class="toc-item" data-section="family">Family</div>
+        <div class="toc-item" data-section="scope">Scope</div>
+      </div>
+      <div class="help-content" id="helpContent"></div>
+    </div>
+    <div class="statusbar"><div class="status-section" id="helpStatus">Overview</div><div class="status-section sm" id="helpCounter">1/10</div></div>
+  </div>
+  <div class="panel outset" id="wizardPanel">
+    <div class="titlebar"><span class="titlebar-text"><span class="icon">🧙</span> Brainstorm Wizard</span><div class="title-buttons"><button class="tbtn">_</button><button class="tbtn">□</button><button class="tbtn">✕</button></div></div>
+    <div class="wizard-body">
+      <div class="wizard-sidebar" id="wizardSidebar"></div>
+      <div class="wizard-main" id="wizardMain"></div>
+    </div>
+    <div class="wizard-footer">
+      <div class="wizard-footer-left"><div class="pbar-outer"><div class="pbar-inner" id="wizProg" style="width:10%"></div></div></div>
+      <div class="wizard-footer-right"><button class="win-btn" id="wizBackBtn" onclick="wizNav(-1)" disabled>&lt; Back</button><button class="win-btn primary" id="wizNextBtn" onclick="wizNav(1)">Next &gt;</button></div>
+    </div>
+    <div class="statusbar"><div class="status-section" id="wizStatus">Instructions</div><div class="status-section sm" id="wizWC">0</div></div>
+  </div>
+  <div class="panel outset" id="docPanel">
+    <div class="titlebar"><span class="titlebar-text"><span class="icon">📝</span> Document Preview</span><div class="title-buttons"><button class="tbtn">_</button><button class="tbtn">□</button><button class="tbtn">✕</button></div></div>
+    <div class="doc-toolbar">
+      <div class="doc-toolbar-info"><strong>Words:</strong> <span id="docWC">0</span>/500 | 12pt TNR Dbl-Spaced</div>
+      <div><button class="win-btn" onclick="refreshDoc()">🔄 Refresh</button></div>
+    </div>
+    <div class="doc-preview-area" id="docArea"></div>
+    <div class="statusbar"><div class="status-section" id="docStatus">Ready</div><div class="status-section sm">DOCX</div></div>
+  </div>
+  <div class="below-window-area" id="belowDoc">
+    <button class="download-btn-large" onclick="dlDocx()"><span class="dl-icon">💾</span><span class="dl-text"><strong>Download .docx</strong><span>Save draft to edit in Word or Google Docs</span></span></button>
+    <div class="arrows-container"><div class="arrow-down">▼</div><div class="arrow-down a2">▼</div><div class="arrow-down a3">▼</div></div>
+    <div class="reminder-card">
+      <div class="reminder-titlebar">⚠️ Don't Forget!</div>
+      <div class="reminder-body"><div class="reminder-icon">📤</div><div class="reminder-text"><strong>Upload your final version below</strong><p>The download is a starting point — edit in Word or Google Docs, rewrite into polished paragraphs, then submit using the upload button below.</p></div></div>
+    </div>
+  </div>
+</div>
+<script>
+var H={
+overview:'<h2>📋 Overview &amp; Requirements</h2><div class="purpose-box"><strong>Purpose:</strong> A clear, concise articulation of your theology, philosophy, and approach to NextGen ministry — prepared for an experienced, ordained AG ministry leader.</div><div class="requirements-grid"><div class="req-card"><strong>📏 Length</strong>350–500 words (1–2 pages)</div><div class="req-card"><strong>🔤 Font</strong>12pt TNR, double-spaced</div><div class="req-card"><strong>📝 Format</strong>Paragraphs — no bullets</div><div class="req-card"><strong>🎤 Tone</strong>Clear, personal, practical</div></div><h3>Style Notes</h3><p>Write in <strong>your own voice</strong>. Be specific and concrete. Avoid copying definitions — demonstrate understanding. This should be a document you would revisit in ministry.</p><h3>Who Reads This?</h3><p>An experienced AG leader — DYD, district official, or Youth Pastor. They want authenticity, theological grounding, and practical clarity. Generic answers don\'t impress; your real voice does.</p>',
+calling:'<h2>▸ Personal Calling</h2><p>Your opening. <em>Why NextGen? Why you?</em></p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>What moment confirmed your calling?</li><li>Name the church, camp, or relationship.</li><li>How did God speak?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>I was sixteen when my youth pastor Dave Mitchell at Valley Assembly asked me to lead junior high small group. First time anyone saw potential in me. Two years later, watching a seventh grader get baptized in the Spirit at camp, I knew.</div><div class="commentary">💡 Real name, real church, real moment. Testimony, not résumé.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I have always felt called to work with young people. God placed a passion in my heart for the next generation.</div><div class="commentary">💡 No names, no places. Could be anyone.</div>',
+theology:'<h2>▸ Theological Convictions</h2><p>Not a doctrinal exam — show how theology <em>shapes what you do</em>.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Which truths shape your ministry most?</li><li>How does Scripture affect a Wednesday night?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>Scripture is living and active — not just historically true but presently powerful. I don\'t simplify the Bible for teenagers; the Spirit illuminates text to a fourteen-year-old like He does for a seminary student.</div><div class="commentary">💡 Each conviction connects to ministry implication.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I believe in the Bible as God\'s Word. I affirm the 16 Fundamental Truths.</div><div class="commentary">💡 A checklist, not a philosophy.</div>',
+win:'<h2>▸ Ministry Win</h2><p>Not numbers — <em>formation outcomes.</em></p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Healthy student after 3 years?</li><li>Could another leader recognize it?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>A student who opens their Bible and finds God. A senior who transitions to young adult community instead of walking away. I measure by who follows Jesus two years after leaving.</div><div class="commentary">💡 Concrete, observable, long-term.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>A win is when a student grows closer to God.</div><div class="commentary">💡 Unmeasurable.</div>',
+discipleship:'<h2>▸ Discipleship</h2><p>Showing up → owning faith.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Your framework?</li><li>First visit to student leader?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>Three postures: belong, believe, become. Groups of 6–8, trained adults committed one year. Some students spend two years in "belong" — that\'s okay.</div><div class="commentary">💡 Named framework, details, patience.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I believe in relational discipleship and walking alongside students.</div><div class="commentary">💡 No structure.</div>',
+developmental:'<h2>▸ Developmental Strategy</h2><p>Understand the humans you minister to.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Programming shift by age?</li><li>Leadership growth?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>Middle school: high-energy, concrete, narrative. High school: dialogue, harder texts. Leadership ladder: setup teams → assist small groups → co-lead with ownership.</div><div class="commentary">💡 Developmental awareness + specific ladder.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I adjust based on age and maturity.</div><div class="commentary">💡 Says nothing about how.</div>',
+teaching:'<h2>▸ Teaching Philosophy</h2><p>How you handle God\'s Word.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Style and why?</li><li>Depth vs. accessibility?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>Narrative exposition. Prep starts with text, not topic. I sit in a passage a week before illustrations. Clarity over cleverness.</div><div class="commentary">💡 Memorable phrase, real process.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I teach in a relevant and engaging way using media and interactive elements.</div><div class="commentary">💡 Methods listed, never explained.</div>',
+pentecostal:'<h2>▸ Pentecostal Distinctives</h2><p>AG identity in practice.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Space for the Spirit?</li><li>Spirit baptism without pressure?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>I protect space — don\'t script every minute. Worship team sensitive to the Spirit, not just finishing the set list. I never pressure tongues — that\'s the Spirit\'s work.</div><div class="commentary">💡 "Protecting space" — pastoral instinct. Maturity.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I believe in Spirit baptism with evidence of tongues. I incorporate worship.</div><div class="commentary">💡 Doctrine restated, not practiced.</div>',
+family:'<h2>▸ Family Partnership</h2><p>Parents as partners + unchurched reality.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>How equip parents?</li><li>Fractured families?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>Communication, equipping nights, available content. For unsupported students: mentors, host homes, open-door policy. Where family is absent, church becomes family.</div><div class="commentary">💡 Idealism + realism. Specific strategies.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>I believe in partnering with parents. Communication is key.</div><div class="commentary">💡 Logistics, not philosophy.</div>',
+scope:'<h2>▸ Scope of Ministry</h2><p>Ground it in real context.</p><div class="key-questions"><strong>Ask Yourself:</strong><ul><li>Age, size, geography?</li><li>Constraints?</li></ul></div><div class="example-box strong"><div class="example-label">✅ STRONG</div>6th–12th grade, mid-size suburban AG church of 300. Northern California — diverse, post-Christian. No flashy budget needed. Strategy: committed volunteers and hungry students.</div><div class="commentary">💡 Honest, self-aware, confident.</div><div class="example-box weak"><div class="example-label">❌ WEAK</div>My ministry is for youth 12–18. I hope to reach as many as possible.</div><div class="commentary">💡 No actual context.</div>'
+};
+
+var ST=['Personal Calling Statement','Core Theological Convictions','Ministry Win Definition','Discipleship Philosophy','Developmental Strategy','Teaching Philosophy','Pentecostal Distinctives','Family Partnership Philosophy','Scope of Ministry'];
+
+var WS=[
+{t:'Instructions',intro:1,p:[]},
+{t:'Personal Calling',d:'Start with your story.',p:[{l:'What moment confirmed your calling?',ph:'Church, camp, mentor...',h:'Real story > general feeling.'},{l:'Who invested in you?',ph:'Youth pastor, mentor...',h:'Who saw potential?'}]},
+{t:'Theology',d:'Connect doctrines to practice.',p:[{l:'2–3 truths that shape your ministry?',ph:'Scripture, local church...',h:'What would you defend?'},{l:'How does one truth change Wednesday night?',ph:'Concrete example...',h:'Doctrine → practice.'}]},
+{t:'Ministry Win',d:'Formation, not attendance.',p:[{l:'Healthy student after 3 years?',ph:'Know, do, be...',h:'Observable qualities.'},{l:'Outcome > numbers?',ph:'Post-graduation faith...',h:'Deepest values.'}]},
+{t:'Discipleship',d:'Showing up → owning faith.',p:[{l:'Your framework?',ph:'Small groups, phases...',h:'Named = intentional.'},{l:'Different starting points?',ph:'Unchurched vs. churched...',h:'Real people.'}]},
+{t:'Development',d:'Know the humans you minister to.',p:[{l:'Programming shift by age?',ph:'Middle → high school...',h:'Show dev awareness.'},{l:'Leadership growth?',ph:'6th grader vs. 11th...',h:'Clear ladder.'}]},
+{t:'Teaching',d:'Handling God\'s Word.',p:[{l:'Style and why?',ph:'Expository, topical, narrative...',h:'"Why" > label.'},{l:'Depth vs. accessibility?',ph:'Hard truth, not dumbed down...',h:'Memorable phrase helps.'}]},
+{t:'Pentecostal',d:'AG identity in practice.',p:[{l:'Space for the Spirit?',ph:'Worship, altar, flow...',h:'"Protect space."'},{l:'Spirit baptism w/o pressure?',ph:'Pastoral approach...',h:'Maturity matters.'}]},
+{t:'Family',d:'Partners + unchurched homes.',p:[{l:'Engaged families?',ph:'Communication, equipping...',h:'Specific strategies.'},{l:'Students w/o support?',ph:'"Church becomes family"...',h:'Pastoral realism.'}]},
+{t:'Scope',d:'Real context, real limits.',p:[{l:'Ministry setting?',ph:'Age, size, geography...',h:'Context is everything.'},{l:'Constraints?',ph:'Budget, volunteers...',h:'Honesty = maturity.'}]}
+];
+
+var tocEls=document.querySelectorAll('.toc-item');
+function showHelp(k){
+  document.getElementById('helpContent').innerHTML=H[k]||'';
+  for(var i=0;i<tocEls.length;i++) tocEls[i].classList.remove('active');
+  var a=document.querySelector('.toc-item[data-section="'+k+'"]');
+  if(a){a.classList.add('active');document.getElementById('helpStatus').textContent=a.textContent;
+  var idx=0;for(var j=0;j<tocEls.length;j++){if(tocEls[j]===a){idx=j;break}}
+  document.getElementById('helpCounter').textContent=(idx+1)+'/'+tocEls.length}
+  document.getElementById('helpContent').scrollTop=0;
+}
+for(var i=0;i<tocEls.length;i++){(function(el){el.addEventListener('click',function(){showHelp(el.getAttribute('data-section'))})})(tocEls[i])}
+showHelp('overview');
+
+var curStep=0;
+var ans=[];for(var i=0;i<WS.length;i++){var a=[];for(var j=0;j<WS[i].p.length;j++) a.push('');ans.push(a)}
+
+function renderSidebar(){
+  var c=document.getElementById('wizardSidebar');
+  var html='<div class="wizard-sidebar-title">Brainstorm<br>Wizard</div>';
+  for(var i=0;i<WS.length;i++){
+    var cls='wizard-step-indicator';
+    if(i===curStep) cls+=' active';
+    else if(i<curStep) cls+=' completed';
+    html+='<div class="'+cls+'"><span class="step-num">'+i+'</span> '+(i===0?'Instructions':WS[i].t)+'</div>';
+  }
+  c.innerHTML=html;
+}
+
+function renderStep(){
+  var s=WS[curStep],m=document.getElementById('wizardMain'),html='';
+  if(s.intro){
+    html='<h2>📋 How to Use This Wizard</h2><div class="instruction-panel"><h3>Welcome</h3><p>This walks you through each section with prompts to brainstorm before writing.</p><ol>';
+    html+='<li><strong>Section Guide</strong> (first tab) — strong/weak examples.</li>';
+    html+='<li><strong>This Wizard</strong> — rough notes per section.</li>';
+    html+='<li><strong>Preview &amp; Download</strong> (third tab) — get a .docx.</li>';
+    html+='<li><strong>Rewrite</strong> — edit in Word/Docs into paragraphs (350–500 words, 12pt TNR, double-spaced).</li>';
+    html+='<li><strong>Submit</strong> — upload below this widget.</li>';
+    html+='</ol><div class="note">💡 These are brainstorm notes, not your final paper. The .docx is a starting point.</div></div>';
+    html+='<p style="font-size:11px;color:var(--text-muted)">Click <strong>Next</strong> to begin.</p>';
+  } else {
+    html='<h2>'+s.t+'</h2><p class="step-desc">'+s.d+'</p>';
+    for(var i=0;i<s.p.length;i++){
+      var p=s.p[i];
+      html+='<div class="prompt-group"><label class="prompt-label">'+p.l+'</label>';
+      html+='<textarea id="wi_'+curStep+'_'+i+'" placeholder="'+p.ph+'" oninput="saveAns('+curStep+','+i+',this.value)">'+ans[curStep][i]+'</textarea>';
+      html+='<div class="wizard-hint">'+p.h+'</div></div>';
+    }
+  }
+  m.innerHTML=html;
+  document.getElementById('wizBackBtn').disabled=curStep===0;
+  var nb=document.getElementById('wizNextBtn');
+  if(curStep===WS.length-1){nb.textContent='💾 View Doc';nb.onclick=function(){switchMode('doc')}}
+  else{nb.textContent='Next >';nb.onclick=function(){wizNav(1)}}
+  document.getElementById('wizProg').style.width=((curStep+1)/WS.length*100)+'%';
+  document.getElementById('wizStatus').textContent=curStep===0?'Instructions':'Step '+curStep+'/'+(WS.length-1);
+  updWC();renderSidebar();
+}
+
+function saveAns(s,p,v){ans[s][p]=v;updWC()}
+function updWC(){var t=0;for(var i=0;i<ans.length;i++) for(var j=0;j<ans[i].length;j++){var w=ans[i][j].trim();if(w) t+=w.split(/\s+/).length}document.getElementById('wizWC').textContent=t}
+function wizNav(d){var n=curStep+d;if(n<0||n>=WS.length)return;curStep=n;renderStep()}
+renderStep();
+
+function secText(i){var a=ans[i];if(!a)return'';var r=[];for(var j=0;j<a.length;j++){if(a[j].trim())r.push(a[j].trim())}return r.join(' ')}
+function totalWC(){var t=0;for(var i=1;i<WS.length;i++){var x=secText(i);if(x) t+=x.split(/\s+/).length}return t}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+
+function refreshDoc(){
+  var area=document.getElementById('docArea'),wc=totalWC();
+  document.getElementById('docWC').textContent=wc;
+  document.getElementById('docWC').style.color=wc<350?'#c62828':wc>500?'#e65100':'#2e7d32';
+  if(wc===0){
+    area.innerHTML='<div class="doc-page" style="min-height:350px;display:flex;align-items:center;justify-content:center"><div class="empty-state"><div class="ei">📝</div><h3>No Content Yet</h3><p>Complete the Wizard first.</p><br><button class="win-btn" onclick="switchMode(\'wizard\')">🧙 Wizard</button></div></div>';
+    document.getElementById('docStatus').textContent='No content';return;
+  }
+  var h='<div class="doc-page"><div class="doc-page-title">NextGen Ministry Philosophy Statement</div><div class="doc-page-subtitle">Pathway Ministry Training Institute</div><div class="doc-page-meta">Assemblies of God — NorCal &amp; Nevada District</div><hr>';
+  for(var i=1;i<WS.length;i++){
+    var t=secText(i);
+    h+='<div class="doc-section-heading">'+ST[i-1]+'</div>';
+    h+=t?'<p class="doc-body-text">'+esc(t)+'</p>':'<p class="doc-empty-placeholder">[Complete in Wizard]</p>';
+  }
+  h+='<div class="doc-page-number">— 1 —</div></div>';
+  area.innerHTML=h;
+  document.getElementById('docStatus').textContent=wc+' words (target 350–500)';
+}
+
+function dlDocx(){
+  var wc=totalWC();
+  if(wc===0){alert('Complete the Wizard first.');return}
+  document.getElementById('docStatus').textContent='Generating...';
+  var D=docx,ch=[];
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:40},children:[new D.TextRun({text:'NextGen Ministry Philosophy Statement',bold:true,size:32,font:'Times New Roman'})]}));
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:40},children:[new D.TextRun({text:'Pathway Ministry Training Institute',size:22,font:'Times New Roman',color:'555555'})]}));
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:200},children:[new D.TextRun({text:'Assemblies of God \u2014 Northern California & Nevada District',size:20,font:'Times New Roman',color:'888888',italics:true})]}));
+  ch.push(new D.Paragraph({spacing:{after:240},border:{bottom:{style:'single',size:6,color:'CCCCCC',space:1}},children:[]}));
+  for(var i=1;i<WS.length;i++){
+    var t=secText(i);
+    ch.push(new D.Paragraph({spacing:{before:240,after:80},children:[new D.TextRun({text:ST[i-1],bold:true,size:24,font:'Times New Roman'})]}));
+    if(t){
+      var ps=t.split(/\n\n+/);
+      for(var j=0;j<ps.length;j++){var tr=ps[j].trim();if(tr) ch.push(new D.Paragraph({spacing:{line:480},indent:j>0?{firstLine:720}:undefined,children:[new D.TextRun({text:tr,size:24,font:'Times New Roman'})]}))}
+    }else{
+      ch.push(new D.Paragraph({spacing:{line:480},children:[new D.TextRun({text:'[Complete this section]',size:24,font:'Times New Roman',color:'BBBBBB',italics:true})]}));
+    }
+  }
+  var doc=new D.Document({sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:ch}]});
+  D.Packer.toBlob(doc).then(function(blob){
+    saveAs(blob,'NextGen_Ministry_Philosophy.docx');
+    document.getElementById('docStatus').textContent='Downloaded!';
+    setTimeout(function(){document.getElementById('docStatus').textContent=wc+' words'},3000);
+  }).catch(function(e){console.error(e);document.getElementById('docStatus').textContent='Error — retry.'});
+}
+
+var activeMode='help';
+function switchMode(m){
+  activeMode=m;
+  var modes=['help','wizard','doc'];
+  for(var i=0;i<modes.length;i++){
+    var k=modes[i];
+    var p=document.getElementById(k+'Panel');
+    var b=document.getElementById(k+'ModeBtn');
+    if(k===m){p.classList.add('visible');b.classList.add('active')}
+    else{p.classList.remove('visible');b.classList.remove('active')}
+  }
+  var bd=document.getElementById('belowDoc');
+  if(m==='doc'){bd.classList.add('visible');refreshDoc()}else{bd.classList.remove('visible')}
+}
+
+function toggleDark(){
+  var h=document.documentElement;
+  var dark=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',dark?'light':'dark');
+  var btn=document.getElementById('darkBtn');
+  btn.textContent=dark?'🌙':'☀️';
+  if(dark) btn.classList.remove('toggled'); else btn.classList.add('toggled');
+}
+
+function printTab(){
+  var panels=document.querySelectorAll('.panel');
+  for(var i=0;i<panels.length;i++) panels[i].classList.remove('print-target');
+  document.getElementById(activeMode+'Panel').classList.add('print-target');
+  if(activeMode==='wizard'){
+    var m=document.getElementById('wizardMain');
+    var orig=m.innerHTML;
+    var ph='<h2 style="font-family:VT323,monospace;font-size:16px;margin-bottom:10px">Brainstorm Notes</h2>';
+    for(var i=1;i<WS.length;i++){
+      ph+='<h3 style="font-family:VT323,monospace;font-size:13px;margin:12px 0 3px">'+WS[i].t+'</h3>';
+      for(var j=0;j<WS[i].p.length;j++){
+        ph+='<p style="font-size:11px;font-weight:bold;margin:4px 0 2px">'+WS[i].p[j].l+'</p>';
+        ph+='<p style="font-size:11px;white-space:pre-wrap;margin:0 0 6px">'+(ans[i][j]||'(not answered)')+'</p>';
+      }
+    }
+    m.innerHTML=ph;
+    window.print();
+    m.innerHTML=orig;
+    renderStep();
+  } else {
+    window.print();
+  }
+}
+</script>
+</body>
+</html>
