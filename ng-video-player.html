@@ -609,10 +609,6 @@ body { display:flex; flex-direction:column; align-items:center; padding:12px 8px
 
     <!-- Bottom bar -->
     <div class="w98-bottom-bar">
-      <button class="w98-btn" id="btnOriginal" type="button" style="display:none;" title="Watch original">
-        <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" fill="var(--w98-teal)"/></svg>
-        Original
-      </button>
       <div class="w98-spacer"></div>
       <div class="w98-theme-wrap">
         <button class="w98-btn" id="btnTheme" type="button" title="Window theme">
@@ -991,14 +987,12 @@ if(hasVariants) {
 }
 
 /* ═══════════════════════════════════════════════════ ORIG / DOWNLOAD BUTTONS */
+/* btnOriginal removed — source link lives only in the Notes toolbar (btnViewSrc) */
 function wireOrigBtn(){
-  var btn = document.getElementById('btnOriginal');
   var vsBtn = document.getElementById('btnViewSrc');
-  if(origUrl){ btn.style.display='flex'; vsBtn.style.display='flex'; }
-  else { btn.style.display='none'; vsBtn.style.display='none'; }
+  if(vsBtn) vsBtn.style.display = origUrl ? 'flex' : 'none';
 }
 wireOrigBtn();
-document.getElementById('btnOriginal').addEventListener('click',function(){ if(origUrl) window.open(origUrl,'_blank','noopener'); });
 document.getElementById('btnViewSrc').addEventListener('click',function(){ if(origUrl) window.open(origUrl,'_blank','noopener'); });
 if(downloadUrl){
   var dlBtn=document.getElementById('btnDownload'); dlBtn.style.display='flex';
@@ -1193,90 +1187,88 @@ if(cfVideoId){
   cfIframe.id='cfStreamIframe';
   cfIframe.className='w98-video-el';
   cfIframe.style.pointerEvents='none';
-  /* muted=0 tells CF not to start muted; autoplay=0 so we control play timing */
   cfIframe.src='https://iframe.cloudflarestream.com/'+cfVideoId+
                '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
-  cfIframe.allow='autoplay;fullscreen;picture-in-picture;accelerometer;gyroscope;encrypted-media';
+  cfIframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';
   cfIframe.allowFullscreen=true;
   if(ph) ph.parentNode.replaceChild(cfIframe,ph);
   document.getElementById('fsBtn').classList.add('visible');
   videoReady=true;
 
-  /* ── Raw postMessage listener (works even without SDK) ── */
+  /* ── Raw postMessage listener (fallback — works even without SDK) ── */
   window.addEventListener('message',function(e){
     var d; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(_){return;}
     if(!d) return;
+    /* Only process messages from our CF iframe */
+    if(cfIframe && e.source !== cfIframe.contentWindow) return;
     var evt = d.event || d.type; if(!evt) return;
     if(evt==='play')  { cfPlaying=true;  updatePlayUI(true); }
     if(evt==='pause') { cfPlaying=false; updatePlayUI(false); }
     if(evt==='ended') { cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
                         maxWatched=cfDur||maxWatched; setDone(true); updateBar(); }
-    /* timeupdate — currentTime/duration may be at root OR inside .data */
     if(evt==='timeupdate'){
       var src = (d.data && typeof d.data.currentTime==='number') ? d.data : d;
-      if(typeof src.currentTime==='number' && typeof src.duration==='number'){
-        cfTime = src.currentTime; cfDur = src.duration;
-        /* Skip-protection for CF */
+      if(typeof src.currentTime==='number'){
+        cfTime = src.currentTime;
+        if(typeof src.duration==='number' && src.duration>0) cfDur = src.duration;
         if(!getDone() && cfTime > maxWatched+2){ cfCmd('seek',{currentTime:maxWatched,time:maxWatched}); showSkip(); return; }
         if(cfTime > maxWatched) maxWatched = cfTime;
         updateBar();
       }
     }
-    if(evt==='durationchange' || evt==='loadedmetadata'){
-      if(typeof d.duration==='number' && d.duration>0) cfDur=d.duration;
+    if(evt==='durationchange'||evt==='loadedmetadata'){
+      var dur = (d.data&&d.data.duration)||d.duration||0;
+      if(dur>0){ cfDur=dur; document.getElementById('timeTotal').textContent=fmt(cfDur); updateBar(); }
     }
   });
 
-  /* ── Load official CF Stream SDK for reliable control ── */
+  /* ── CF Stream SDK — initialize only after BOTH sdk script AND iframe have loaded ── */
+  var _cfSdkReady=false, _cfFrameReady=false;
+  function _initCFPlayer(){
+    if(!_cfSdkReady || !_cfFrameReady || cfPlayer) return;
+    try{
+      cfPlayer = window.Stream(cfIframe);
+      cfPlayer.addEventListener('play',  function(){ cfPlaying=true;  updatePlayUI(true); });
+      cfPlayer.addEventListener('pause', function(){ cfPlaying=false; updatePlayUI(false); });
+      cfPlayer.addEventListener('ended', function(){
+        cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
+        maxWatched=cfPlayer.duration||maxWatched; setDone(true); updateBar();
+      });
+      cfPlayer.addEventListener('timeupdate', function(){
+        cfTime = cfPlayer.currentTime||0;
+        cfDur  = cfPlayer.duration||cfDur||0;
+        if(!getDone() && cfTime > maxWatched+2){ cfPlayer.currentTime=maxWatched; showSkip(); return; }
+        if(cfTime > maxWatched) maxWatched = cfTime;
+        updateBar();
+      });
+      cfPlayer.addEventListener('durationchange', function(){
+        var dur=cfPlayer.duration||0;
+        if(dur>0){ cfDur=dur; document.getElementById('timeTotal').textContent=fmt(cfDur); updateBar(); }
+      });
+      cfPlayer.addEventListener('volumechange', function(){
+        try{ if(cfPlayer.muted||cfPlayer.volume<0.05) showUnmuteOverlay(); else hideUnmuteOverlay(); }catch(e){}
+      });
+      /* Poll duration until we get it — some browsers miss durationchange */
+      var durProbeId=setInterval(function(){
+        if(cfDur>0){ clearInterval(durProbeId); return; }
+        try{ var d=cfPlayer.duration; if(d&&isFinite(d)&&d>0){ cfDur=d; document.getElementById('timeTotal').textContent=fmt(d); updateBar(); clearInterval(durProbeId); } }catch(e){}
+      },800);
+      console.log('[Pathway] CF Stream SDK bound successfully');
+    }catch(err){ console.warn('[Pathway] CF Stream SDK init error:',err); }
+  }
+
+  /* Mark iframe ready — fires when CF player page has loaded inside the iframe */
+  cfIframe.addEventListener('load', function(){
+    _cfFrameReady=true;
+    _initCFPlayer();
+  });
+
+  /* Load SDK script */
   (function(){
-    var sdk = document.createElement('script');
-    sdk.src = 'https://embed.cloudflarestream.com/embed/sdk.latest.min.js';
-    sdk.onload = function(){
-      try{
-        cfPlayer = window.Stream(cfIframe);
-        /* SDK events — more reliable than postMessage */
-        cfPlayer.addEventListener('play',  function(){ cfPlaying=true;  updatePlayUI(true); });
-        cfPlayer.addEventListener('pause', function(){ cfPlaying=false; updatePlayUI(false); });
-        cfPlayer.addEventListener('ended', function(){
-          cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
-          maxWatched=cfPlayer.duration||maxWatched; setDone(true); updateBar();
-        });
-        cfPlayer.addEventListener('timeupdate', function(){
-          cfTime = cfPlayer.currentTime||0;
-          cfDur  = cfPlayer.duration||cfDur||0;
-          if(!getDone() && cfTime > maxWatched+2){
-            cfPlayer.currentTime = maxWatched; showSkip(); return;
-          }
-          if(cfTime > maxWatched) maxWatched = cfTime;
-          updateBar();
-        });
-        cfPlayer.addEventListener('durationchange', function(){
-          var d = cfPlayer.duration||0;
-          if(d>0){ cfDur=d; document.getElementById('timeTotal').textContent = fmt(cfDur); updateBar(); }
-        });
-        /* Detect browser-forced mute so we can show the unmute overlay */
-        cfPlayer.addEventListener('volumechange', function(){
-          try{
-            if(cfPlayer.muted || cfPlayer.volume < 0.05){ showUnmuteOverlay(); }
-            else { hideUnmuteOverlay(); }
-          }catch(e){}
-        });
-        /* Duration probe: poll until we read a valid duration (some browsers miss durationchange) */
-        var durProbeId = setInterval(function(){
-          if(cfDur > 0){ clearInterval(durProbeId); return; }
-          try{
-            var d = cfPlayer.duration;
-            if(d && isFinite(d) && d > 0){
-              cfDur = d;
-              document.getElementById('timeTotal').textContent = fmt(cfDur);
-              updateBar();
-              clearInterval(durProbeId);
-            }
-          }catch(e){}
-        }, 800);
-      }catch(err){ console.warn('[Pathway] CF Stream SDK error:', err); }
-    };
-    sdk.onerror = function(){ console.warn('[Pathway] CF Stream SDK failed to load — falling back to postMessage'); };
+    var sdk=document.createElement('script');
+    sdk.src='https://embed.cloudflarestream.com/embed/sdk.latest.min.js';
+    sdk.onload=function(){ _cfSdkReady=true; _initCFPlayer(); };
+    sdk.onerror=function(){ console.warn('[Pathway] CF Stream SDK failed — using postMessage fallback'); };
     document.head.appendChild(sdk);
   })();
 
