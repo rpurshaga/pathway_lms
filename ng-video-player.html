@@ -953,7 +953,7 @@ function setVariant(which, fromChoice) {
       cfPlaying = false; cfTime = 0; cfDur = 0; cfPlayer = null;
       updatePlayUI(false);
       cfIframe.src = 'https://iframe.cloudflarestream.com/'+newCFId+
-                     '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
+                     '?autoplay=false&loop=false&controls=false&playsinline=true&muted=false&preload=metadata';
     }
     /* Update View Source link to reflect the active variant */
     origUrl = which==='b' ? (origUrl_b || origUrl_a) : origUrl_a;
@@ -1195,7 +1195,7 @@ if(cfVideoId){
   cfIframe.className='w98-video-el';
   cfIframe.style.pointerEvents='none';
   cfIframe.src='https://iframe.cloudflarestream.com/'+cfVideoId+
-               '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
+               '?autoplay=false&loop=false&controls=false&playsinline=true&muted=false&preload=metadata';
   cfIframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope; xr-spatial-tracking';
   cfIframe.allowFullscreen=true;
   if(ph) ph.parentNode.replaceChild(cfIframe,ph);
@@ -1207,7 +1207,9 @@ if(cfVideoId){
     var d; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(_){return;}
     if(!d) return;
     var evt = d.event || d.type; if(!evt) return;
-    if(evt==='play')  { cfPlaying=true;  updatePlayUI(true); }
+    /* Only accept play/pause events if the user has actually clicked play (isPlaying guard prevents
+       CF's autoplay-on-load event from hijacking the UI before the user interacts) */
+    if(evt==='play')  { if(isPlaying) { cfPlaying=true; updatePlayUI(true); } else { cfCmd('pause'); } }
     if(evt==='pause') { cfPlaying=false; updatePlayUI(false); }
     if(evt==='ended') { cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
                         maxWatched=cfDur||maxWatched; setDone(true); updateBar(); }
@@ -1233,7 +1235,7 @@ if(cfVideoId){
     if(!_cfSdkReady || !_cfFrameReady || cfPlayer) return;
     try{
       cfPlayer = window.Stream(cfIframe);
-      cfPlayer.addEventListener('play',  function(){ cfPlaying=true;  updatePlayUI(true); });
+      cfPlayer.addEventListener('play',  function(){ if(isPlaying){ cfPlaying=true; updatePlayUI(true); } else { try{cfPlayer.pause();}catch(e){} } });
       cfPlayer.addEventListener('pause', function(){ cfPlaying=false; updatePlayUI(false); });
       cfPlayer.addEventListener('ended', function(){
         cfPlaying=false; updatePlayUI(false); setStatus('Complete ✓');
