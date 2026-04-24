@@ -1182,7 +1182,7 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
   };
   var ARTICLE = {
     id:    P.get('articleId')    || docEl.dataset.articleId    || 'article',
-    title: P.get('articleTitle') || docEl.dataset.articleTitle || 'Article',
+    title: b64text('articleTitle') || P.get('articleTitle') || docEl.dataset.articleTitle || 'Article',
     url:   window.location.href
   };
 
