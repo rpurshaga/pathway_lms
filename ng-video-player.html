@@ -1167,16 +1167,18 @@ function createVideo(){
 /* ═══════════════════════════════════════════════════ CF STREAM */
 var cfPlayer = null; /* Cloudflare Stream SDK player instance (if SDK loads) */
 
-/* Low-level postMessage command — sends BOTH event and type keys for max compat */
+/* Low-level postMessage command — sends BOTH object and string formats for max compat */
 function cfCmd(cmd, data){
   if(!cfIframe) return;
-  /* CF Stream accepts either {event:'play'} or {type:'play'} — send both to be safe */
   var msg = {event: cmd, type: cmd};
   if(data !== undefined){
-    /* Flatten data props onto message root (CF doesn't expect nested .data) */
     Object.keys(data).forEach(function(k){ msg[k]=data[k]; });
   }
-  try{ cfIframe.contentWindow.postMessage(JSON.stringify(msg), '*'); }catch(e){}
+  try{
+    /* Send as object (newer CF players) AND as JSON string (older CF players) */
+    cfIframe.contentWindow.postMessage(msg, '*');
+    cfIframe.contentWindow.postMessage(JSON.stringify(msg), '*');
+  }catch(e){}
 }
 
 /* Seek helper: CF uses 'seek' + currentTime at root level */
@@ -1194,7 +1196,7 @@ if(cfVideoId){
   cfIframe.style.pointerEvents='none';
   cfIframe.src='https://iframe.cloudflarestream.com/'+cfVideoId+
                '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
-  cfIframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media';
+  cfIframe.allow='autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope; xr-spatial-tracking';
   cfIframe.allowFullscreen=true;
   if(ph) ph.parentNode.replaceChild(cfIframe,ph);
   document.getElementById('fsBtn').classList.add('visible');
@@ -1275,11 +1277,14 @@ if(cfVideoId){
     document.head.appendChild(sdk);
   })();
 
-  /* CF polling — drives progress bar when SDK timeupdate events are sparse */
+  /* CF polling — drives progress bar based on UI play state + direct SDK time read */
   setInterval(function(){
-    if(!cfPlaying || !cfDur) return;
-    if(cfPlayer){ try{ var t=cfPlayer.currentTime; if(t&&t>0) cfTime=t; }catch(e){} }
-    updateBar();
+    /* Probe duration if we don't have it yet */
+    if(cfDur<=0 && cfPlayer){ try{ var d=cfPlayer.duration; if(d&&d>0){ cfDur=d; document.getElementById('timeTotal').textContent=fmt(cfDur); } }catch(e){} }
+    /* Update bar whenever user has clicked play (isPlaying) or CF confirmed playing (cfPlaying) */
+    if(!isPlaying && !cfPlaying) return;
+    if(cfPlayer){ try{ var t=cfPlayer.currentTime; if(typeof t==='number'&&t>=0) cfTime=t; }catch(e){} }
+    if(cfDur>0) updateBar();
   }, 500);
 
   /* CF captions */
@@ -1297,13 +1302,11 @@ if(cfVideoId){
 }
 document.getElementById('btnCC').addEventListener('click',function(e){ e.stopPropagation(); document.getElementById('ccMenu').classList.toggle('open'); });
 
-/* CF polling fallback — keep bar moving and probe duration even when paused */
+/* CF postMessage fallback polling — sends commands when SDK is not available */
 if(cfVideoId){
   setInterval(function(){
-    /* Always try to capture duration via postMessage if we still don't have it */
     if(cfDur <= 0 && !cfPlayer) cfCmd('getDuration',{});
-    if(!cfPlaying) return;
-    /* Keep bar in sync on postMessage path (SDK fires timeupdate itself) */
+    if(!isPlaying && !cfPlaying) return;
     if(!cfPlayer && cfDur>0) updateBar();
     if(!cfPlayer) cfCmd('getCurrentTime',{});
   },500);
@@ -1441,15 +1444,17 @@ function togglePlay(){
         cfCmd('pause');
       }
     } else {
-      /* Apply volume then play */
+      /* Apply volume then play — set cfPlaying optimistically so polling starts immediately */
+      cfPlaying = true;
       if(cfPlayer){
         try{
           cfPlayer.volume=svCF/100; cfPlayer.muted=false;
           cfPlayer.play().catch(function(err){
             console.warn('[Pathway] CF play() blocked:', err&&err.message||err);
+            cfPlaying = false;
             updatePlayUI(false);
           });
-        }catch(e){ updatePlayUI(false); }
+        }catch(e){ cfPlaying=false; updatePlayUI(false); }
       } else {
         cfCmd('volume',{volume:svCF/100, level:svCF/100});
         cfCmd('play');
