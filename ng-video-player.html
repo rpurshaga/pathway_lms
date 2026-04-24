@@ -768,6 +768,8 @@ var cfVideoId  = p('vid');
 var cfVideoId2 = p('vid2');   /* second CF Stream ID — dual-video variant mode */
 var videoSrc   = b64('b') || p('src') || b64('mp4') || p('mp4src');
 var origUrl    = b64('orig') || p('orig');
+var origUrl_b  = b64('orig2') || p('orig2');  /* Video B source URL */
+var origUrl_a  = origUrl;                      /* keep a reference to Video A source */
 var downloadUrl= b64('dl')   || p('dl');
 
 /* Variant A/B */
@@ -953,6 +955,9 @@ function setVariant(which, fromChoice) {
       cfIframe.src = 'https://iframe.cloudflarestream.com/'+newCFId+
                      '?autoplay=0&loop=0&controls=0&playsinline=1&muted=0&preload=auto';
     }
+    /* Update View Source link to reflect the active variant */
+    origUrl = which==='b' ? (origUrl_b || origUrl_a) : origUrl_a;
+    wireOrigBtn();
     choiceEl.classList.remove('visible');
     return;
   }
@@ -1199,8 +1204,6 @@ if(cfVideoId){
   window.addEventListener('message',function(e){
     var d; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(_){return;}
     if(!d) return;
-    /* Only process messages from our CF iframe */
-    if(cfIframe && e.source !== cfIframe.contentWindow) return;
     var evt = d.event || d.type; if(!evt) return;
     if(evt==='play')  { cfPlaying=true;  updatePlayUI(true); }
     if(evt==='pause') { cfPlaying=false; updatePlayUI(false); }
@@ -1271,6 +1274,13 @@ if(cfVideoId){
     sdk.onerror=function(){ console.warn('[Pathway] CF Stream SDK failed — using postMessage fallback'); };
     document.head.appendChild(sdk);
   })();
+
+  /* CF polling — drives progress bar when SDK timeupdate events are sparse */
+  setInterval(function(){
+    if(!cfPlaying || !cfDur) return;
+    if(cfPlayer){ try{ var t=cfPlayer.currentTime; if(t&&t>0) cfTime=t; }catch(e){} }
+    updateBar();
+  }, 500);
 
   /* CF captions */
   fetch('https://videodelivery.net/'+cfVideoId+'/captions')
