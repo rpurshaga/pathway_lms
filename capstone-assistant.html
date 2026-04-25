@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway Capstone Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#008080;--silver:#c0c0c0;--dark:#808080;--white:#dfdfdf;--black:#000;
+--blue:#000080;--blue-lt:#1084d0;--hi:#0a246a;--bd:#404040;--inset:#808080;
+--cbg:#fff;--txt:#000;--muted:#555;--hint:#777;
+--note:#fffde8;--noteb:#cca;--good:#e8f5e8;--bad:#fdecea;
+--tbar1:#000080;--tbar2:#1084d0;--wiz1:#000080;--wiz2:#000050;
+--rem1:#cc6600;--rem2:#ff9933;--sl:#2e7d32;--wl:#c62828;
+--inp:#fff;--scr:#e8e8e8;--req:#f5f5f5;--reqb:#ddd;
+}
+html[data-theme=dark]{
+--bg:#1a1a2e;--silver:#3a3a4a;--dark:#555;--white:#4a4a5a;--black:#111;
+--blue:#4466aa;--blue-lt:#6699dd;--hi:#334466;--bd:#222;--inset:#2a2a3a;
+--cbg:#1e1e2e;--txt:#d0d0e0;--muted:#999;--hint:#888;
+--note:#2a2820;--noteb:#555;--good:#1a2e1a;--bad:#2e1a1a;
+--tbar1:#333355;--tbar2:#4a5580;--wiz1:#222244;--wiz2:#111122;
+--rem1:#885520;--rem2:#aa7733;--sl:#6cb;--wl:#c88;
+--inp:#252535;--scr:#333;--req:#252535;--reqb:#444;
+}
+body{background:var(--bg);font-family:'Segoe UI',Tahoma,sans-serif;font-size:11px;color:var(--txt);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:6px}
+.app{width:820px;max-width:100%}
+.outset{border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);box-shadow:1px 1px 0 var(--black)}
+.inset{border:2px solid;border-color:var(--inset) var(--white) var(--white) var(--inset)}
+.tbar{background:linear-gradient(90deg,var(--tbar1),var(--tbar2));padding:3px 5px;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.tbar-txt{color:#fff;font-size:11px;font-weight:bold;display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbar-btns{display:flex;gap:2px;flex-shrink:0}
+.tbtn{width:16px;height:14px;background:var(--silver);border:1px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:9px;font-weight:bold}
+.win-btn{min-width:62px;height:23px;background:var(--silver);border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);font-family:inherit;font-size:11px;cursor:pointer;padding:0 8px;color:var(--txt)}
+.win-btn:active,.win-btn.active{border-color:var(--bd) var(--white) var(--white) var(--bd)}
+.win-btn.primary{font-weight:bold}
+.win-btn:disabled{opacity:.4;cursor:not-allowed}
+.util{display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap}
+.modebar{background:var(--silver);padding:3px;display:flex;gap:3px;border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);flex:1}
+.mbtn{height:26px;background:var(--silver);border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);font-family:inherit;font-size:11px;cursor:pointer;padding:0 8px;display:flex;align-items:center;gap:4px;flex:1;justify-content:center;white-space:nowrap;color:var(--txt)}
+.mbtn.active{border-color:var(--bd) var(--white) var(--white) var(--bd);background:#acacac;font-weight:bold}
+.toolbar{background:var(--silver);padding:3px;display:flex;gap:3px;border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);flex-shrink:0}
+.tbtn2{width:26px;height:26px;background:var(--silver);border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px}
+.tbtn2:active,.tbtn2.on{border-color:var(--bd) var(--white) var(--white) var(--bd)}
+.panel{display:none;background:var(--silver)}.panel.vis{display:block}
+.statusbar{background:var(--silver);border-top:1px solid var(--dark);padding:2px 4px;display:flex;font-size:10px;color:var(--txt)}
+.ss{border:1px solid;border-color:var(--inset) var(--white) var(--white) var(--inset);padding:1px 5px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ss.sm{flex:0 0 auto;min-width:50px;text-align:center}
+/* --- BODY LAYOUT --- */
+.body-wrap{display:flex;min-height:480px}
+/* --- SIDEBAR --- */
+.sidebar{width:172px;min-width:172px;background:var(--cbg);border-right:2px solid var(--dark);display:flex;flex-direction:column;overflow:hidden}
+.sb-hdr{background:var(--silver);padding:3px 6px;font-size:10px;font-weight:bold;border-bottom:1px solid var(--dark);font-family:'VT323',monospace;color:var(--blue);display:flex;justify-content:space-between;align-items:center}
+.sb-prog{font-size:9px;color:var(--muted);font-family:inherit}
+.sb-scroll{flex:1;overflow-y:auto}
+.doc-group{border-bottom:1px solid var(--reqb)}
+.doc-hdr{background:var(--req);padding:4px 6px 3px;font-size:10px;font-weight:bold;font-family:'VT323',monospace;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--reqb)}
+.doc-hdr:hover{background:#e8e8f8}
+.sec-item{padding:3px 6px 3px 14px;cursor:pointer;font-size:10px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:5px;color:var(--txt);transition:background .1s}
+.sec-item:hover{background:var(--hi);color:#fff}
+.sec-item.active{background:var(--blue);color:#fff;font-weight:bold}
+.sec-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--muted);flex-shrink:0;background:transparent}
+.sec-dot.partial{background:var(--blue-lt);border-color:var(--blue-lt)}
+.sec-dot.done{background:#2e7d32;border-color:#2e7d32}
+.sec-item.active .sec-dot{border-color:#fff;background:transparent}
+.sec-item.active .sec-dot.done{background:#8f8}
+.sb-ethics{margin:6px;padding:6px 7px;background:var(--note);border:1px solid var(--noteb);font-size:9px;line-height:1.5;color:var(--txt)}
+.sb-ethics strong{font-family:'VT323',monospace;color:var(--blue);font-size:10px}
+/* --- MAIN PANEL --- */
+.main-panel{flex:1;overflow-y:auto;background:var(--cbg);min-height:480px}
+/* BUILD */
+.build-wrap{padding:12px 14px}
+.sec-badge{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:2px 7px;font-family:'VT323',monospace;font-size:12px;margin-bottom:6px}
+.sec-title{font-family:'VT323',monospace;font-size:17px;color:var(--blue);margin-bottom:3px}
+.trigger-box{background:var(--note);border:1px solid var(--noteb);padding:4px 8px;font-size:10px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.sec-desc{font-size:11px;line-height:1.6;margin-bottom:10px;color:var(--txt)}
+.field-label{font-family:'VT323',monospace;font-size:12px;color:var(--blue);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.field-label .req-badge{background:#c62828;color:#fff;font-size:8px;padding:1px 4px;font-family:inherit;border-radius:0}
+textarea{width:100%;background:var(--inp);border:2px solid;border-color:var(--inset) var(--white) var(--white) var(--inset);font-family:inherit;font-size:11px;padding:6px;resize:vertical;line-height:1.5;color:var(--txt)}
+textarea:focus{outline:none;box-shadow:inset 0 0 0 1px var(--blue)}
+textarea::placeholder{color:var(--hint);font-style:italic}
+.wc-row{display:flex;justify-content:space-between;align-items:center;margin-top:3px;margin-bottom:10px;font-size:10px;color:var(--muted)}
+.wc-bar-outer{height:4px;background:var(--reqb);flex:1;margin:0 8px;border:1px solid var(--reqb)}
+.wc-bar-inner{height:100%;background:var(--blue-lt);transition:width .3s;max-width:100%}
+/* AI PROMPT */
+.ai-block{border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);margin-bottom:10px}
+.ai-hdr{background:var(--silver);padding:4px 8px;font-family:'VT323',monospace;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:var(--blue)}
+.ai-hdr:hover{background:#b8b8c8}
+.ai-body{padding:8px 10px;display:none;background:var(--cbg)}
+.ai-body.open{display:block}
+.ai-ethics-note{background:#fff3e0;border:1px solid #ffb74d;padding:5px 8px;font-size:10px;margin-bottom:7px;line-height:1.5}
+.ai-ethics-note strong{color:#e65100}
+.ai-prompt-box{background:var(--note);border:1px solid var(--noteb);padding:7px 9px;font-size:10.5px;line-height:1.6;white-space:pre-wrap;font-family:'Courier New',monospace;color:var(--txt);margin-bottom:6px}
+.copy-btn{background:var(--silver);border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);cursor:pointer;padding:2px 10px;font-size:10px;font-family:inherit;color:var(--txt)}
+.copy-btn:active{border-color:var(--bd) var(--white) var(--white) var(--bd)}
+.nav-row{display:flex;justify-content:space-between;margin-top:8px}
+/* GUIDE */
+.guide-wrap{padding:12px 14px}
+.guide-wrap h2{font-family:'VT323',monospace;font-size:17px;color:var(--blue);margin-bottom:5px;border-bottom:2px solid var(--blue);padding-bottom:3px}
+.guide-wrap h3{font-family:'VT323',monospace;font-size:13px;color:var(--blue-lt);margin:10px 0 4px}
+.guide-wrap p{font-size:11.5px;line-height:1.65;margin-bottom:8px}
+.ex-box{padding:9px 11px;font-size:11px;line-height:1.7;border-left:4px solid;margin:6px 0}
+.ex-box.good{background:var(--good);border-color:#4caf50}
+.ex-box.bad{background:var(--bad);border-color:#e53935}
+.ex-label{font-family:'VT323',monospace;font-size:12px;font-weight:bold;margin-bottom:3px}
+.ex-box.good .ex-label{color:var(--sl)}
+.ex-box.bad .ex-label{color:var(--wl)}
+.ex-note{font-size:10px;color:var(--muted);font-style:italic;margin-top:4px}
+.kq-box{background:var(--note);border:1px solid var(--noteb);padding:7px 9px;margin:7px 0;font-size:11px}
+.kq-box strong{font-family:'VT323',monospace;color:var(--blue);font-size:12px}
+.kq-box ul{margin:3px 0 0 16px;padding:0}
+.kq-box li{margin-bottom:2px}
+.checklist-item{display:flex;align-items:flex-start;gap:6px;padding:3px 0;font-size:11px}
+.checklist-item input{margin-top:1px;flex-shrink:0}
+/* PREVIEW */
+.preview-wrap{padding:10px 14px;background:var(--dark);min-height:400px}
+.page{background:var(--cbg);padding:26px 30px 22px;margin-bottom:10px;box-shadow:2px 2px 4px rgba(0,0,0,.3);position:relative}
+.page-title{font-family:'Times New Roman',serif;font-size:13pt;font-weight:bold;text-align:center;color:var(--txt);margin-bottom:2px}
+.page-sub{font-family:'Times New Roman',serif;font-size:10pt;text-align:center;color:var(--muted);margin-bottom:2px}
+.page-meta{font-family:'Times New Roman',serif;font-size:9pt;text-align:center;color:var(--hint);margin-bottom:8px;font-style:italic}
+.page hr{border:none;border-top:1px solid #ccc;margin:6px 0}
+.page-sh{font-family:'Times New Roman',serif;font-size:11pt;font-weight:bold;color:var(--txt);margin:9px 0 2px}
+.page-body{font-family:'Times New Roman',serif;font-size:11pt;line-height:2;color:var(--txt)}
+.page-empty{font-family:'Times New Roman',serif;font-size:11pt;line-height:2;color:var(--hint);font-style:italic}
+.page-num{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:8px;color:var(--hint);font-family:'Times New Roman',serif}
+/* DOWNLOAD */
+.dl-wrap{padding:12px 14px}
+.dl-btn{width:100%;padding:10px 12px;background:var(--silver);border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);box-shadow:1px 1px 0 var(--black);cursor:pointer;display:flex;align-items:center;gap:10px;font-family:inherit;text-align:left;color:var(--txt);margin-bottom:6px}
+.dl-btn:active{border-color:var(--bd) var(--white) var(--white) var(--bd);box-shadow:none}
+.dl-icon{font-size:22px;flex-shrink:0}
+.dl-info{display:flex;flex-direction:column;gap:1px}
+.dl-info strong{font-size:12px;font-family:'VT323',monospace;color:var(--blue)}
+.dl-info span{font-size:10px;color:var(--muted)}
+.steps-box{background:var(--note);border:2px solid var(--noteb);padding:10px 12px;margin:8px 0;font-size:11px;line-height:1.65}
+.steps-box h3{font-family:'VT323',monospace;font-size:13px;color:var(--blue);margin-bottom:5px}
+.steps-box ol{margin:0 0 0 16px}
+.steps-box li{margin-bottom:4px}
+.remind-card{border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);box-shadow:1px 1px 0 var(--black)}
+.remind-tbar{background:linear-gradient(90deg,var(--rem1),var(--rem2));padding:3px 8px;font-size:11px;font-weight:bold;color:#fff}
+.remind-body{padding:8px 10px;display:flex;gap:8px;align-items:flex-start;background:var(--silver)}
+.remind-icon{font-size:22px;flex-shrink:0}
+.remind-txt{flex:1;font-size:10px;line-height:1.5}
+.remind-txt strong{font-family:'VT323',monospace;font-size:12px;color:var(--blue);display:block;margin-bottom:2px}
+/* COURSE SELECTOR */
+.selector{padding:20px;background:var(--cbg);min-height:400px}
+.selector h2{font-family:'VT323',monospace;font-size:20px;color:var(--blue);margin-bottom:4px}
+.selector p{font-size:11px;color:var(--muted);margin-bottom:14px}
+.course-cards{display:flex;flex-direction:column;gap:8px}
+.course-card{padding:10px 12px;border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);background:var(--silver);cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:1px 1px 0 var(--black)}
+.course-card:hover{background:#d8d8e8}
+.course-card:active{border-color:var(--bd) var(--white) var(--white) var(--bd);box-shadow:none}
+.cc-icon{font-size:24px;flex-shrink:0}
+.cc-info h3{font-family:'VT323',monospace;font-size:14px;color:var(--blue);margin-bottom:2px}
+.cc-info p{font-size:10px;color:var(--muted)}
+.cc-docs{font-size:9px;color:var(--blue-lt);margin-top:2px}
+/* SCROLLBAR */
+.sb-scroll::-webkit-scrollbar,.main-panel::-webkit-scrollbar,.preview-wrap::-webkit-scrollbar{width:14px}
+.sb-scroll::-webkit-scrollbar-track,.main-panel::-webkit-scrollbar-track,.preview-wrap::-webkit-scrollbar-track{background:var(--scr)}
+.sb-scroll::-webkit-scrollbar-thumb,.main-panel::-webkit-scrollbar-thumb,.preview-wrap::-webkit-scrollbar-thumb{background:var(--silver);border:1px outset var(--silver)}
+.interview-req{background:#fff3e0;border:2px solid #e65100;padding:7px 9px;margin-bottom:10px;font-size:10.5px;line-height:1.5}
+.interview-req strong{color:#e65100;font-family:'VT323',monospace;font-size:12px}
+.spreadsheet-note{background:#e8f5e8;border:2px solid #2e7d32;padding:7px 9px;margin-bottom:10px;font-size:10.5px;line-height:1.5}
+.spreadsheet-note strong{color:#1b5e20;font-family:'VT323',monospace;font-size:12px}
+@media(max-width:600px){
+.sidebar{width:130px;min-width:130px}
+.build-wrap,.guide-wrap,.dl-wrap{padding:8px}
+.page{padding:14px 10px}
+.sec-title{font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+// ══════════════════════════════════════════
+// COURSE DATA
+// ══════════════════════════════════════════
+const COURSES = {
+1:{
+  id:1, title:"Course 1 Capstone", subtitle:"Theology, Identity & Formation",
+  tagline:"Your First Three Years of Ministry — Built Before You Start",
+  key:"c1",
+  docs:[
+    {id:"d1",num:"Doc 1",title:"Ministry Blueprint",desc:"Who You Are & What You Believe",
+     format:"Paragraph form • 1–2 pages • Double-spaced",
+     secs:[
+      {id:"calling",title:"Personal Calling Statement",
+       trigger:"After Section 1 — Vitals of NextGen Ministry",
+       desc:"Why are you in NextGen ministry? Not \"I love kids\" — what burden do you carry? Name a real moment, person, or call that confirms this. Write as if telling your senior pastor why this role matters.",
+       ph:"Start with a specific moment — a place, a person, a conversation...",
+       ai:`After writing your own draft above, copy this into ChatGPT or Claude:
+
+"I'm writing a personal calling statement for ministry training. Here's my draft:
+[PASTE YOUR NOTES]
+
+Help me by: (1) asking me 3 questions that expose whether this is a real burden or a generic statement, (2) identifying phrases that sound like anyone vs. sounding like me, (3) pointing out where I describe an activity instead of a calling. Do NOT rewrite it — just question it."`,
+       guide:{
+         what:"A specific, personal account of why you're called to NextGen ministry. Theology of purpose, not résumé.",
+         qs:["What moment confirmed this calling?","Who invested in you — name them?","What problem in the church does this address?"],
+         strong:"I was sixteen when my youth pastor Dave Mitchell at Valley Assembly asked me to lead junior high small group. First time anyone saw potential in me. Two years later, watching a seventh grader get baptized in the Spirit at camp, I knew.",
+         sNote:"Real name, real church, real moment. Testimony, not résumé.",
+         weak:"I have always felt called to work with young people. God placed a passion in my heart for the next generation.",
+         wNote:"No names, no places. Could describe anyone."
+       },wt:150},
+      {id:"theology",title:"Core Theological Convictions",
+       trigger:"After Section 2 — Biblical Literacy",
+       desc:"Name 2–3 theological convictions that shape how you do NextGen ministry. Don't just list doctrines — articulate why they matter to a 14-year-old sitting in your youth room. Ground this in Scripture.",
+       ph:"What doctrines are non-negotiable in how you teach and disciple young people?",
+       ai:`After writing your own draft:
+
+"Here are my theological convictions for youth ministry: [PASTE YOURS]
+
+Ask me: (1) Do these convictions actually change what happens on a Wednesday night, or are they just beliefs I hold? (2) Which one is most distinct to my ministry vs. something any church would say? (3) Where am I stating a doctrine without explaining why it matters to a teenager? Push me to be more specific."`,
+       guide:{
+         what:"Not a doctrinal exam — show how theology shapes what you actually do.",
+         qs:["Which truths most shape your ministry?","How does Scripture affect a Wednesday night?","Why does this matter to a 14-year-old?"],
+         strong:"Scripture is living and active — not just historically true but presently powerful. I don't simplify the Bible for teenagers; the Spirit illuminates text to a fourteen-year-old like He does for a seminary student.",
+         sNote:"Each conviction connects to ministry implication.",
+         weak:"I believe in the Bible as God's Word. I affirm the 16 Fundamental Truths.",
+         wNote:"A checklist, not a philosophy."
+       },wt:150},
+      {id:"win",title:"Ministry Win Definition",
+       trigger:"After Section 1 — Vitals of NextGen Ministry",
+       desc:"Define what a win looks like at three scales: Weekly (what happened Wednesday that tells you it's working?), Monthly (what trend are you watching?), At graduation (what kind of 18-year-old are you sending out?). Be specific enough that someone could observe for a month and tell you whether you're winning.",
+       ph:"Weekly: ... Monthly: ... At graduation: ...",
+       ai:`After writing your own draft:
+
+"Here is my ministry win definition: [PASTE YOURS]
+
+(1) Are these wins measurable — could someone else confirm them by watching my ministry? (2) Which wins are outcomes vs. outputs (e.g., 'students attended' is output; 'students opened Bible on their own' is outcome)? (3) Do my graduation-level wins connect logically to my weekly wins? Point out gaps."`,
+       guide:{
+         what:"Formation outcomes, not attendance numbers. What does a healthy student look like after 3 years?",
+         qs:["Could another leader recognize your win?","Is it measurable at all three scales?"],
+         strong:"A student who opens their Bible and finds God. A senior who transitions to young adult community instead of walking away. I measure by who follows Jesus two years after leaving.",
+         sNote:"Concrete, observable, long-term.",
+         weak:"A win is when a student grows closer to God.",
+         wNote:"Unmeasurable."
+       },wt:120},
+      {id:"discipleship",title:"Discipleship Philosophy",
+       trigger:"After Section 7 — Discipleship Part 1",
+       desc:"What does a mature (not perfect) student look like? What are the markers? How does your ministry intentionally produce those markers rather than hoping they happen? Describe your philosophy of discipleship — not your programs, but the conviction underneath them.",
+       ph:"What does a formed student look like, and how does your ministry produce that formation?",
+       ai:`After writing your own draft:
+
+"Here is my discipleship philosophy: [PASTE YOURS]
+
+(1) Am I describing a philosophy or a program list? (2) Is there a named framework or is this vague? (3) What does this look like for a student who just showed up for the first time vs. one who has been here 3 years? Ask me questions that push toward specificity."`,
+       guide:{
+         what:"The conviction underneath your programs. Showing up → owning faith.",
+         qs:["What's your named framework?","What does the first-visit-to-student-leader journey look like?"],
+         strong:"Three postures: belong, believe, become. Groups of 6–8, trained adults committed one year. Some students spend two years in 'belong' — that's okay.",
+         sNote:"Named framework, details, patience.",
+         weak:"I believe in relational discipleship and walking alongside students.",
+         wNote:"No structure."
+       },wt:150},
+      {id:"development",title:"Developmental Strategy",
+       trigger:"After Section 3 — Development Theories",
+       desc:"Create a developmental framework for kids (5–10), middle school (11–13), and high school (14–18). For each: 2–3 sentences on how you adapt communication, expectations, and environment. What can a 7-year-old handle that a 15-year-old would outgrow?",
+       ph:"Kids (5-10): ... Middle (11-13): ... High School (14-18): ...",
+       ai:`After writing your draft:
+
+"Here is my developmental strategy: [PASTE YOURS]
+
+(1) Am I actually changing my approach by age, or just saying different ages need different things? (2) What's missing developmentally — cognitively, socially, spiritually — for each stage? (3) Could a new volunteer read this and know how to adapt how they talk to a 7th grader vs. a 10th grader?"`,
+       guide:{
+         what:"Show that you understand the humans you minister to across three life stages.",
+         qs:["How does programming shift by age?","What does leadership development look like at different stages?"],
+         strong:"Middle school: high-energy, concrete, narrative. High school: dialogue, harder texts. Leadership ladder: setup teams → assist small groups → co-lead with ownership.",
+         sNote:"Developmental awareness + specific ladder.",
+         weak:"I adjust based on age and maturity.",
+         wNote:"Says nothing about how."
+       },wt:150},
+      {id:"teaching",title:"Teaching Philosophy",
+       trigger:"After Section 4 — Hermeneutics",
+       desc:"How do you teach the Bible to young people? What is your approach to interpreting and applying Scripture in a youth context? How do you balance depth and accessibility? How do you move from text to life? What does faithful teaching look like when your audience is 13?",
+       ph:"My teaching approach is... because... The balance between depth and accessibility looks like...",
+       ai:`After writing your draft:
+
+"Here is my teaching philosophy: [PASTE YOURS]
+
+(1) Have I described my method OR just listed what I use (media, stories, etc.)? (2) Do I say why I teach the way I do, not just how? (3) Is there a memorable phrase or conviction that makes this distinctly mine?"`,
+       guide:{
+         what:"How you handle God's Word — method, conviction, and process. Not just tools.",
+         qs:["Style and why?","How do you handle the depth vs. accessibility tension?"],
+         strong:"Narrative exposition. Prep starts with text, not topic. I sit in a passage a week before illustrations. Clarity over cleverness.",
+         sNote:"Memorable phrase, real process.",
+         weak:"I teach in a relevant and engaging way using media and interactive elements.",
+         wNote:"Methods listed, never explained."
+       },wt:150},
+      {id:"pentecostal",title:"Pentecostal Distinctives",
+       trigger:"After Section 6 — Holy Spirit Emphasis",
+       desc:"What makes your ministry distinctly Pentecostal — not in doctrine but in practice? How do you create space for the Spirit without manufacturing emotion? How do you disciple a student through a genuine encounter with God? How do you handle the planning/spontaneity tension?",
+       ph:"Spirit-empowered ministry in my context looks like... I create space by...",
+       ai:`After writing your draft:
+
+"Here is my Pentecostal distinctives section: [PASTE YOURS]
+
+(1) Have I described practice, or just re-stated doctrine? (2) Where do I address the tension between planning services and leaving room for God to move? (3) Does this section sound different from what a non-Pentecostal pastor might write?"`,
+       guide:{
+         what:"AG identity in practice — not what you believe, but how it shapes what happens.",
+         qs:["How do you protect space for the Spirit?","How do you handle Spirit baptism without pressure?"],
+         strong:"I protect space — don't script every minute. Worship team sensitive to the Spirit, not just finishing the set list. I never pressure tongues — that's the Spirit's work.",
+         sNote:"\"Protecting space\" — pastoral instinct. Maturity.",
+         weak:"I believe in Spirit baptism with evidence of tongues. I incorporate worship.",
+         wNote:"Doctrine restated, not practiced."
+       },wt:150},
+      {id:"family",title:"Family Partnership Philosophy",
+       trigger:"After Section 9 — Parent Partnership",
+       desc:"What is the family's role in spiritual formation vs. your role? Where does the church's responsibility begin and end? How do you partner with engaged parents? How do you serve students whose parents are absent or disengaged? Avoid clichés — say what you actually mean.",
+       ph:"The family's role is... My role is... For engaged parents I... For absent/disengaged parents I...",
+       ai:`After writing your draft:
+
+"Here is my family partnership philosophy: [PASTE YOURS]
+
+(1) Do I address both engaged AND disengaged parents, or only the ideal scenario? (2) Have I said anything specific beyond 'communication is important'? (3) Where is the line between the church's responsibility and the family's — have I drawn it clearly?"`,
+       guide:{
+         what:"Parents as partners + the reality of unchurched and fractured families.",
+         qs:["How do you equip parents?","What happens when the family is the problem, not the partner?"],
+         strong:"Communication, equipping nights, available content. For unsupported students: mentors, host homes, open-door policy. Where family is absent, church becomes family.",
+         sNote:"Idealism + realism. Specific strategies.",
+         weak:"I believe in partnering with parents. Communication is key.",
+         wNote:"Logistics, not philosophy."
+       },wt:150},
+      {id:"scope",title:"Scope of Ministry",
+       trigger:"After Section 9 — Parent Partnership (closing reflection)",
+       desc:"Define the boundaries of your role. What is your lane? What is not? Write 3–5 sentences that draw a clear line between what you will own and what you will refer, delegate, or decline. This protects your calling, your family, and your longevity.",
+       ph:"My lane is... What is not my lane: ... This boundary protects...",
+       ai:`After writing your draft:
+
+"Here is my scope of ministry: [PASTE YOURS]
+
+(1) Is this specific enough that I could hand it to my senior pastor and they'd understand exactly what I will and won't do? (2) Does this protect the things I said matter most in my calling statement? (3) What's the hardest boundary to hold here and have I addressed it?"`,
+       guide:{
+         what:"The lane you'll stay in — and what you'll say no to. Prevents burnout.",
+         qs:["What are you willing to say no to?","Does this protect what your calling statement said matters most?"],
+         strong:"6th–12th grade. I own the spiritual formation of the students in my care — not nursery, not adult small groups, not event coordination for the whole church. I refer mental health crises to licensed counselors and communicate with parents.",
+         sNote:"Honest, self-aware, confident.",
+         weak:"My ministry is for youth 12–18. I hope to reach as many as possible.",
+         wNote:"No actual scope defined."
+       },wt:100}
+    ]},
+    {id:"d2",num:"Doc 2",title:"Ministry Map",desc:"How You Will Lead & Execute",
+     format:"Structured outline / calendar / table",
+     secs:[
+      {id:"pathway",title:"Formation Pathway Overlay",
+       trigger:"After Section 1 — Vitals of NextGen Ministry",
+       desc:"Sketch a quarterly formation arc for the year. What is being formed each season? Suggested: Fall → Identity, Winter → Scripture, Spring → Spirit, Summer → Mission. Adapt as needed, but name what's being formed each quarter. This overlay sits above your teaching calendar.",
+       ph:"Fall (Identity): ... Winter (Scripture): ... Spring (Spirit): ... Summer (Mission): ...",
+       ai:`After sketching your pathway:
+
+"Here is my formation pathway overlay: [PASTE YOURS]
+
+(1) Does each quarter have a clear formation goal (not just a topic)? (2) Does the arc build — does the Fall quarter set up what happens in Winter? (3) Is this shaped by my theology (from Doc 1) or is it a generic template?"`,
+       guide:{what:"A quarterly formation arc that gives the whole year a theological shape.",qs:["What is being formed each season?","Does the arc build progressively?"]},wt:100},
+      {id:"calendar",title:"Annual Teaching Calendar v1",
+       trigger:"After Section 5 — Curriculum & Planning",
+       desc:"Draft your first annual teaching calendar. Map series or themes by semester/quarter. For each series: working title, approximate length, primary Scripture, and which formation pathway quarter it falls under. This is version 1 — you'll refine it in the capstone module.",
+       ph:"Q1 Series: [Title] | [Length] | [Scripture] | Formation goal: ...\nQ2 Series: ...",
+       ai:`After drafting your calendar:
+
+"Here is my teaching calendar draft: [PASTE YOURS]
+
+(1) Does each series connect to a formation pathway quarter? (2) Am I balancing topical and expository teaching? (3) Are there gaps — times of year with no clear teaching plan? (4) Does this calendar serve my actual community or is it generic?"`,
+       guide:{what:"Series mapped to quarters with formation pathway alignment.",qs:["Does each series have a Scripture anchor?","Does the calendar align with your formation pathway?"]},wt:150},
+      {id:"milestones",title:"Spiritual Milestones",
+       trigger:"After Section 6 — Holy Spirit Emphasis",
+       desc:"Identify the spiritual milestones your ministry will intentionally cultivate and celebrate: salvation, water baptism, baptism in the Holy Spirit, first time serving, first time leading, first time sharing faith. For each: when in the year it's most likely to happen and how you create space for it.",
+       ph:"Salvation: [when/how] ... Water Baptism: ... Spirit Baptism: ... First Serve: ... First Lead: ...",
+       ai:`After drafting your milestones:
+
+"Here are my spiritual milestones: [PASTE YOURS]
+
+(1) Are these on my calendar with specific dates, or just names? (2) Is there a system for following up after each milestone? (3) What happens the week after a student gets saved at camp — is there a plan?"`,
+       guide:{what:"Milestones your ministry cultivates — placed on the calendar, not just listed.",qs:["Are milestones calendar-anchored?","What's the follow-up system after each?"]},wt:120},
+      {id:"agelevel",title:"Age-Level Strategy",
+       trigger:"After Section 3 — Development Theories",
+       desc:"Translate your Doc 1 developmental strategy into an operational format. For each age level (kids, middle, high school): environment design, communication approach, and key activities. This is the operational layer underneath your teaching calendar.",
+       ph:"Kids: Environment: ... Communication: ... Activities: ...\nMiddle: ...\nHigh School: ...",
+       ai:`After drafting:
+
+"Here is my age-level strategy: [PASTE YOURS]
+
+(1) Is there a real difference between age levels, or do all three look the same? (2) Does the environment design match the developmental stage? (3) Could a new volunteer read this and know how to adapt their approach?"`,
+       guide:{what:"The operational translation of your developmental strategy.",qs:["Does each level genuinely differ?","Could a substitute implement this?"]},wt:150},
+      {id:"discipleship_sys",title:"Discipleship Systems",
+       trigger:"After Section 8 — Discipleship Part 2",
+       desc:"Draft the systems that make discipleship happen: small group structure (who, when, how), mentoring pairings (how matched and guided?), spiritual disciplines introduction (what practices, at what age?), and follow-up systems (what happens after camp, altar call, salvation?).",
+       ph:"Small Groups: ... Mentoring: ... Spiritual Disciplines by age: ... Follow-up system: what happens Monday after camp?",
+       ai:`After drafting:
+
+"Here are my discipleship systems: [PASTE YOURS]
+
+(1) Do my systems have triggers — specific events that activate them? (2) Is my follow-up system specific enough that a volunteer could execute it without me? (3) Where does my system assume things will happen naturally rather than intentionally?"`,
+       guide:{what:"The pipes underneath the calendar. Systems that have triggers and owners.",qs:["Does each system have a trigger?","Could it run without you?"]},wt:150},
+      {id:"leadership_dev",title:"Leadership Development Plan",
+       trigger:"After Section 8 — Discipleship Part 2",
+       desc:"Draft your student leadership development plan. When are student leaders identified? What training do they receive and when? What's the progression (attender → participant → student leader → intern)? Add leadership touchpoints to your calendar: training nights, retreats, commissioning.",
+       ph:"Progression: Attender → Participant → Student Leader → Intern\nHow identified: ... Training schedule: ... Calendar touchpoints: ...",
+       ai:`After drafting:
+
+"Here is my leadership development plan: [PASTE YOURS]
+
+(1) Does this pipeline have actual dates, or is it aspirational? (2) What makes someone ready to move from one stage to the next — have I defined the markers? (3) Does my calendar have leadership development touchpoints visible on it?"`,
+       guide:{what:"A clear progression from attender to intern with calendar dates.",qs:["Does the pipeline have calendar dates?","What marks readiness to advance?"]},wt:150},
+      {id:"parent_rhythm",title:"Parent Engagement Rhythm",
+       trigger:"After Section 9 — Parent Partnership",
+       desc:"Draft your parent engagement rhythm. What communication do parents receive and when (weekly updates, monthly newsletters, quarterly meetings)? What events include families? When do you equip parents with resources for home discipleship? Be specific — 'monthly parent email' beats 'regular communication.'",
+       ph:"Weekly: ... Monthly: ... Quarterly: ... Family events: ... Parent equipping: ...",
+       ai:`After drafting:
+
+"Here is my parent engagement rhythm: [PASTE YOURS]
+
+(1) Are these specific communication cadences or vague intentions? (2) Do I have at least one parent equipping event per year — not just communication? (3) Does this rhythm appear on my teaching calendar?"`,
+       guide:{what:"Specific communication cadence, family events, parent equipping touchpoints on calendar.",qs:["Are touchpoints calendar-anchored?","Is there equipping, not just informing?"]},wt:120}
+    ]},
+    {id:"dx",num:"Reflection",title:"AI Interaction Reflection",desc:"Required with submission",
+     format:"½ page • Honest engagement required",
+     secs:[
+      {id:"ai_reflect",title:"AI Interaction Reflection",
+       trigger:"Complete before final submission",
+       desc:"Required with every submission. Answer all three: (1) What did AI help you clarify in your thinking? (2) What did you reject from AI's suggestions, and why? (3) What remained uniquely yours — ideas, convictions, or language that no AI could have generated?\n\nFull marks for honest reflection. This is about teaching you to use AI without losing your voice.",
+       ph:"1. AI helped me clarify...\n2. I rejected... because...\n3. What remained uniquely mine: my calling story, my conviction about...",
+       ai:`This section is about reflecting on your OWN use of AI. No AI prompt needed here — this must come entirely from you.`,
+       guide:{what:"Honest reflection on how AI was (or wasn't) used in your process.",qs:["What did AI help with?","What did you reject and why?","What is irreducibly yours?"]},wt:200,noAI:true}
+    ]}
+  ]
+},
+2:{
+  id:2, title:"Course 2 Capstone", subtitle:"Community, Safety & Sending",
+  tagline:"Culture, Mission & the World Beyond Your Walls",
+  key:"c2",
+  docs:[
+    {id:"d3",num:"Doc 3",title:"Protection + Culture Covenant",desc:"Child & Youth Protection Policy + Ministry Culture",
+     format:"2 pages • District interview required",
+     interviewReq:true,
+     secs:[
+      {id:"culture_values",title:"Ministry Culture Values + Small Group Philosophy",
+       trigger:"After Sections 1–2 — Culture & Small Groups",
+       desc:"(1) Name 3–5 ministry culture values with 2–3 sentence descriptions of what each looks like in practice — not dictionary definitions, but what a visitor would feel on a Wednesday night. Think: visible artifacts, espoused values, underlying assumptions. (2) Draft your small group philosophy: structure, purpose, leader expectations, how groups build the culture you described.",
+       ph:"Value 1: [Name] — In practice this looks like...\nValue 2: ...\n\nSmall Group Philosophy: Our groups exist to... They meet [frequency]. Leader expectations: ...",
+       ai:`After writing your values:
+
+"Here are my ministry culture values: [PASTE YOURS]
+
+(1) Do these describe what a visitor would actually experience, or are they aspirational slogans? (2) Are they specific to my ministry or could any church claim them? (3) Does my small group philosophy execute these values — or are they disconnected?"`,
+       guide:{what:"Culture is felt before it's named. Values should describe reality, not aspiration.",qs:["What would a first-time visitor feel?","Do the values show up in small groups?"]},wt:200},
+      {id:"conflict",title:"Conflict Resolution Process",
+       trigger:"After Section 3 — Conflict Resolution & Peacemaking",
+       desc:"Draft a step-by-step conflict resolution process for your ministry. Cover at least three types: peer-to-peer (student conflicts), leader-to-student, and parent-to-leader. Make it restorative, not punitive. A parent reading this should know exactly what will happen when relational breakdown occurs. Incorporate impact listening principles.",
+       ph:"Peer-to-Peer Conflicts:\nStep 1: ... Step 2: ... Step 3: ...\n\nLeader-to-Student:\n...\n\nParent-to-Leader:\n...",
+       ai:`After drafting your process:
+
+"Here is my conflict resolution process: [PASTE YOURS]
+
+(1) Is this restorative or punitive in tone? (2) Does a parent reading this know exactly what will happen if they bring a concern to me? (3) Where does my process involve someone other than just me — is there accountability built in?"`,
+       guide:{what:"A step-by-step restorative process covering three conflict types.",qs:["Is it restorative, not punitive?","Is it specific enough for a parent to follow?"]},wt:200},
+      {id:"digital",title:"Digital Communication Policy + Social Media Guidelines",
+       trigger:"After Section 4 — Digital & Online Guidelines",
+       desc:"(1) Digital communication policy: the Rule of Three (all digital communication includes at least three parties), platform guidelines, documentation requirements, AI use boundaries. (2) Social media guidelines for staff, volunteers, and students: private messaging rules, tagging, content sharing, personal vs. ministry accounts, and your digital discipleship philosophy.",
+       ph:"Rule of Three: all digital communication with youth must include...\nApproved platforms: ...\nPrivate messaging: NEVER...\nSocial media guidelines: ...\nDigital discipleship philosophy: ...",
+       ai:`After drafting your policy:
+
+"Here is my digital communication policy: [PASTE YOURS]
+
+(1) Does the Rule of Three apply to all platforms I've listed? (2) Is there a gray area in my policy that a volunteer could exploit without technically violating it? (3) Does my digital discipleship philosophy say what I actually believe about online ministry, or is it just safety rules?"`,
+       guide:{what:"Both protection (safety rules) AND discipleship (how you use digital spaces intentionally).",qs:["Does Rule of Three cover every platform?","Is there a discipleship philosophy, not just restrictions?"]},wt:200},
+      {id:"protection",title:"Child Protection Policy + Volunteer Covenant",
+       trigger:"After Section 4 + District Official Interview",
+       interviewReq:true,
+       desc:"Using your interview notes, draft the full child protection section: (1) Policy preamble and theological foundation, (2) Screening and background checks (AG-aligned), (3) Two-person rule with enforcement strategies, (4) Appropriate touch standards, (5) Mandatory reporting protocol with state-specific requirements, (6) Incident response procedure (first 24 hours), (7) Volunteer covenant — signable, with signature lines.",
+       ph:"Preamble: This ministry commits to protecting every child in our care because...\n\nBackground Checks: We use [provider]. Renewal: every [X] years.\n\nTwo-Person Rule: No adult will be alone with a child under any circumstances except...\n\nMandatory Reporting: In [state], all ministry workers are mandated reporters. If abuse is suspected: Step 1...\n\nVolunteer Covenant:\nI, [name], commit to...\nSignature: _______________ Date: ______",
+       ai:`After drafting your protection policy:
+
+"Here is my child protection policy draft: [PASTE YOURS]
+
+(1) Are all 7 required elements present? (2) Does my mandatory reporting protocol reflect my specific state's law, or is it generic? (3) Would a new volunteer know exactly what to do if they witnessed something concerning? (4) Does the volunteer covenant have actual signature lines?"`,
+       guide:{
+         what:"The most legally critical document in the certificate. Every element must be present.",
+         qs:["Is mandatory reporting state-specific?","Could a new volunteer execute this without you?","Did your interview inform this?"],
+         strong:"Uses interview insights throughout. State-specific reporting law named. Two-person rule has specific enforcement strategy. Volunteer covenant has actual signature lines.",
+         sNote:"Interview integrated, not appended. Specific, not generic.",
+         weak:"We believe children are a gift from God. All volunteers must pass a background check.",
+         wNote:"Preamble without substance. No specifics."
+       },wt:400},
+      {id:"interview_notes",title:"District Official Interview Notes",
+       trigger:"Complete before Section 4 capstone work — schedule early",
+       interviewReq:true,
+       desc:"Record your interview with a district official (Secretary, District Youth Director, or Sectional Presbyter). Minimum 15–20 minutes. Include: name, title, date, and detailed notes from each question. These notes are submitted with your final capstone.\n\nSuggested questions:\n1. Most common gaps in local church child protection policies?\n2. What happens when a report reaches the district?\n3. Recommended background check provider and renewal cycle?\n4. Enforcement strategies for two-person rule in smaller churches?\n5. First 24-hour response after a report?\n6. Digital communication expectations for credentialed ministers?\n7. What do you wish every new youth pastor knew?",
+       ph:"Interviewee: [Name], [Title]\nDate: [Date]\nChurch/District: [Name]\n\nQ1: Most common gaps?\nA: ...\n\nQ2: What happens when a report reaches the district?\nA: ...\n\nQ3: Background check provider / renewal?\nA: ...\n\nQ4: Two-person rule enforcement?\nA: ...\n\nQ5: First 24-hour response?\nA: ...\n\nQ6: Digital communication expectations?\nA: ...\n\nQ7: What do you wish every new youth pastor knew?\nA: ...",
+       ai:`This section is your interview notes — it must come entirely from your real conversation.
+
+No AI prompt for this section. If you haven't scheduled the interview yet, do it now — this conversation itself is a formational experience.`,
+       guide:{what:"A real conversation with a real district official. Not research, not AI — a relationship.",qs:["Have you scheduled the interview?","Do you have name, title, and date recorded?"]},wt:300,noAI:true}
+    ]},
+    {id:"d4",num:"Doc 4",title:"Outreach & Missions Strategy",desc:"Local, Global & Cultural Engagement",
+     format:"2 pages",
+     secs:[
+      {id:"cultural",title:"Cultural Landscape Analysis",
+       trigger:"After Sections 5–6 — Gen Z/Alpha & Social Justice",
+       desc:"Who are the young people you're trying to reach — not generically, but in your town, your school district, your neighborhood? What are their assumptions about church, faith, and Christianity? What cultural values shape them? How does your ministry speak to those values without compromising the gospel? This is reconnaissance for mission, not a sociology paper.",
+       ph:"My ministry context: [town/neighborhood, school district]\nThe young people here are shaped by...\nTheir assumptions about church/faith: ...\nCultural values: ...\nHow we engage without compromising: ...",
+       ai:`After writing your analysis:
+
+"Here is my cultural landscape analysis: [PASTE YOURS]
+
+(1) Is this specific to my community, or could it describe any American suburb? (2) What assumptions about Christianity are most common in my specific area — have I named them? (3) Does my ministry actually address these assumptions, or does it proceed as if the culture doesn't exist?"`,
+       guide:{what:"Reconnaissance for mission. Specific to YOUR zip code, not generic Gen Z data.",qs:["Is this about your actual community?","Have you named specific assumptions about faith?"],
+         strong:"Suburban Sacramento valley. Majority unchurched, culturally Christian at best. Students assume church = rules and performance. Highest value: authenticity. Our in is 'we're not pretending.' The gospel lands hardest through friendship and story, not argument.",
+         sNote:"Specific location, specific assumptions, specific entry point.",
+         weak:"Gen Z is diverse and technologically driven. They value authenticity and social justice.",
+         wNote:"Could describe any Gen Z population anywhere."
+       },wt:200},
+      {id:"evangelism",title:"Evangelism & Apologetics Approach",
+       trigger:"After Sections 6 & 9 — Social Justice & Kids Evangelism",
+       desc:"How does your ministry share the gospel with young people who may never have been in a church? Address: the friendship model, how you contextualize without diluting, how you equip students to defend their faith among peers, age-level adaptation (gospel with an 8-year-old looks different than with a 16-year-old). Name specific objections your students encounter and how you prepare them.",
+       ph:"Friendship model: ...\nContextualization approach: ...\nApologetics equipping for students: ...\nFor 8-year-olds: ... For 16-year-olds: ...\nTop objections we prepare for: 1)... 2)... 3)...",
+       ai:`After drafting:
+
+"Here is my evangelism and apologetics approach: [PASTE YOURS]
+
+(1) Have I named specific objections students in my community face, or generic ones? (2) Is there a real difference between how I share with an 8-year-old vs. a 16-year-old? (3) Am I equipping students to share, or am I just the one who shares?"`,
+       guide:{what:"Friendship-based, age-adapted, apologetically informed. Students are the missionaries.",qs:["Are objections specific to your community?","Are students the evangelists or just the audience?"]},wt:200},
+      {id:"local_outreach",title:"Local Outreach Strategy",
+       trigger:"After Section 8 — Local & Global Missions",
+       desc:"How does your ministry engage the community beyond church walls? Cover: regular local service rhythms (embedded practices, not one-off events), partnerships with schools and community organizations, how outreach is discipleship (not an add-on but a formation tool), and how students are missionaries, not just participants. Be specific to your community: what needs exist within a 5-mile radius?",
+       ph:"Regular rhythms (not just events): ...\nSchool/community partnerships: ...\nNeeds within 5 miles of our church: ...\nHow outreach forms students: ...\nHow students lead (not just attend): ...",
+       ai:`After drafting:
+
+"Here is my local outreach strategy: [PASTE YOURS]
+
+(1) Are these embedded rhythms or annual events? (2) Am I the missionary or are students the missionaries? (3) What specific need in my community have I addressed — or is this generic service?"`,
+       guide:{what:"Regular rhythms tied to real community needs. Students as missionaries, outreach as discipleship.",qs:["Are these rhythms or events?","What's the specific need in your 5-mile radius?"]},wt:200},
+      {id:"global_missions",title:"Global Missions Integration",
+       trigger:"After Sections 7–8 — Sending & Missions",
+       desc:"How does your ministry connect young people to what God is doing beyond their neighborhood? Cover: AG missions resources (BGMC, Speed the Light, AGWM partnerships), how you build global awareness into regular programming (not just a missions Sunday), short-term mission trip philosophy and progression (local → domestic → international), and how global missions shapes identity formation.",
+       ph:"AG resources we'll use: BGMC (how)... STL (how)... AGWM (how)...\nGlobal awareness in regular programming: ...\nMission trip progression: Local: ... Domestic: ... International: ...\nHow missions shapes student identity: ...",
+       ai:`After drafting:
+
+"Here is my global missions integration plan: [PASTE YOURS]
+
+(1) Have I named specific AG resources with specific integration points, or just listed them? (2) Is global missions embedded in my calendar or is it one annual event? (3) Does my mission trip philosophy have a progression — do students grow in their missions engagement over time?"`,
+       guide:{what:"AG resources engaged specifically. Missions as rhythm, not event. Identity-shaping, not just trip-taking.",qs:["Are AG resources named with integration points?","Is missions on the calendar year-round?"]},wt:200}
+    ]},
+    {id:"d5",num:"Doc 5",title:"Raising Sons & Daughters",desc:"A Vision for Sending Missionaries",
+     format:"1 page",
+     secs:[
+      {id:"sending",title:"Sending Identity + Missionary Development Pipeline",
+       trigger:"After Section 7 — Sending Sons & Daughters",
+       desc:"(1) Write a sending identity statement: one paragraph declaring that your ministry exists not only to form young people, but to launch them. The local church is a greenhouse, not a museum. (2) Draft a missionary development pipeline: How do you identify students with a missions calling? What's the progression from 'interested' to 'sent'? Include mentoring, exposure experiences, mission trip progression, and connection to AG structures (AGWM, Chi Alpha, AG institutions).",
+       ph:"Sending Identity:\nThis ministry exists not only to protect and form young people, but to launch them...\n\nMissionary Pipeline:\nIdentification: how we spot calling early...\nProgression: Interested → Exposed → Formed → Sent\nMentoring: ...\nAG connections: ...",
+       ai:`After drafting:
+
+"Here is my sending vision: [PASTE YOURS]
+
+(1) Does my sending identity statement sound like a conviction or a program description? (2) Is my pipeline realistic for my ministry's size right now? (3) Does the pipeline actually connect to AG sending structures, or is it self-contained?"`,
+       guide:{what:"A theological conviction about launching, not just a program. Greenhouse, not museum.",qs:["Does the pipeline connect to AG structures?","Is this realistic for your ministry size?"]},wt:200},
+      {id:"missions_rhythm",title:"Annual Missions Rhythm + AG Resource Map",
+       trigger:"After Sections 8–9 — Missions & Evangelism",
+       desc:"(1) An annual missions rhythm showing when and how missional activities are embedded in the ministry year: BGMC emphasis months, Speed the Light campaigns, mission trip preparation windows, Youth Alive campus launches, missionary guest schedules, and local service rhythms. Not add-ons — woven into the calendar. (2) An AG resource map: list every AG missions resource you will leverage and how — BGMC, STL, AGWM, Youth Alive, Fine Arts, NYC/AGYC, Chi Alpha, district camps. For each, name the specific integration point.",
+       ph:"Annual Rhythm:\nSeptember: ... October: ... November: BGMC push... December: STL campaign...\nJanuary: ... February: ... March: mission prep...\n\nAG Resource Map:\nBGMC: [integration point]\nSpeed the Light: ...\nAGWM partner: ...\nYouth Alive: ...",
+       ai:`After drafting:
+
+"Here is my annual missions rhythm and AG resource map: [PASTE YOURS]
+
+(1) Are these truly embedded in the calendar, or listed as add-ons? (2) Have I named specific integration points for each AG resource, not just mentioned them? (3) Does this rhythm align with my outreach strategy in Doc 4?"`,
+       guide:{what:"Month-by-month missions rhythm with specific AG resource integration points.",qs:["Is it calendar-embedded or add-on?","Are integration points specific?"]},wt:200}
+    ]},
+    {id:"dx2",num:"Disclosure",title:"AI Disclosure Statement",desc:"Required with every document",
+     format:"3–5 sentences",
+     secs:[
+      {id:"ai_disclosure2",title:"AI Disclosure Statement",
+       trigger:"Complete before final submission",
+       desc:"Required with every submitted document. Answer in 3–5 sentences: (1) What AI tools did you use? (2) How did you use them? (3) What remained uniquely yours — especially your cultural landscape analysis and local community knowledge that AI could not have generated?",
+       ph:"Tools used: ...\nHow I used them: ...\nWhat remained uniquely mine: especially my knowledge of [community], my interview with [name], my specific context of...",
+       ai:`This section is about your own honest reflection on AI use. It must come entirely from you.`,
+       guide:{what:"Honest disclosure — full marks for transparency, deductions for undisclosed use.",qs:["Were you honest about what AI helped with?","Did you name what AI could NOT have known?"]},wt:100,noAI:true}
+    ]}
+  ]
+},
+3:{
+  id:3, title:"Course 3 Capstone", subtitle:"Leadership & Ministry Practicum",
+  tagline:"The 12-Month Ministry Operations Plan",
+  key:"c3",
+  docs:[
+    {id:"d6",num:"Doc 6",title:"Volunteer System",desc:"Recruitment, Training & Retention",
+     format:"2 pages narrative + appended templates",
+     secs:[
+      {id:"vol_roles",title:"Volunteer Role Descriptions",
+       trigger:"After section on team structure & delegation",
+       desc:"Draft role descriptions for at least four volunteer positions (e.g., small group leader, greeter, worship team, tech/AV, check-in). For each: title, purpose, time commitment, key responsibilities, who they report to, and qualifications/spiritual requirements.",
+       ph:"Role 1: Small Group Leader\nPurpose: ...\nTime commitment: ...\nResponsibilities: ...\nReports to: ...\nQualifications: ...\n\nRole 2: ...",
+       ai:`After drafting your role descriptions:
+
+"Here are my volunteer role descriptions: [PASTE YOURS]
+
+(1) Is every role specific enough that someone reading it knows exactly what they're signing up for? (2) Have I included time commitment for each role — including prep time, not just meeting time? (3) Are the qualifications realistic for volunteers (not staff-level expectations)?"`,
+       guide:{what:"At least four complete role descriptions, immediately usable for recruitment.",qs:["Does each role have time commitment?","Are qualifications realistic?"]},wt:250},
+      {id:"vol_recruit",title:"Recruitment Pipeline",
+       trigger:"After section on identifying & inviting leaders",
+       desc:"Draft your recruitment pipeline. Where do volunteers come from? How do you identify potential leaders? What does the 'ask' look like — who makes it, when, and how? Include proactive recruitment (you approach them) and responsive pathways (they express interest). Address the cold-start problem: how do you recruit when you have no existing team?",
+       ph:"Proactive recruitment:\n- Where I look: ...\n- How I identify potential: ...\n- What the ask looks like: ...\n\nResponsive pathway:\n- When someone expresses interest: ...\n\nCold-start strategy:\n- Starting from zero: ...",
+       ai:`After drafting:
+
+"Here is my recruitment pipeline: [PASTE YOURS]
+
+(1) Have I addressed both proactive AND responsive pathways? (2) What does the actual ask sound like — have I scripted it? (3) What's my strategy if I'm starting a new ministry with zero existing volunteers?"`,
+       guide:{what:"Proactive + responsive pathways with a specific ask and cold-start strategy.",qs:["Is the ask scripted?","What's the cold-start strategy?"]},wt:200},
+      {id:"vol_onboard",title:"Onboarding Process",
+       trigger:"After section on volunteer management & orientation",
+       desc:"Draft your onboarding process as a step-by-step checklist. From the moment someone says yes to their first day serving: application, background check, reference check, orientation meeting, training schedule, pairing with a mentor volunteer, and first-serve shadow period. Should be usable by a church administrator.",
+       ph:"Step 1: Application form sent within [X days]\nStep 2: Background check initiated via [provider]\nStep 3: Reference check (2 references, [who calls them?])\nStep 4: Orientation meeting — covers: ...\nStep 5: Paired with mentor volunteer: [who? how?]\nStep 6: Shadow period: [how long?]\nStep 7: First independent serve — debrief within [X days]",
+       ai:`After drafting:
+
+"Here is my onboarding checklist: [PASTE YOURS]
+
+(1) Is every step assigned to someone — or does 'we do this' mean 'nobody does this'? (2) Is the background check process specific enough that my church administrator could execute it without me? (3) How long does my entire onboarding take — is that realistic?"`,
+       guide:{what:"A step-by-step checklist from yes → first serve that a church admin could execute.",qs:["Is every step assigned to someone?","Is background check process named specifically?"]},wt:200},
+      {id:"vol_develop",title:"Ongoing Development",
+       trigger:"After section on leadership formation & sustaining team culture",
+       desc:"Draft your ongoing development plan. How do you invest in volunteers after onboarding? Cover: monthly leader huddles (format, frequency, content), training resources and delivery, spiritual care rhythms (how do you pastor your team?), and annual or seasonal development opportunities (retreats, conferences, book studies).",
+       ph:"Monthly huddles: [format, length, typical content]\nTraining resources: ...\nSpiritual care: how I pastor volunteers...\nAnnual development: [retreat? conference? book study?]\nFrequency: ...",
+       ai:`After drafting:
+
+"Here is my ongoing development plan: [PASTE YOURS]
+
+(1) Is my monthly huddle format specific enough that a volunteer knows what to expect? (2) Do I address spiritual care for my team, or just ministry training? (3) Is there at least one annual development moment that goes deeper than a huddle?"`,
+       guide:{what:"After onboarding — the investment that keeps volunteers growing and staying.",qs:["Do you pastor volunteers, not just manage them?","Is there annual depth, not just monthly maintenance?"]},wt:200},
+      {id:"vol_retain",title:"Appreciation & Retention Rhythms",
+       trigger:"After section on volunteer sustainability & honor culture",
+       desc:"Draft your appreciation and retention rhythms. How are volunteers honored and sustained over time? Include: regular encouragement practices (not just annual banquets), how you manage burnout and sabbaticals from serving, how you celebrate milestones, and how you create a culture where serving feels like privilege rather than obligation.",
+       ph:"Regular encouragement (not just annual banquet): ...\nBurnout prevention: how I watch for it, what I do...\nSabbatical policy: ...\nMilestone celebrations: ...\nWhat makes serving feel like privilege here: ...",
+       ai:`After drafting:
+
+"Here is my appreciation and retention plan: [PASTE YOURS]
+
+(1) Am I describing regular rhythms or just an annual banquet? (2) Do I have a burnout prevention strategy — specific warning signs I watch for? (3) Is there a sabbatical policy — can volunteers take a season off and return?"`,
+       guide:{what:"Regular rhythms of honor. Burnout prevention. Sabbatical culture.",qs:["Is this year-round, not just annual?","Is there a real sabbatical policy?"]},wt:150},
+      {id:"vol_exit",title:"Exit / Offboarding Procedure",
+       trigger:"After section on transitions & organizational continuity",
+       desc:"Draft your exit and offboarding procedure. What happens when a volunteer needs to step down — by choice, life circumstance, or performance concern? Include: how you have the conversation, transition of responsibilities, return of materials/access, exit interview questions, and how you maintain the relationship after someone stops serving.",
+       ph:"For voluntary exits:\n- The conversation: ...\n- Transition of responsibilities: ...\n- Return of materials/access: ...\nFor performance concerns:\n- Process: ...\nExit interview questions:\n1. ...\nMaintaining the relationship after: ...",
+       ai:`After drafting:
+
+"Here is my exit/offboarding procedure: [PASTE YOURS]
+
+(1) Do I have a different process for voluntary vs. performance exits? (2) Is there a clear process for returning materials and removing system access? (3) Do I have exit interview questions that would actually tell me how to improve the volunteer experience?"`,
+       guide:{what:"Graceful endings — voluntary and performance exits — with relational continuity.",qs:["Is there a performance exit process?","Is there an exit interview?"]},wt:150}
+    ]},
+    {id:"d7",num:"Doc 7",title:"Ministry Budget & Resources",desc:"Budget Planning & Stewardship Communication",
+     format:"Working .xlsx spreadsheet + 1-page narrative",
+     spreadsheetNote:true,
+     secs:[
+      {id:"budget_cats",title:"Annual Budget Categories",
+       trigger:"After section on financial stewardship & resource allocation",
+       desc:"Draft your annual budget with line-item categories and realistic dollar amounts for your church context. Required categories: curriculum/resources, weekly programming, special events, volunteer appreciation, missions giving (BGMC/STL), equipment & supplies, food/hospitality, training & conferences, contingency fund. Note: the working .xlsx spreadsheet with formulas is a separate deliverable — use these notes to populate it.",
+       ph:"Curriculum/Resources: $...\nWeekly Programming: $...\nSpecial Events (list): $...\nVolunteer Appreciation: $...\nMissions Giving (BGMC/STL): $...\nEquipment & Supplies: $...\nFood/Hospitality: $...\nTraining & Conferences: $...\nContingency (5–10%): $...\nTOTAL: $...\n\nContext: church of [size], current budget allocation: ...",
+       ai:`After drafting your budget:
+
+"Here are my budget categories and amounts: [PASTE YOURS]
+
+(1) Are my numbers realistic for a church of my size — have I actually looked at real costs? (2) Are there categories I'm missing? (3) Does my budget reflect my ministry priorities from Doc 8, or are these just generic line items? Note: do NOT ask AI to generate the actual numbers for you."`,
+       guide:{what:"Real numbers from your real church context. Formulas in spreadsheet, narrative in this tool.",qs:["Are numbers from real research?","Does budget reflect ministry priorities?"]},wt:250},
+      {id:"event_cost",title:"Per-Event Cost Tracking",
+       trigger:"After section on event planning & resource stewardship",
+       desc:"Build a per-event cost template. Choose two events from your ministry calendar (one weekly program night, one annual event like camp or retreat) and break down every cost: venue, food, supplies, speaker/guest, transportation, promotional materials, insurance, miscellaneous. Show unit costs and totals. This template should be reusable for any event.",
+       ph:"Event 1: Weekly Program Night\nVenue: $... Food: $... Supplies: $... AV/Tech: $...\nTotal per event: $... Annual total (52x): $...\n\nEvent 2: Annual Camp/Retreat\nVenue/lodging: $... Food: $... Transportation: $... Speaker: $... Supplies: $... Insurance: $...\nTotal: $...\nCost per student: $...",
+       ai:`After drafting your cost breakdown:
+
+"Here is my per-event cost template: [PASTE YOURS]
+
+(1) Have I included ALL cost categories — what am I forgetting? (2) Does my weekly program cost annualize reasonably into my total budget? (3) Is there a cost-per-student calculation for major events?"`,
+       guide:{what:"A reusable template showing every cost. Annualizable for budget planning.",qs:["Is every cost category included?","Is there a cost-per-student calculation?"]},wt:200},
+      {id:"fundraising",title:"Fundraising Policy",
+       trigger:"After section on financial ethics & church governance",
+       desc:"Draft your fundraising policy and procedures. Cover: what types of fundraising are permitted (and what is not), approval process (who authorizes a fundraiser?), financial handling and accounting procedures, transparency requirements, and how funds are designated and tracked. Distinguish between church-budgeted funds and student-raised funds (e.g., Speed the Light, mission trips).",
+       ph:"Permitted fundraising types: ...\nNot permitted: ...\nApproval process: ...\nFinancial handling: cash is never handled by one person...\nTransparency requirements: ...\nSTL/Mission Trip funds designation: ...",
+       ai:`After drafting:
+
+"Here is my fundraising policy: [PASTE YOURS]
+
+(1) Is there a clear approval chain — does my senior pastor need to approve every fundraiser? (2) Is there a two-person financial handling policy? (3) Are mission trip funds clearly designated and separate from general ministry funds?"`,
+       guide:{what:"Clear procedures, approval chain, and transparency. Two-person financial handling.",qs:["Is there an approval chain?","Are designated funds (STL, missions) handled separately?"]},wt:200},
+      {id:"stewardship_comm",title:"Stewardship Communication Template",
+       trigger:"After section on pastoral leadership & board relations",
+       desc:"Draft a one-page stewardship report template for quarterly presentation to your senior pastor and church board. Include: budget vs. actual spending, key investments and their ministry impact, upcoming financial needs, and any budget adjustments you're requesting. This is a narrative — it tells the story of how resources became ministry.",
+       ph:"QUARTERLY MINISTRY STEWARDSHIP REPORT\nPeriod: [Q1/Q2/Q3/Q4] [Year]\n\nBudget Summary:\n- Allocated: $... | Spent: $... | Remaining: $...\n\nKey Investments This Quarter:\n- [Line item]: $... → Impact: ...\n\nUpcoming Needs:\n- ...\n\nAdjustments Requested:\n- ...",
+       ai:`After drafting your template:
+
+"Here is my stewardship report template: [PASTE YOURS]
+
+(1) Does this tell the story of impact, or just list numbers? (2) Would a board member with no ministry background understand what the money accomplished? (3) Is there a section that connects spending to outcomes?"`,
+       guide:{what:"A narrative that tells the story of how dollars became ministry. Not just numbers.",qs:["Does it tell a story, not just list numbers?","Would a non-ministry board member understand it?"]},wt:200},
+      {id:"budget_case",title:"The Budget Case",
+       trigger:"After section on vision-casting & advocating for NextGen ministry",
+       desc:"Draft a persuasive 1–2 paragraph argument for why your church should invest in NextGen ministry at the level you're proposing. Connect budget lines to ministry outcomes. A board member reading this should understand what the money buys and why it matters. This is the document you pull out when someone asks 'Why does youth group need that much?'",
+       ph:"Every dollar invested in NextGen ministry at [church name] accomplishes...\n\nSpecifically, [line item] produces [outcome]. [Line item] enables [outcome]...\n\nThe return on investment is not measured in..., but in...",
+       ai:`After writing your budget case:
+
+"Here is my budget case: [PASTE YOURS]
+
+(1) Does this connect specific budget lines to specific ministry outcomes? (2) Does it sound like a vision, or just a justification? (3) Would someone who is skeptical about youth ministry spending be persuaded by this?"`,
+       guide:{
+         what:"A persuasive argument connecting dollars to outcomes. Vision, not justification.",
+         qs:["Does it connect specific lines to outcomes?","Does it inspire or just defend?"],
+         strong:"Every dollar invested in NextGen at Valley Assembly produces the next generation of disciples, leaders, and missionaries. The $800 small group training budget develops 8 volunteers who collectively invest 4,000 hours into 60 students per year.",
+         sNote:"Specific line → specific outcome → compelling math.",
+         weak:"Youth ministry is important and we need funding to run a good program.",
+         wNote:"No connection to outcomes. No specifics."
+       },wt:150}
+    ]},
+    {id:"d8",num:"Doc 8",title:"12-Month Ministry Plan",desc:"The Vitals-Based Integrating Capstone",
+     format:"3 pages • Integrating capstone of the full certificate",
+     secs:[
+      {id:"vision_yr",title:"Vision Statement for the Year",
+       trigger:"After section on vision-casting & annual theme-setting",
+       desc:"Write a vision statement for your ministry's upcoming year. Not a mission statement (that's permanent) — a year-specific vision: What is God calling this ministry to focus on, grow into, or step toward in the next 12 months? Write 1–2 paragraphs you could read to your team on the first night of the year.",
+       ph:"This year, God is calling [ministry name] to...\n\nWe will know we've stepped toward this vision when...\n\nThis year's anchor: ...",
+       ai:`After writing your vision statement:
+
+"Here is my year vision statement: [PASTE YOURS]
+
+(1) Is this specific to THIS year, or could it apply to any year? (2) Does it give the team something to rally around, or does it just describe ongoing activity? (3) Would a student hear this and know what's different this year?"`,
+       guide:{what:"Year-specific, team-rallying, distinct from your permanent mission statement.",qs:["Is it this-year specific?","Would a student know what's different?"]},wt:150},
+      {id:"teach_plan",title:"Biblical Truth — Teaching Plan",
+       trigger:"After section on curriculum design & teaching rhythms",
+       desc:"Draft your annual teaching plan. Map the year's teaching calendar: series titles or themes by month/quarter, how series connect to the annual vision, what curriculum resources you'll use, and how you balance topical teaching with biblical exposition. Reference your Teaching Philosophy from Doc 1/Doc 2. Include how teaching is evaluated.",
+       ph:"Q1 Series: [Title] | [Months] | [Primary Scripture] | [Vision connection]\nQ2 Series: ...\nQ3 Series: ...\nQ4 Series: ...\n\nCurriculum resources: ...\nExpository vs. topical balance: ...\nHow teaching is evaluated: ...",
+       ai:`After drafting:
+
+"Here is my annual teaching plan: [PASTE YOURS]
+
+(1) Does each series connect explicitly to my year vision? (2) Am I balancing expository and topical approaches? (3) Is there an evaluation mechanism — how will I know if the teaching is working?"`,
+       guide:{what:"Teaching calendar aligned to annual vision and Doc 1 teaching philosophy.",qs:["Does every series connect to the year vision?","Is there a teaching evaluation mechanism?"]},wt:200},
+      {id:"encounter",title:"Spiritual Transformation — Encounter Strategy",
+       trigger:"After section on altar ministry & prayer culture",
+       desc:"Draft your spiritual transformation strategy. How does your ministry create space for encounters with God? Cover: altar/response time philosophy, prayer culture (when, how, who leads), Spirit-emphasis integration in weekly programming (not just special services), and how you disciple students through spiritual experiences rather than treating them as isolated events.",
+       ph:"Altar/response philosophy: we create space by...\nPrayer culture: ...\nSpirit-emphasis in weekly programming: ...\nHow we disciple through (not just celebrate) spiritual experiences: ...",
+       ai:`After drafting:
+
+"Here is my encounter strategy: [PASTE YOURS]
+
+(1) Is the Spirit-emphasis part of every week, or only special services? (2) Do I have a plan for what happens after a student has a significant spiritual experience? (3) Does this connect to my Pentecostal Distinctives from Doc 1?"`,
+       guide:{what:"Weekly Spirit-emphasis, altar philosophy, and discipleship THROUGH (not just after) encounters.",qs:["Is this weekly, not just for special services?","Is there follow-up after spiritual experiences?"]},wt:150},
+      {id:"small_grp_plan",title:"Healthy Community — Small Group Plan",
+       trigger:"After section on relational ministry & small group structures",
+       desc:"Draft your healthy community plan. How are small groups structured (age, gender, interest, neighborhood)? How often do they meet? Who leads them and how are they trained? How does your Community Covenant (from Doc 3/Doc 4) get implemented in practice — not just read aloud but lived? Include your conflict resolution protocols by reference.",
+       ph:"Small group structure: grouped by [age/gender/interest?]\nMeeting frequency: ...\nLeader qualifications and training: ...\nSize: ... groups of ... students\nCommunity Covenant implementation: ...\nConflict resolution: see [Doc 3/4] process",
+       ai:`After drafting:
+
+"Here is my small group plan: [PASTE YOURS]
+
+(1) Is my community covenant implemented, or just posted on the wall? (2) Do my group leaders have a clear training pathway? (3) Does this small group plan connect to my discipleship system from Doc 1/2?"`,
+       guide:{what:"Small groups that implement the Community Covenant, with trained leaders and conflict protocols.",qs:["Is the covenant lived, not just recited?","Do leaders have a training pathway?"]},wt:150},
+      {id:"missions_cal",title:"Missional Living — Engagement Calendar",
+       trigger:"After section on local & global mission",
+       desc:"Draft your missional engagement calendar. Pull from your Raising Sons & Daughters vision (Doc 5) and expand it month by month: which months feature which missional activities? How do local service projects, BGMC, Speed the Light, Youth Alive, and mission trip preparation fit into the year? Show how missions is a rhythm, not a once-a-year trip.",
+       ph:"September: ... October: ... November: BGMC push...\nDecember: STL campaign... January: local service...\nFebruary: ... March: mission trip prep...\nApril: ... May: ... June: mission trip...\nJuly: ... August: ...\n\nMissions is a rhythm because: ...",
+       ai:`After drafting:
+
+"Here is my missional engagement calendar: [PASTE YOURS]
+
+(1) Is there missional activity in most months, or clustered in one or two? (2) Does this calendar connect to my AG resource map from Doc 5? (3) Does local service appear year-round, not just on one service Sunday?"`,
+       guide:{what:"Month-by-month missions rhythm that makes missions a habit, not an event.",qs:["Is missions present in most months?","Does this expand Doc 5's vision?"]},wt:200},
+      {id:"leadership_pipe",title:"Leadership Development — Student & Volunteer Pipeline",
+       trigger:"After section on student leadership formation",
+       desc:"Draft a student leadership pipeline. How do you identify emerging student leaders? What's the progression (attender → participant → student leader → intern → sent)? What training do student leaders receive? How does this pipeline connect to your volunteer development plan in Doc 6? Include a volunteer development summary that cross-references Doc 6.",
+       ph:"Student Pipeline:\nAttender → identified by: ...\nParticipant → how moved: ...\nStudent Leader → training: ...\nIntern → role: ...\nSent → into: ...\n\nVolunteer pipeline cross-reference: see Doc 6 for [recruitment / onboarding / development]",
+       ai:`After drafting:
+
+"Here is my leadership development pipeline: [PASTE YOURS]
+
+(1) What marks the transition from one stage to the next — have I defined those markers? (2) Does my student pipeline connect to my volunteer pipeline in Doc 6? (3) Do calendar dates appear in this pipeline?"`,
+       guide:{what:"Clear progression from attender to sent, with calendar touchpoints and Doc 6 cross-reference.",qs:["Are stage transitions defined?","Does it cross-reference Doc 6?"]},wt:200},
+      {id:"family_integ",title:"Family Integration Touchpoints",
+       trigger:"After section on parent partnership & intergenerational ministry",
+       desc:"Draft your family integration touchpoints. How and when does the ministry communicate with parents? What events include families? How do you equip parents to disciple their own children at home? Address: regular parent communication rhythms, family events in the calendar, parent resource provision, and how you handle the parent who is disengaged vs. the one who is over-involved.",
+       ph:"Weekly communication: ...\nMonthly: ...\nQuarterly family events: ...\nParent equipping resources: ...\n\nFor the disengaged parent: ...\nFor the over-involved parent: ...",
+       ai:`After drafting:
+
+"Here are my family integration touchpoints: [PASTE YOURS]
+
+(1) Do I address both disengaged AND over-involved parents? (2) Are there equipping events, not just informational communication? (3) Are family touchpoints visible on my calendar?"`,
+       guide:{what:"Specific communication cadence, equipping events, and realistic strategy for the full parent spectrum.",qs:["Are equipping events present, not just communication?","Is the full parent spectrum addressed?"]},wt:200},
+      {id:"metrics",title:"Metrics & Evaluation",
+       trigger:"After section on assessment & data-informed ministry",
+       desc:"Draft your metrics and evaluation plan. What numbers do you track — and what do they actually tell you? Cover both quantitative metrics (attendance, salvations, baptisms, small group participation, volunteer count) and qualitative indicators (story-based evidence of life change, parent feedback, volunteer health). How often do you evaluate, and who sees the results?",
+       ph:"Quantitative: attendance, salvations, baptisms, small group participation (%), volunteers\nQualitative: stories of life change, parent feedback, volunteer satisfaction\n\nEvaluation schedule: monthly with team, quarterly with senior pastor\nWho sees results: ...\nHow I use data to adjust: ...",
+       ai:`After drafting:
+
+"Here is my metrics plan: [PASTE YOURS]
+
+(1) Are my quantitative metrics measuring outputs (attendance) or outcomes (life change indicators)? (2) Is there a qualitative component — story collection, not just counting? (3) Does someone hold me accountable to my metrics — is there a review process?"`,
+       guide:{what:"Quantitative + qualitative, with a review schedule and accountability.",qs:["Are outcomes measured, not just outputs?","Is there an accountability review process?"]},wt:150},
+      {id:"sustainability",title:"Personal Sustainability Plan",
+       trigger:"After section on pastoral self-care & Sabbath rhythms",
+       desc:"Draft your personal sustainability plan. This is the most honest section in the capstone. Cover: your Sabbath practice, your family rhythms and how ministry will not consume them, your mentoring relationships (who pastors you?), your plan for continued education and growth, and the warning signs you'll watch for that indicate you're drifting toward burnout.",
+       ph:"Sabbath: every [day]. What I protect on that day: ...\n\nFamily rhythms: ...\n\nWho pastors me: [name, how often we meet]\n\nContinued education plan: ...\n\nMy personal burnout warning signs: ...\nWhat I'll do when I see them: ...",
+       ai:`After writing your sustainability plan:
+
+"Here is my personal sustainability plan: [PASTE YOURS]
+
+(1) Is this honest, or does it say what I think an instructor wants to hear? (2) Do I name a specific person who pastors me — not a concept, but a name? (3) Are my burnout warning signs specific to me, or generic?"`,
+       guide:{
+         what:"The most honest section. Specific Sabbath, specific mentor, specific warning signs.",
+         qs:["Is there a named person who pastors you?","Are warning signs personal, not generic?"],
+         strong:"Sabbath is Friday. I protect it by not scheduling meetings, not checking ministry email. My wife and I have a 9pm phone cutoff during the week. My mentor is Pastor Ruiz — we meet monthly. My warning signs: I start resenting the students who need the most.",
+         sNote:"Specific day, specific protection, specific name, specific warning sign.",
+         weak:"I believe in self-care and maintaining work-life balance. I will take time to rest.",
+         wNote:"No specifics. Could be anyone. Won't be used."
+       },wt:200}
+    ]},
+    {id:"dx3",num:"Disclosure",title:"AI Disclosure Statement",desc:"Required with every document",
+     format:"3–5 sentences per document",
+     secs:[
+      {id:"ai_disclosure3",title:"AI Disclosure Statement",
+       trigger:"Complete before final submission",
+       desc:"Required with every submitted document. For each document (Doc 6, Doc 7, Doc 8), answer in 3–5 sentences: (1) What AI tools did you use? (2) How did you use them? (3) What remained uniquely yours — especially your real budget numbers, your actual church context, and your personal sustainability plan.",
+       ph:"Doc 6 AI use: ...\nDoc 7 AI use: ... (Note: budget numbers came from real church data, not AI averages)\nDoc 8 AI use: ...\nWhat remained uniquely mine: my knowledge of [church/community], my actual budget from [source], my personal sustainability plan including...",
+       ai:`This section is about your honest reflection on AI use. It must come entirely from you.`,
+       guide:{what:"Honest disclosure — especially note where real church data was used vs. AI estimates.",qs:["Did budget numbers come from real research?","Is context specific to your church?"]},wt:150,noAI:true}
+    ]}
+  ]
+}
+};
+
+// ══════════════════════════════════════════
+// APP STATE
+// ══════════════════════════════════════════
+let courseId=null, mode='build', docIdx=0, secIdx=0;
+let answers={};
+
+function storageKey(){return 'pathway_'+COURSES[courseId].key+'_answers'}
+function loadAnswers(){try{answers=JSON.parse(localStorage.getItem(storageKey()))||{}}catch(e){answers={}}}
+function saveAnswers(){localStorage.setItem(storageKey(),JSON.stringify(answers))}
+function getAnswer(id){return answers[id]||''}
+function setAnswer(id,v){answers[id]=v;saveAnswers();updateSidebar();updateStatus()}
+
+function getCourse(){return COURSES[courseId]}
+function getDocs(){return getCourse().docs}
+function getCurrentDoc(){return getDocs()[docIdx]}
+function getCurrentSec(){return getCurrentDoc().secs[secIdx]}
+function allSections(){const a=[];getDocs().forEach(d=>d.secs.forEach(s=>a.push({...s,docId:d.id})));return a}
+function sectionState(sid){const v=(answers[sid]||'').trim();if(!v)return'empty';const wc=v.split(/\s+/).length;return wc>=20?'done':'partial'}
+function totalProgress(){const all=allSections();const done=all.filter(s=>sectionState(s.id)==='done').length;return{done,total:all.length}}
+
+function navigate(dIdx,sIdx){
+  docIdx=dIdx;secIdx=sIdx;
+  renderMode();
+  document.querySelector('.main-panel')&&(document.querySelector('.main-panel').scrollTop=0);
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function renderApp(){
+  const p=new URLSearchParams(window.location.search);
+  const cid=parseInt(p.get('course'));
+  if(cid&&COURSES[cid]){courseId=cid;loadAnswers();renderMain()}
+  else renderSelector();
+}
+
+function renderSelector(){
+  document.getElementById('app').innerHTML=`
+  <div class="outset">
+    <div class="tbar"><span class="tbar-txt">📘 Pathway Capstone Assistant</span><div class="tbar-btns"><button class="tbtn">_</button><button class="tbtn">□</button><button class="tbtn">✕</button></div></div>
+    <div style="background:var(--silver);padding:8px">
+      <div class="selector">
+        <h2>Select Your Course</h2>
+        <p>Choose the capstone assistant for your current course. Each saves your work separately.</p>
+        <div class="course-cards">
+          ${[1,2,3].map(n=>{const c=COURSES[n];return`
+          <div class="course-card" onclick="startCourse(${n})">
+            <div class="cc-icon">${['📖','🛡️','⚙️'][n-1]}</div>
+            <div class="cc-info">
+              <h3>${c.title}: ${c.subtitle}</h3>
+              <p>${c.tagline}</p>
+              <div class="cc-docs">${c.docs.filter(d=>!d.id.startsWith('dx')).map(d=>d.num+': '+d.title).join(' · ')}</div>
+            </div>
+          </div>`}).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="statusbar"><div class="ss">Select a course to begin</div></div>
+  </div>`;
+}
+
+function startCourse(n){courseId=n;loadAnswers();renderMain()}
+
+function renderMain(){
+  const c=getCourse();
+  document.getElementById('app').innerHTML=`
+  <div class="util">
+    <div class="modebar">
+      <button class="mbtn ${mode==='guide'?'active':''}" onclick="setMode('guide')"><span>📖</span> Guide</button>
+      <button class="mbtn ${mode==='build'?'active':''}" onclick="setMode('build')"><span>✍️</span> Build</button>
+      <button class="mbtn ${mode==='preview'?'active':''}" onclick="setMode('preview')"><span>👁️</span> Preview</button>
+      <button class="mbtn ${mode==='download'?'active':''}" onclick="setMode('download')"><span>💾</span> Download</button>
+    </div>
+    <div class="toolbar">
+      <button class="tbtn2" id="darkBtn" onclick="toggleDark()" title="Dark mode">🌙</button>
+    </div>
+  </div>
+  <div class="panel vis outset" id="mainPanel">
+    <div class="tbar">
+      <span class="tbar-txt">📘 ${c.title} — ${c.subtitle}</span>
+      <div class="tbar-btns"><button class="tbtn">_</button><button class="tbtn">□</button><button class="tbtn">✕</button></div>
+    </div>
+    <div class="body-wrap">
+      <div class="sidebar">
+        <div class="sb-hdr">📁 Documents <span class="sb-prog" id="sbProg"></span></div>
+        <div class="sb-scroll" id="sbScroll"></div>
+        <div class="sb-ethics">
+          <strong>✍️ You Think First</strong><br>
+          AI sharpens what you already wrote — it cannot write your calling, your community context, or your convictions.<br><br>
+          <strong>70/30 Rule:</strong> 70% must originate from you.
+        </div>
+      </div>
+      <div class="main-panel" id="mainContent"></div>
+    </div>
+    <div class="statusbar">
+      <div class="ss" id="stLeft">Ready</div>
+      <div class="ss sm" id="stRight">0 wds</div>
+    </div>
+  </div>`;
+  updateSidebar();
+  renderMode();
+}
+
+function updateSidebar(){
+  if(!courseId) return;
+  const prog=totalProgress();
+  const sbp=document.getElementById('sbProg');
+  if(sbp) sbp.textContent=prog.done+'/'+prog.total;
+  const sb=document.getElementById('sbScroll');
+  if(!sb) return;
+  let html='';
+  getDocs().forEach((doc,di)=>{
+    const docDone=doc.secs.filter(s=>sectionState(s.id)==='done').length;
+    html+=`<div class="doc-group">
+      <div class="doc-hdr" onclick="toggleDoc(${di})">
+        <span>${doc.num}: ${doc.title}</span>
+        <span style="font-size:9px;font-weight:normal;color:var(--muted)">${docDone}/${doc.secs.length}</span>
+      </div>
+      <div id="docSecs_${di}">`;
+    doc.secs.forEach((sec,si)=>{
+      const st=sectionState(sec.id);
+      const active=(di===docIdx&&si===secIdx&&(mode==='build'||mode==='guide'));
+      html+=`<div class="sec-item ${active?'active':''}" onclick="navigate(${di},${si});setMode(mode==='guide'?'guide':'build')">
+        <div class="sec-dot ${st}"></div>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${sec.title}</span>
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  sb.innerHTML=html;
+}
+
+function toggleDoc(di){
+  const el=document.getElementById('docSecs_'+di);
+  if(el) el.style.display=el.style.display==='none'?'':'none';
+}
+
+function setMode(m){mode=m;renderMode();updateSidebar()}
+
+function renderMode(){
+  const mc=document.getElementById('mainContent');
+  if(!mc) return;
+  document.querySelectorAll('.mbtn').forEach((b,i)=>{
+    const modes=['guide','build','preview','download'];
+    b.classList.toggle('active',modes[i]===mode);
+  });
+  if(mode==='build') mc.innerHTML=renderBuild();
+  else if(mode==='guide') mc.innerHTML=renderGuide();
+  else if(mode==='preview') mc.innerHTML=renderPreview();
+  else if(mode==='download') mc.innerHTML=renderDownload();
+  if(mode==='build'){
+    const ta=document.getElementById('secTA');
+    if(ta) ta.addEventListener('input',e=>{setAnswer(getCurrentSec().id,e.target.value);updateWC(e.target.value,getCurrentSec().wt)});
+  }
+  updateStatus();
+}
+
+function renderBuild(){
+  const doc=getCurrentDoc(), sec=getCurrentSec();
+  const val=getAnswer(sec.id);
+  let html=`<div class="build-wrap">`;
+  if(doc.interviewReq&&sec.interviewReq){
+    html+=`<div class="interview-req"><strong>⚠️ Interview Required</strong> — Before completing this section, you must interview a district official (Secretary, DYD, or Sectional Presbyter). Minimum 15–20 minutes. Schedule early in the course.</div>`;
+  }
+  if(doc.spreadsheetNote){
+    html+=`<div class="spreadsheet-note"><strong>📊 Spreadsheet Note</strong> — Doc 7 includes a working .xlsx spreadsheet as a separate deliverable. Use this tool to draft your narrative content. The spreadsheet with formulas and real dollar amounts is submitted alongside these notes.</div>`;
+  }
+  html+=`<div class="sec-badge">${doc.num} › Section ${secIdx+1}</div>
+  <div class="sec-title">${sec.title}</div>
+  <div class="trigger-box">⏰ <em>${sec.trigger}</em></div>
+  <div class="sec-desc">${sec.desc.replace(/\n/g,'<br>')}</div>
+  <div class="field-label">✍️ Your Notes First <span class="req-badge">THINK FIRST</span></div>
+  <textarea id="secTA" rows="7" placeholder="${sec.ph}">${esc(val)}</textarea>
+  <div class="wc-row">
+    <span id="wcLabel">0 words</span>
+    <div class="wc-bar-outer"><div class="wc-bar-inner" id="wcBar" style="width:0%"></div></div>
+    <span style="color:var(--muted)">target: ~${sec.wt}</span>
+  </div>`;
+
+  if(!sec.noAI){
+    html+=`<div class="ai-block outset">
+      <div class="ai-hdr" onclick="toggleAI(this)">
+        🤖 Thinking Partner Prompt <span style="font-size:10px;font-weight:normal">(use AFTER writing above) ▼</span>
+      </div>
+      <div class="ai-body" id="aiBody">
+        <div class="ai-ethics-note"><strong>Ethical use:</strong> Write your own notes first. Use this prompt to test and deepen your thinking — not to generate content from scratch. AI cannot know your story, your community, or your convictions.</div>
+        <div class="ai-prompt-box">${esc(sec.ai)}</div>
+        <button class="copy-btn" onclick="copyAI()">📋 Copy Prompt</button>
+      </div>
+    </div>`;
+  } else {
+    html+=`<div class="ai-block outset">
+      <div class="ai-hdr">🚫 No AI Prompt for This Section</div>
+      <div class="ai-body open" style="display:block">
+        <div class="ai-ethics-note"><strong>This section must come entirely from you.</strong> ${sec.ai||'No AI prompt available for this section.'}</div>
+      </div>
+    </div>`;
+  }
+
+  // Navigation
+  const allSecs=allSections();
+  const flatIdx=allSecs.findIndex(s=>s.id===sec.id);
+  const prevSec=flatIdx>0?allSecs[flatIdx-1]:null;
+  const nextSec=flatIdx<allSecs.length-1?allSecs[flatIdx+1]:null;
+  let prevDocIdx=docIdx,prevSecIdx=secIdx-1;
+  if(prevSecIdx<0){if(docIdx>0){prevDocIdx=docIdx-1;prevSecIdx=getDocs()[prevDocIdx].secs.length-1}}
+  let nextDocIdx=docIdx,nextSecIdx=secIdx+1;
+  if(nextSecIdx>=getCurrentDoc().secs.length){nextDocIdx=docIdx+1;nextSecIdx=0}
+
+  html+=`<div class="nav-row">
+    <button class="win-btn" onclick="navigate(${prevDocIdx},${prevSecIdx})" ${!prevSec?'disabled':''}>‹ Previous</button>
+    <button class="win-btn" onclick="setMode('guide')">📖 Guide</button>
+    <button class="win-btn primary" onclick="${nextSec?`navigate(${nextDocIdx},${nextSecIdx})`:`setMode('preview')`}">${nextSec?'Next ›':'👁️ Preview'}</button>
+  </div>`;
+  html+='</div>';
+
+  setTimeout(()=>{
+    const ta=document.getElementById('secTA');
+    if(ta){ta.addEventListener('input',e=>{setAnswer(sec.id,e.target.value);updateWC(e.target.value,sec.wt)});updateWC(getAnswer(sec.id),sec.wt)}
+  },0);
+  return html;
+}
+
+function renderGuide(){
+  const doc=getCurrentDoc(),sec=getCurrentSec();
+  const g=sec.guide||{};
+  let html=`<div class="guide-wrap">
+  <h2>${sec.title}</h2>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:8px;font-style:italic">⏰ ${sec.trigger}</div>`;
+  if(g.what) html+=`<p>${g.what}</p>`;
+  if(g.qs&&g.qs.length){
+    html+=`<div class="kq-box"><strong>🔑 Ask Yourself:</strong><ul>${g.qs.map(q=>`<li>${q}</li>`).join('')}</ul></div>`;
+  }
+  if(g.strong){
+    html+=`<div class="ex-box good"><div class="ex-label">✅ STRONG</div>${g.strong}${g.sNote?`<div class="ex-note">💡 ${g.sNote}</div>`:''}`;
+    html+=`</div>`;
+  }
+  if(g.weak){
+    html+=`<div class="ex-box bad"><div class="ex-label">❌ WEAK</div>${g.weak}${g.wNote?`<div class="ex-note">💡 ${g.wNote}</div>`:''}`;
+    html+=`</div>`;
+  }
+  html+=`<h3>Format</h3><p style="font-size:10px;color:var(--muted)">${doc.format}</p>`;
+  html+=`<div style="margin-top:12px"><button class="win-btn primary" onclick="setMode('build')">✍️ Write This Section</button></div>`;
+  html+='</div>';
+  return html;
+}
+
+function renderPreview(){
+  const c=getCourse();
+  let html=`<div class="preview-wrap">`;
+  getDocs().forEach((doc,di)=>{
+    if(doc.id.startsWith('dx')&&di>0) html+=`<div style="margin-top:8px"></div>`;
+    html+=`<div class="page">
+    <div class="page-title">${doc.title}</div>
+    <div class="page-sub">${c.title} — ${doc.desc}</div>
+    <div class="page-meta">Pathway Ministry Institute · Northern California & Nevada District · Assemblies of God</div>
+    <hr>`;
+    doc.secs.forEach(sec=>{
+      const val=(answers[sec.id]||'').trim();
+      html+=`<div class="page-sh">${sec.title}</div>`;
+      html+=val?`<p class="page-body">${esc(val).replace(/\n/g,'<br>')}</p>`:`<p class="page-empty">[Complete this section in Build mode]</p>`;
+    });
+    const wc=doc.secs.reduce((t,s)=>{const v=(answers[s.id]||'').trim();return t+(v?v.split(/\s+/).length:0)},0);
+    html+=`<div class="page-num">Word count: ${wc} | ${doc.num}: ${doc.title}</div></div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+function renderDownload(){
+  const c=getCourse();
+  const prog=totalProgress();
+  return`<div class="dl-wrap">
+  <h2 style="font-family:'VT323',monospace;font-size:16px;color:var(--blue);margin-bottom:8px">Download Your Draft</h2>
+  <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Sections complete: <strong>${prog.done}/${prog.total}</strong></p>
+  ${c.docs.filter(d=>!d.id.startsWith('dx')).map((doc,i)=>`
+  <button class="dl-btn" onclick="dlDoc(${i})">
+    <div class="dl-icon">💾</div>
+    <div class="dl-info"><strong>Download ${doc.num}: ${doc.title}</strong><span>${doc.desc} · ${doc.format}</span></div>
+  </button>`).join('')}
+  <button class="dl-btn" onclick="dlAll()" style="margin-top:4px">
+    <div class="dl-icon">📦</div>
+    <div class="dl-info"><strong>Download All Documents</strong><span>Complete capstone package as one .docx file</span></div>
+  </button>
+  <div class="steps-box">
+    <h3>📋 Next Steps After Downloading</h3>
+    <ol>
+      <li><strong>Open in Word or Google Docs</strong> — your draft is a starting point, not a finished paper.</li>
+      <li><strong>Rewrite into polished paragraphs</strong> — turn raw notes into connected, flowing prose that sounds like you.</li>
+      <li><strong>Voice check:</strong> read every paragraph aloud. If it doesn't sound like how you actually talk, rewrite it.</li>
+      <li><strong>Check format:</strong> ${c.id===1?'Doc 1: paragraph form, 1–2 pages, double-spaced, 12pt TNR. Doc 2: structured outline/table.':c.id===2?'Doc 3: 2 pages with district interview notes attached. Doc 4: 2 pages. Doc 5: 1 page.':'Doc 6: 2 pages + appended templates. Doc 7: narrative + .xlsx spreadsheet. Doc 8: 3 pages.'}</li>
+      <li><strong>Complete peer/pastor review</strong> as required by your instructor.</li>
+      <li><strong>Submit in Talent LMS</strong> using the upload button in your course — NOT back to this tool.</li>
+    </ol>
+  </div>
+  <div class="remind-card">
+    <div class="remind-tbar">⚠️ Submit in Talent LMS — Not Here</div>
+    <div class="remind-body">
+      <div class="remind-icon">📤</div>
+      <div class="remind-txt"><strong>Upload your final edited version to Talent LMS</strong>
+      <p>This tool helps you collect and draft your ideas. After downloading and editing your final document in Word or Google Docs, submit it using the assignment upload button in your Talent LMS course. Your instructor will grade it there.</p></div>
+    </div>
+  </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function toggleAI(hdr){const b=hdr.nextElementSibling;b.classList.toggle('open')}
+function copyAI(){const box=document.querySelector('.ai-prompt-box');if(box){navigator.clipboard.writeText(box.textContent).then(()=>{const btn=document.querySelector('.copy-btn');if(btn){btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='📋 Copy Prompt',2000)}})}}
+function updateWC(v,target){
+  const w=(v||'').trim()===''?0:(v||'').trim().split(/\s+/).length;
+  const wcl=document.getElementById('wcLabel');
+  const wcb=document.getElementById('wcBar');
+  if(wcl) wcl.textContent=w+' word'+(w!==1?'s':'');
+  if(wcb) wcb.style.width=Math.min(100,Math.round(w/(target||100)*100))+'%';
+}
+function updateStatus(){
+  const sl=document.getElementById('stLeft'),sr=document.getElementById('stRight');
+  if(!sl||!courseId) return;
+  const sec=getCurrentSec();
+  sl.textContent=(mode==='build'||mode==='guide')?sec.title:'Mode: '+mode;
+  const allWC=allSections().reduce((t,s)=>{const v=(answers[s.id]||'').trim();return t+(v?v.split(/\s+/).length:0)},0);
+  if(sr) sr.textContent=allWC+' wds total';
+}
+function toggleDark(){
+  const h=document.documentElement;
+  const d=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',d?'light':'dark');
+  const btn=document.getElementById('darkBtn');
+  if(btn){btn.textContent=d?'🌙':'☀️';btn.classList.toggle('on',!d)}
+}
+
+// ══════════════════════════════════════════
+// DOCX GENERATION
+// ══════════════════════════════════════════
+function buildDocx(docs){
+  const D=docx,ch=[];
+  const c=getCourse();
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:60},children:[new D.TextRun({text:c.title,bold:true,size:32,font:'Times New Roman'})]}));
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:40},children:[new D.TextRun({text:c.subtitle,size:24,font:'Times New Roman',color:'444444'})]}));
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:40},children:[new D.TextRun({text:c.tagline,size:20,font:'Times New Roman',color:'888888',italics:true})]}));
+  ch.push(new D.Paragraph({alignment:D.AlignmentType.CENTER,spacing:{after:200},children:[new D.TextRun({text:'Pathway Ministry Institute · Northern California & Nevada District · Assemblies of God',size:18,font:'Times New Roman',color:'888888'})]}));
+  ch.push(new D.Paragraph({spacing:{after:240},border:{bottom:{style:'single',size:6,color:'CCCCCC',space:1}},children:[]}));
+
+  docs.forEach((doc,di)=>{
+    if(di>0) ch.push(new D.Paragraph({pageBreakBefore:true,children:[new D.TextRun({text:''})]}));
+    ch.push(new D.Paragraph({spacing:{before:200,after:80},children:[new D.TextRun({text:`${doc.num}: ${doc.title}`,bold:true,size:28,font:'Times New Roman'})]}));
+    ch.push(new D.Paragraph({spacing:{after:200},border:{bottom:{style:'single',size:4,color:'CCCCCC',space:1}},children:[new D.TextRun({text:doc.desc+' · '+doc.format,size:18,font:'Times New Roman',color:'888888',italics:true})]}));
+    doc.secs.forEach(sec=>{
+      const val=(answers[sec.id]||'').trim();
+      ch.push(new D.Paragraph({spacing:{before:240,after:80},children:[new D.TextRun({text:sec.title,bold:true,size:24,font:'Times New Roman'})]}));
+      if(val){
+        val.split(/\n\n+/).forEach((p,pi)=>{const t=p.trim();if(t) ch.push(new D.Paragraph({spacing:{line:480},indent:pi>0?{firstLine:720}:undefined,children:[new D.TextRun({text:t,size:24,font:'Times New Roman'})]}))});
+      } else {
+        ch.push(new D.Paragraph({spacing:{line:480},children:[new D.TextRun({text:'[Complete this section]',size:24,font:'Times New Roman',color:'BBBBBB',italics:true})]}));
+      }
+    });
+  });
+
+  return new D.Document({sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:ch}]});
+}
+
+function dlDoc(docIdx){
+  const doc=getDocs()[docIdx];
+  const wc=doc.secs.reduce((t,s)=>{const v=(answers[s.id]||'').trim();return t+(v?v.split(/\s+/).length:0)},0);
+  if(wc===0){alert('Complete some sections first.');return}
+  const d=buildDocx([doc]);
+  docx.Packer.toBlob(d).then(b=>saveAs(b,`Pathway_${getCourse().key}_${doc.id}.docx`)).catch(e=>{console.error(e);alert('Download error. Try again.')});
+}
+
+function dlAll(){
+  const prog=totalProgress();
+  if(prog.done===0){alert('Complete some sections first.');return}
+  const d=buildDocx(getDocs());
+  docx.Packer.toBlob(d).then(b=>saveAs(b,`Pathway_${getCourse().key}_Capstone_All.docx`)).catch(e=>{console.error(e);alert('Download error. Try again.')});
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderApp();
+</script>
+</body>
+</html>
