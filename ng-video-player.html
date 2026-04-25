@@ -797,7 +797,7 @@ var DK   = 'pw-done-'     + lessonId;
 var VK   = 'pw-vol-global';
 var SelK = 'pw-sel-'       + lessonId;
 var NK   = 'pw-notes-all-v1';  /* unified across ALL lessons */
-var DraftK = 'pw-notes-draft';
+var DraftK = 'pw-notes-draft-' + lessonId; /* per-lesson so drafts don't bleed across lessons */
 var WThK = 'pw98-wtheme';
 
 document.title = lessonTitle || 'Pathway Media Player';
