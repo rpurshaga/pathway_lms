@@ -2,7 +2,9 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Pathway Capstone Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
@@ -165,11 +167,101 @@ textarea::placeholder{color:var(--hint);font-style:italic}
 .interview-req strong{color:#e65100;font-family:'VT323',monospace;font-size:12px}
 .spreadsheet-note{background:#e8f5e8;border:2px solid #2e7d32;padding:7px 9px;margin-bottom:10px;font-size:10.5px;line-height:1.5}
 .spreadsheet-note strong{color:#1b5e20;font-family:'VT323',monospace;font-size:12px}
-@media(max-width:600px){
-.sidebar{width:130px;min-width:130px}
-.build-wrap,.guide-wrap,.dl-wrap{padding:8px}
-.page{padding:14px 10px}
-.sec-title{font-size:14px}
+/* ── MOBILE NAV BAR (hidden on desktop) ── */
+.mobile-topnav{display:none;background:var(--silver);border-bottom:2px solid var(--dark);padding:4px 6px;align-items:center;gap:6px}
+.ham-btn{width:36px;height:36px;background:var(--silver);border:2px solid;border-color:var(--white) var(--bd) var(--bd) var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+.ham-btn:active{border-color:var(--bd) var(--white) var(--white) var(--bd)}
+.mobile-sec-info{flex:1;min-width:0;overflow:hidden}
+.mobile-sec-label{font-size:10px;color:var(--muted);font-family:'VT323',monospace}
+.mobile-sec-title{font-size:12px;font-weight:bold;color:var(--blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mobile-prog{font-size:10px;color:var(--muted);flex-shrink:0}
+/* ── SIDEBAR OVERLAY (mobile) ── */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999}
+.sb-overlay.open{display:block}
+.sidebar-drawer{position:fixed;top:0;left:-100%;width:80%;max-width:300px;height:100%;background:var(--cbg);z-index:1000;transition:left .25s ease;display:flex;flex-direction:column;box-shadow:3px 0 12px rgba(0,0,0,.3)}
+.sidebar-drawer.open{left:0}
+.sb-drawer-hdr{background:linear-gradient(90deg,var(--tbar1),var(--tbar2));padding:10px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sb-drawer-hdr span{color:#fff;font-family:'VT323',monospace;font-size:14px}
+.sb-close-btn{width:32px;height:32px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+@media(max-width:650px){
+  html,body{overflow-x:hidden;max-width:100vw}
+  body{padding:0;align-items:stretch}
+  .app{width:100%;max-width:100vw;min-width:0}
+  /* util bar: stack modebar and toolbar on same row, constrained */
+  .util{flex-wrap:nowrap;gap:3px;padding:3px;background:var(--silver)}
+  .modebar{flex:1;min-width:0;padding:2px;gap:2px}
+  .mbtn{font-size:9px;padding:0 3px;min-width:0;height:32px;gap:2px}
+  .mbtn span{font-size:14px;flex-shrink:0}
+  .toolbar{padding:2px;gap:2px;flex-shrink:0}
+  .tbtn2{width:32px;height:32px}
+  /* panel: prevent overflow */
+  .panel.vis{max-width:100vw;overflow-x:hidden}
+  /* hide desktop sidebar inside body-wrap */
+  .body-wrap>.sidebar{display:none}
+  /* show mobile nav bar */
+  .mobile-topnav{display:flex}
+  /* full-width content, no overflow */
+  .body-wrap{overflow-x:hidden}
+  .main-panel{width:100%;min-width:0;overflow-x:hidden}
+  /* bigger touch targets */
+  .win-btn{height:40px;min-width:0;font-size:12px;padding:0 10px}
+  /* content padding */
+  .build-wrap,.guide-wrap,.dl-wrap{padding:12px 10px}
+  /* larger readable text */
+  .sec-badge{font-size:11px}
+  .sec-title{font-size:17px}
+  .sec-desc{font-size:13px;line-height:1.7}
+  .trigger-box{font-size:11px;white-space:normal;word-break:break-word}
+  .field-label{font-size:13px}
+  textarea{font-size:15px;min-height:150px;width:100%}
+  .wc-row{font-size:11px;flex-wrap:wrap;gap:4px}
+  .wc-bar-outer{min-width:80px}
+  .ai-hdr{font-size:12px;padding:10px 8px}
+  .ai-ethics-note{font-size:11px}
+  .ai-prompt-box{font-size:11px;overflow-x:auto}
+  .copy-btn{height:40px;font-size:12px;padding:0 14px;width:100%;margin-top:4px}
+  /* nav row — 3 equal buttons */
+  .nav-row{gap:6px;flex-wrap:nowrap}
+  .nav-row .win-btn{flex:1;height:44px;font-size:12px;padding:0 4px;text-align:center}
+  /* guide */
+  .guide-wrap h2{font-size:17px}
+  .guide-wrap h3{font-size:13px}
+  .guide-wrap p,.ex-box{font-size:12px;line-height:1.65}
+  .kq-box{font-size:12px}
+  .kq-box li{margin-bottom:4px}
+  /* preview page */
+  .preview-wrap{padding:6px;overflow-x:hidden}
+  .page{padding:14px 10px 20px;max-width:100%;overflow-x:hidden}
+  .page-title{font-size:11pt}
+  .page-body,.page-empty,.page-sh{font-size:10pt}
+  /* download */
+  .dl-btn{padding:10px;gap:8px}
+  .dl-icon{font-size:18px}
+  .dl-info strong{font-size:11px}
+  .steps-box{font-size:12px}
+  .steps-box li{margin-bottom:6px}
+  .remind-body{flex-direction:column;gap:4px}
+  /* statusbar */
+  .statusbar{font-size:10px}
+  .ss{padding:2px 4px}
+  /* title bar */
+  .tbar-btns{display:none}
+  .tbar-txt{font-size:10px}
+  /* mobile top nav */
+  .ham-btn{width:40px;height:40px;font-size:18px}
+  /* interview/spreadsheet notes */
+  .interview-req,.spreadsheet-note{font-size:11px}
+  /* mobile drawer */
+  .sb-drawer-hdr span{font-size:13px}
+  .sec-item{padding:8px 8px 8px 14px;font-size:12px}
+  .doc-hdr{padding:6px 8px;font-size:11px}
+}
+@media(max-width:380px){
+  .mbtn span{font-size:12px}
+  .mbtn{height:30px}
+  .build-wrap,.guide-wrap,.dl-wrap{padding:8px}
+  textarea{font-size:14px}
 }
 </style>
 </head>
@@ -909,6 +1001,15 @@ function renderMain(){
       <span class="tbar-txt">📘 ${c.title} — ${c.subtitle}</span>
       <div class="tbar-btns"><button class="tbtn">_</button><button class="tbtn">□</button><button class="tbtn">✕</button></div>
     </div>
+    <!-- Mobile top nav (hidden on desktop) -->
+    <div class="mobile-topnav" id="mobileTopNav">
+      <button class="ham-btn" onclick="openMobileSidebar()" title="Browse sections">☰</button>
+      <div class="mobile-sec-info">
+        <div class="mobile-sec-label" id="mobileDocLabel">Doc 1</div>
+        <div class="mobile-sec-title" id="mobileSectionTitle">Personal Calling Statement</div>
+      </div>
+      <div class="mobile-prog" id="mobileProg">0/17</div>
+    </div>
     <div class="body-wrap">
       <div class="sidebar">
         <div class="sb-hdr">📁 Documents <span class="sb-prog" id="sbProg"></span></div>
@@ -925,38 +1026,84 @@ function renderMain(){
       <div class="ss" id="stLeft">Ready</div>
       <div class="ss sm" id="stRight">0 wds</div>
     </div>
+  </div>
+  <!-- Mobile sidebar drawer (overlay) -->
+  <div class="sb-overlay" id="sbOverlay" onclick="closeMobileSidebar()"></div>
+  <div class="sidebar-drawer" id="sbDrawer">
+    <div class="sb-drawer-hdr">
+      <span>📁 Sections <span id="drawerProg" style="font-size:11px;opacity:.7"></span></span>
+      <button class="sb-close-btn" onclick="closeMobileSidebar()">✕</button>
+    </div>
+    <div class="sb-scroll" id="drawerScroll" style="flex:1;overflow-y:auto"></div>
+    <div class="sb-ethics" style="margin:6px;padding:6px 7px;background:var(--note);border:1px solid var(--noteb);font-size:10px;line-height:1.5;flex-shrink:0">
+      <strong style="font-family:'VT323',monospace;color:var(--blue);font-size:11px">✍️ You Think First • 70/30 Rule</strong><br>
+      Write your own notes before using any AI prompt.
+    </div>
   </div>`;
   updateSidebar();
   renderMode();
 }
 
-function updateSidebar(){
-  if(!courseId) return;
-  const prog=totalProgress();
-  const sbp=document.getElementById('sbProg');
-  if(sbp) sbp.textContent=prog.done+'/'+prog.total;
-  const sb=document.getElementById('sbScroll');
-  if(!sb) return;
+function buildSidebarHTML(prefix){
   let html='';
   getDocs().forEach((doc,di)=>{
     const docDone=doc.secs.filter(s=>sectionState(s.id)==='done').length;
     html+=`<div class="doc-group">
-      <div class="doc-hdr" onclick="toggleDoc(${di})">
+      <div class="doc-hdr" onclick="toggleDocSecs('${prefix}',${di})">
         <span>${doc.num}: ${doc.title}</span>
         <span style="font-size:9px;font-weight:normal;color:var(--muted)">${docDone}/${doc.secs.length}</span>
       </div>
-      <div id="docSecs_${di}">`;
+      <div id="${prefix}DocSecs_${di}">`;
     doc.secs.forEach((sec,si)=>{
       const st=sectionState(sec.id);
       const active=(di===docIdx&&si===secIdx&&(mode==='build'||mode==='guide'));
-      html+=`<div class="sec-item ${active?'active':''}" onclick="navigate(${di},${si});setMode(mode==='guide'?'guide':'build')">
+      html+=`<div class="sec-item ${active?'active':''}" onclick="navigate(${di},${si});setMode(mode==='guide'?'guide':'build');closeMobileSidebar()">
         <div class="sec-dot ${st}"></div>
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${sec.title}</span>
       </div>`;
     });
     html+='</div></div>';
   });
-  sb.innerHTML=html;
+  return html;
+}
+
+function updateSidebar(){
+  if(!courseId) return;
+  const prog=totalProgress();
+  // Desktop sidebar
+  const sbp=document.getElementById('sbProg');
+  if(sbp) sbp.textContent=prog.done+'/'+prog.total;
+  const sb=document.getElementById('sbScroll');
+  if(sb) sb.innerHTML=buildSidebarHTML('sb');
+  // Mobile drawer
+  const dp=document.getElementById('drawerProg');
+  if(dp) dp.textContent=prog.done+'/'+prog.total;
+  const dr=document.getElementById('drawerScroll');
+  if(dr) dr.innerHTML=buildSidebarHTML('dr');
+  // Mobile top nav labels
+  const sec=getCurrentSec(),doc=getCurrentDoc();
+  const ml=document.getElementById('mobileDocLabel');
+  const mt=document.getElementById('mobileSectionTitle');
+  const mp=document.getElementById('mobileProg');
+  if(ml) ml.textContent=doc.num;
+  if(mt) mt.textContent=sec.title;
+  if(mp) mp.textContent=prog.done+'/'+prog.total;
+}
+
+function toggleDocSecs(prefix,di){
+  const el=document.getElementById(prefix+'DocSecs_'+di);
+  if(el) el.style.display=el.style.display==='none'?'':'none';
+}
+
+function openMobileSidebar(){
+  document.getElementById('sbOverlay').classList.add('open');
+  document.getElementById('sbDrawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMobileSidebar(){
+  document.getElementById('sbOverlay').classList.remove('open');
+  document.getElementById('sbDrawer').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 function toggleDoc(di){
