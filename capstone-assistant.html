@@ -263,6 +263,37 @@ textarea::placeholder{color:var(--hint);font-style:italic}
   .build-wrap,.guide-wrap,.dl-wrap{padding:8px}
   textarea{font-size:14px}
 }
+/* ── MINI WIDGET ── */
+.mini-wrap{display:flex;flex-direction:column;gap:6px;padding:4px 0;max-width:760px;margin:0 auto}
+.mini-header{background:var(--silver)}
+.mini-card{background:var(--cbg)}
+.mini-card-hdr{background:var(--silver);padding:5px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--dark);flex-wrap:wrap}
+.mini-doc-badge{background:var(--blue);color:#fff;padding:1px 7px;font-family:'VT323',monospace;font-size:11px;flex-shrink:0}
+.mini-sec-title{font-family:'VT323',monospace;font-size:14px;color:var(--blue);flex:1;min-width:0}
+.mini-wc-chip{font-size:10px;color:var(--muted);flex-shrink:0;font-family:'VT323',monospace}
+.mini-trigger{background:var(--note);border-bottom:1px solid var(--noteb);padding:4px 10px;font-size:10px;color:var(--muted);font-style:italic}
+.mini-desc{padding:10px 10px 6px;font-size:12px;line-height:1.65;color:var(--txt)}
+.mini-field-lbl{padding:0 10px 4px;font-family:'VT323',monospace;font-size:12px;color:var(--blue);display:flex;align-items:center;gap:5px}
+.mini-ta{display:block;width:calc(100% - 20px);margin:0 10px;background:var(--inp);border:2px solid;border-color:var(--inset) var(--white) var(--white) var(--inset);font-family:inherit;font-size:13px;padding:7px;resize:vertical;line-height:1.5;color:var(--txt);min-height:120px}
+.mini-ta:focus{outline:none;box-shadow:inset 0 0 0 1px var(--blue)}
+.mini-ta::placeholder{color:var(--hint);font-style:italic}
+.mini-wc-row{padding:4px 10px 8px;display:flex;align-items:center;font-size:10px;color:var(--muted)}
+.mini-card .ai-block{margin:0 10px 10px}
+.mini-footer{background:var(--silver);padding:6px 10px;display:flex;flex-direction:column;gap:2px;font-size:10px;color:var(--txt)}
+.mini-footer-hint{color:var(--muted);font-style:italic}
+@media(max-width:650px){
+  .mini-wrap{padding:2px 0;gap:4px}
+  .mini-desc{font-size:13px}
+  .mini-ta{font-size:15px;min-height:140px;width:calc(100% - 16px);margin:0 8px}
+  .mini-card-hdr{padding:6px 8px}
+  .mini-sec-title{font-size:13px}
+  .mini-trigger{font-size:11px;padding:5px 8px}
+  .mini-field-lbl{padding:0 8px 4px;font-size:13px}
+  .mini-wc-row{padding:4px 8px 8px;font-size:11px}
+  .mini-card .ai-block{margin:0 8px 8px}
+  .ai-hdr{padding:10px 8px;font-size:13px}
+  .copy-btn{width:calc(100%);height:42px;font-size:13px}
+}
 </style>
 </head>
 <body>
@@ -951,8 +982,100 @@ function navigate(dIdx,sIdx){
 function renderApp(){
   const p=new URLSearchParams(window.location.search);
   const cid=parseInt(p.get('course'));
-  if(cid&&COURSES[cid]){courseId=cid;loadAnswers();renderMain()}
-  else renderSelector();
+  const secsParam=p.get('secs'); // e.g. "calling,win,pathway"
+  const compile=p.get('view')==='compile';
+  if(cid&&COURSES[cid]){
+    courseId=cid;loadAnswers();
+    if(secsParam){renderMini(secsParam.split(',').map(s=>s.trim()).filter(Boolean))}
+    else if(compile){renderMain();setMode('download')}
+    else renderMain();
+  } else renderSelector();
+}
+
+// ── MINI WIDGET (per-section embed) ────────────────────────────
+function findSec(id){
+  for(const doc of getDocs()){const s=doc.secs.find(x=>x.id===id);if(s) return{sec:s,doc}}
+  return null;
+}
+
+function renderMini(secIds){
+  const c=getCourse();
+  const found=secIds.map(id=>findSec(id)).filter(Boolean);
+  if(!found.length){document.getElementById('app').innerHTML=`<p style="padding:16px;color:red">Section not found: ${secIds.join(',')}</p>`;return;}
+
+  let html=`<div class="mini-wrap">
+  <div class="mini-header outset">
+    <div class="tbar"><span class="tbar-txt">📘 ${c.title} — Capstone Builder</span>
+    <button class="tbtn2" style="width:26px;height:22px;font-size:12px" onclick="toggleDark()" id="darkBtn">🌙</button></div>
+  </div>`;
+
+  found.forEach(({sec,doc},i)=>{
+    html+=`<div class="mini-card outset" id="miniCard_${sec.id}">
+    <div class="mini-card-hdr">
+      <span class="mini-doc-badge">${doc.num}</span>
+      <span class="mini-sec-title">${sec.title}</span>
+      <span class="mini-wc-chip" id="mwc_${sec.id}">0 wds</span>
+    </div>
+    <div class="mini-trigger">⏰ <em>${sec.trigger}</em></div>
+    <div class="mini-desc">${sec.desc.replace(/\n/g,'<br>')}</div>
+    <div class="mini-field-lbl">✍️ Your Notes First <span class="req-badge">THINK FIRST</span></div>
+    <textarea class="mini-ta" id="mta_${sec.id}" rows="6" placeholder="${sec.ph}">${esc(getAnswer(sec.id))}</textarea>
+    <div class="mini-wc-row">
+      <span id="mwclbl_${sec.id}">0 words</span>
+      <div class="wc-bar-outer" style="flex:1;margin:0 8px"><div class="wc-bar-inner" id="mwcbar_${sec.id}" style="width:0%"></div></div>
+      <span style="color:var(--muted)">~${sec.wt} target</span>
+    </div>
+    ${!sec.noAI?`<div class="ai-block outset" style="margin-top:8px">
+      <div class="ai-hdr" onclick="toggleAI(this)">🤖 Thinking Partner Prompt <span style="font-size:10px;font-weight:normal">(use AFTER writing above) ▼</span></div>
+      <div class="ai-body">
+        <div class="ai-ethics-note"><strong>Write your own notes first.</strong> Use this prompt to test and deepen your thinking — not to generate content from scratch.</div>
+        <div class="ai-prompt-box">${esc(sec.ai)}</div>
+        <button class="copy-btn" onclick="copyPrompt('mta_${sec.id}',this)">📋 Copy Prompt</button>
+      </div>
+    </div>`:`<div class="ai-block outset" style="margin-top:8px"><div class="ai-hdr">🚫 No AI Prompt — This section must come entirely from you</div></div>`}
+    </div>`;
+  });
+
+  const prog=totalProgress();
+  html+=`<div class="mini-footer outset">
+    <span>💾 Auto-saved · ${prog.done}/${prog.total} sections complete across this course</span>
+    <span class="mini-footer-hint">Complete all sections → go to <strong>Final Capstone</strong> to download</span>
+  </div></div>`;
+
+  document.getElementById('app').innerHTML=html;
+
+  // Wire up each textarea
+  found.forEach(({sec})=>{
+    const ta=document.getElementById('mta_'+sec.id);
+    if(ta){
+      miniUpdateWC(sec.id,ta.value);
+      ta.addEventListener('input',e=>{
+        setAnswer(sec.id,e.target.value);
+        miniUpdateWC(sec.id,e.target.value);
+        // update footer progress
+        const p=totalProgress();
+        const ft=document.querySelector('.mini-footer span');
+        if(ft) ft.textContent=`💾 Auto-saved · ${p.done}/${p.total} sections complete across this course`;
+      });
+    }
+  });
+}
+
+function miniUpdateWC(id,v){
+  const w=(!v||v.trim()==='')?0:v.trim().split(/\s+/).length;
+  const sec=findSec(id);
+  const target=sec?sec.sec.wt:100;
+  const lbl=document.getElementById('mwclbl_'+id);
+  const bar=document.getElementById('mwcbar_'+id);
+  const chip=document.getElementById('mwc_'+id);
+  if(lbl) lbl.textContent=w+' word'+(w!==1?'s':'');
+  if(bar) bar.style.width=Math.min(100,Math.round(w/target*100))+'%';
+  if(chip){chip.textContent=w+' wds';chip.style.color=w>=target?'#2e7d32':w>0?'var(--blue-lt)':'var(--muted)'}
+}
+
+function copyPrompt(taId,btn){
+  const box=btn.parentElement.querySelector('.ai-prompt-box');
+  if(box){navigator.clipboard.writeText(box.textContent).then(()=>{btn.textContent='✅ Copied!';setTimeout(()=>btn.textContent='📋 Copy Prompt',2000)});}
 }
 
 function renderSelector(){
