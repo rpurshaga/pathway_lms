@@ -881,6 +881,9 @@ function setStatus(msg){ statusEl.textContent = msg; }
   var windowEl  = document.getElementById('coachWindow');
   var titleEl   = document.getElementById('coachTitle');
 
+  // No message → hide the whole coach window; nothing to show
+  if(!coachText){ windowEl.style.display='none'; return; }
+
   labelEl.textContent = coachName;
   titleEl.textContent = coachTitleTxt;
 

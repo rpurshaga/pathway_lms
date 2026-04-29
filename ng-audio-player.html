@@ -581,7 +581,7 @@ body {
   border: 2px solid;
   border-color: var(--w98-darker) var(--w98-white) var(--w98-white) var(--w98-darker);
   margin: 6px;
-  padding: 16px 20px;
+  padding: 20px 24px 24px;
   color: var(--w98-field-text);
   font-size: 13px;
   line-height: var(--reading-lh);
@@ -589,54 +589,89 @@ body {
   word-spacing: var(--reading-ws);
   transition: line-height .3s, letter-spacing .3s, word-spacing .3s;
 }
+
+/* ── Headings ── */
 .w98-paper h1 {
   font-family: var(--w98-font);
-  font-size: 15px; font-weight: 700;
+  font-size: 16px; font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin: 0 0 4px 0;
+  letter-spacing: 1px;
+  margin: 20px 0 6px;
   color: var(--w98-title);
   border-bottom: 2px solid var(--course-color);
-  padding-bottom: 4px;
+  padding-bottom: 5px;
 }
+.w98-paper h1:first-child { margin-top: 0; }
+
 .w98-paper h2 {
   font-family: var(--w98-font);
-  font-size: 13px; font-weight: 700; font-style: italic;
+  font-size: 14px; font-weight: 700;
   color: var(--course-color);
-  margin: 0 0 12px 0;
+  margin: 18px 0 6px;
+  padding-left: 6px;
+  border-left: 3px solid var(--course-color);
 }
+.w98-paper h2:first-child { margin-top: 0; }
+
 .w98-paper h3 {
   font-family: var(--w98-font);
-  font-size: 12px; font-weight: 700;
+  font-size: 13px; font-weight: 700; font-style: italic;
   color: var(--w98-field-text);
-  margin: 16px 0 6px;
+  margin: 14px 0 4px;
+  opacity: 0.9;
 }
-.w98-paper p { margin: 0 0 12px 0; }
+
+/* ── Body text ── */
+.w98-paper p {
+  margin: 0 0 12px;
+  text-align: justify;
+  hyphens: auto;
+}
+.w98-paper p:last-child { margin-bottom: 0; }
+
+/* ── Inline emphasis ── */
+.w98-paper strong { font-weight: 700; }
+.w98-paper em     { font-style: italic; opacity: 0.9; }
+
+/* ── Bullet lists ── */
 .w98-paper ul {
   list-style: none;
-  margin: 6px 0 14px 0;
-  padding: 8px 14px;
-  background: #f4f4f0;
-  border: 1px solid var(--w98-darker);
+  margin: 4px 0 14px;
+  padding: 10px 14px 10px 14px;
+  background: rgba(0,0,0,0.03);
+  border: 1px solid var(--w98-dark);
+  border-radius: 0;
 }
 [data-theme="dark"] .w98-paper ul,
 [data-theme="amber"] .w98-paper ul { background: rgba(255,255,255,0.05); }
-.w98-paper ul li { position: relative; padding: 2px 0 2px 20px; }
+
+.w98-paper ul li {
+  position: relative;
+  padding: 3px 0 3px 22px;
+  line-height: 1.55;
+}
 .w98-paper ul li::before {
   content: '';
   position: absolute;
-  left: 4px; top: 9px;
+  left: 5px; top: 10px;
   width: 6px; height: 6px;
   background: var(--course-color);
-  border: 1px solid var(--w98-black);
+  border: 1px solid var(--w98-darker);
 }
+.w98-paper ul li + li { border-top: 1px dotted var(--w98-dark); padding-top: 4px; }
+
+/* ── Blockquote ── */
 .w98-paper blockquote {
-  border-left: 3px solid var(--course-color);
-  padding: 4px 12px;
-  margin: 0 0 12px;
-  color: var(--w98-dark);
+  border-left: 4px solid var(--course-color);
+  background: rgba(0,0,0,0.025);
+  padding: 8px 14px;
+  margin: 0 0 14px;
   font-style: italic;
+  color: var(--w98-field-text);
+  opacity: 0.85;
 }
+[data-theme="dark"] .w98-paper blockquote,
+[data-theme="amber"] .w98-paper blockquote { background: rgba(255,255,255,0.04); }
 
 /* Bionic */
 .w98-bionic b { font-weight: 700; }
@@ -1838,7 +1873,9 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
     var imgUrl      = b64('img')  || P.get('imgSrc')  || d.img;
     var imgFallback = d.imgFallback || '';
     var coachName   = b64text('name') || P.get('name') || d.name;
-    var coachText   = b64text('text') || P.get('text') || d.text;
+    var coachText   = b64text('text') || P.get('text') || '';
+    var hasCoach    = !!coachText;   // true only when an explicit message was passed
+    if (!hasCoach) coachText = d.text;   // keep default for any code path that might run
     var coachSpeed  = parseInt(P.get('speed')  || '30',  10);
     var startDelay  = parseInt(P.get('delay')  || '400', 10);
     var coachLoop   = P.get('loop') === '1' || P.get('loop') === 'true';
@@ -1852,6 +1889,9 @@ mark.w98-hl-red   { background: rgba(252,165,165,0.45); }
     var minBtn     = document.getElementById('coachMin');
     var windowEl   = document.getElementById('coachWindow');
     var titleEl    = document.getElementById('coachTitle');
+
+    /* ─── No message → hide the whole coach window ─────────────── */
+    if (!hasCoach) { windowEl.style.display = 'none'; return; }
 
     labelEl.textContent = coachName;
     titleEl.textContent = coachTitle;
