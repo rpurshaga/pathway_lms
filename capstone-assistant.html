@@ -299,8 +299,8 @@ const COURSES = {
   tagline:"Your First Three Years of Ministry — Built Before You Start",
   key:"c1",
   docs:[
-    {id:"d1",num:"Doc 1",title:"Ministry Blueprint",desc:"Who You Are & What You Believe",
-     format:"Paragraph form • 1–2 pages • Double-spaced",
+    {id:"d1",num:"Doc 1",title:"Ministry Blueprint",desc:"Who You Are & What You Believe — Foundation & Strategy",
+     format:"Paragraph form + structured outline • 2–3 pages • Double-spaced",
      secs:[
       {id:"calling",title:"Personal Calling Statement",
        trigger:"After Section 1 — Vitals of NextGen Ministry",
@@ -320,23 +320,6 @@ const COURSES = {
          weak:"I have always felt called to work with young people. God placed a passion in my heart for the next generation.",
          wNote:"No names, no places. Could describe anyone."
        },wt:150},
-      {id:"theology",title:"Core Theological Convictions",
-       trigger:"After Section 2 — Biblical Literacy",
-       desc:"Name 2–3 theological convictions that shape how you do NextGen ministry. Don't just list doctrines — articulate why they matter to a 14-year-old sitting in your youth room. Ground this in Scripture.",
-       ph:"What doctrines are non-negotiable in how you teach and disciple young people?",
-       ai:`After writing your own draft:
-
-"In Section 2 I studied how to develop biblical literacy in students — lesson planning methods, gospel fluency, Christian worldview formation, and how to make Scripture accessible without making it shallow. Here are my theological convictions: [PASTE YOURS]
-
-(1) Section 2 covered gospel fluency — the ability to speak the gospel into everyday situations. Does my theology include a conviction about students being able to do this, or is it something only I do for them? (2) The section pushed leaders to develop a Christian worldview in students, not just Bible knowledge. Do my theological convictions equip students to think differently about culture, or do they stay inside the church walls? (3) The section challenged leaders to engage Scripture with depth, not just accessibility. Does each conviction reflect real biblical engagement, or am I restating a doctrinal position without showing how I arrived there? Push me to connect conviction to practice."`,
-       guide:{
-         what:"Not a doctrinal exam — show how theology shapes what you actually do.",
-         qs:["Which truths most shape your ministry?","How does Scripture affect a Wednesday night?","Why does this matter to a 14-year-old?"],
-         strong:"Scripture is living and active — not just historically true but presently powerful. I don't simplify the Bible for teenagers; the Spirit illuminates text to a fourteen-year-old like He does for a seminary student.",
-         sNote:"Each conviction connects to ministry implication.",
-         weak:"I believe in the Bible as God's Word. I affirm the 16 Fundamental Truths.",
-         wNote:"A checklist, not a philosophy."
-       },wt:150},
       {id:"win",title:"Ministry Win Definition",
        trigger:"After Section 1 — Vitals of NextGen Ministry",
        desc:"Define what a win looks like at three scales: Weekly (what happened Wednesday that tells you it's working?), Monthly (what trend are you watching?), At graduation (what kind of 18-year-old are you sending out?). Be specific enough that someone could observe for a month and tell you whether you're winning.",
@@ -354,22 +337,22 @@ const COURSES = {
          weak:"A win is when a student grows closer to God.",
          wNote:"Unmeasurable."
        },wt:120},
-      {id:"discipleship",title:"Discipleship Philosophy",
-       trigger:"After Section 6 — Spiritual Disciplines and Mentoring",
-       desc:"What does a mature (not perfect) student look like? What are the markers? How does your ministry intentionally produce those markers rather than hoping they happen? Describe your philosophy of discipleship — not your programs, but the conviction underneath them.",
-       ph:"What does a formed student look like, and how does your ministry produce that formation?",
+      {id:"theology",title:"Core Theological Convictions",
+       trigger:"After Section 2 — Biblical Literacy",
+       desc:"Name 2–3 theological convictions that shape how you do NextGen ministry. Don't just list doctrines — articulate why they matter to a 14-year-old sitting in your youth room. Ground this in Scripture.",
+       ph:"What doctrines are non-negotiable in how you teach and disciple young people?",
        ai:`After writing your own draft:
 
-"Section 6 was the most extensive section in Course 1 — covering spiritual disciplines, mentoring relationships, teaching students to pray for others, rites of passage, and how structured practice produces faith development over time. Here is my discipleship philosophy: [PASTE YOURS]
+"In Section 2 I studied how to develop biblical literacy in students — lesson planning methods, gospel fluency, Christian worldview formation, and how to make Scripture accessible without making it shallow. Here are my theological convictions: [PASTE YOURS]
 
-(1) Section 6 showed that discipleship requires both structured spiritual practices AND relational mentoring — does my philosophy rely on one at the expense of the other, or does it intentionally hold both together? (2) The section covered rites of passage as intentional formation milestones — does my philosophy include specific markers that a student moves through, or is it purely relational with no defined progression? (3) Teaching students to pray for others — not just to be prayed for — was a major theme. Is intercessory practice part of my discipleship framework, or is it something I hope happens naturally? Ask me questions that push toward specificity."`,
+(1) Section 2 covered gospel fluency — the ability to speak the gospel into everyday situations. Does my theology include a conviction about students being able to do this, or is it something only I do for them? (2) The section pushed leaders to develop a Christian worldview in students, not just Bible knowledge. Do my theological convictions equip students to think differently about culture, or do they stay inside the church walls? (3) The section challenged leaders to engage Scripture with depth, not just accessibility. Does each conviction reflect real biblical engagement, or am I restating a doctrinal position without showing how I arrived there? Push me to connect conviction to practice."`,
        guide:{
-         what:"The conviction underneath your programs. Showing up → owning faith.",
-         qs:["What's your named framework?","What does the first-visit-to-student-leader journey look like?"],
-         strong:"Three postures: belong, believe, become. Groups of 6–8, trained adults committed one year. Some students spend two years in 'belong' — that's okay.",
-         sNote:"Named framework, details, patience.",
-         weak:"I believe in relational discipleship and walking alongside students.",
-         wNote:"No structure."
+         what:"Not a doctrinal exam — show how theology shapes what you actually do.",
+         qs:["Which truths most shape your ministry?","How does Scripture affect a Wednesday night?","Why does this matter to a 14-year-old?"],
+         strong:"Scripture is living and active — not just historically true but presently powerful. I don't simplify the Bible for teenagers; the Spirit illuminates text to a fourteen-year-old like He does for a seminary student.",
+         sNote:"Each conviction connects to ministry implication.",
+         weak:"I believe in the Bible as God's Word. I affirm the 16 Fundamental Truths.",
+         wNote:"A checklist, not a philosophy."
        },wt:150},
       {id:"development",title:"Developmental Strategy",
        trigger:"After Section 3 — Age-Appropriate Hermeneutics",
@@ -388,6 +371,16 @@ const COURSES = {
          weak:"I adjust based on age and maturity.",
          wNote:"Says nothing about how."
        },wt:150},
+      {id:"agelevel",title:"Age-Level Strategy",
+       trigger:"After Section 3 — Age-Appropriate Hermeneutics",
+       desc:"Translate your Doc 1 developmental strategy into an operational format. For each age level (kids, middle, high school): environment design, communication approach, and key activities. This is the operational layer underneath your teaching calendar.",
+       ph:"Kids: Environment: ... Communication: ... Activities: ...\nMiddle: ...\nHigh School: ...",
+       ai:`After drafting:
+
+"In Section 3 I studied age-appropriate hermeneutics — how to interpret and present Scripture through the lens of developmental stage. I worked through Piaget's cognitive stages (concrete vs. abstract), Erikson's psychosocial stages (trust, autonomy, initiative, identity), and Bronfenbrenner's ecological model (the student in family, school, peer, and cultural systems). Here is my age-level strategy: [PASTE YOURS]
+
+(1) Piaget tells us kids operate in concrete thinking while teens can handle abstraction — looking at my kids environment design vs. my high school environment, do the physical space and activities reflect this difference, or do they just use smaller chairs? (2) Erikson's identity stage (ages 12–18) means my middle and high school students are actively constructing who they are — does my communication approach for those ages leave room for question, doubt, and exploration, or does it assume students just need correct information delivered clearly? (3) Could a brand-new volunteer with no youth ministry background read my age-level strategy and walk into a 4th grade class or a 10th grade small group and know concretely how to communicate differently in each setting?"`,
+       guide:{what:"The operational translation of your developmental strategy.",qs:["Does each level genuinely differ?","Could a substitute implement this?"]},wt:150},
       {id:"teaching",title:"Teaching Philosophy",
        trigger:"After Section 4 — Curriculum Design and Annual Planning",
        desc:"How do you teach the Bible to young people? What is your approach to interpreting and applying Scripture in a youth context? How do you balance depth and accessibility? How do you move from text to life? What does faithful teaching look like when your audience is 13?",
@@ -405,60 +398,19 @@ const COURSES = {
          weak:"I teach in a relevant and engaging way using media and interactive elements.",
          wNote:"Methods listed, never explained."
        },wt:150},
-      {id:"pentecostal",title:"Pentecostal Distinctives",
-       trigger:"After Section 5 — Pentecostal Emphasis on the Holy Spirit",
-       desc:"What makes your ministry distinctly Pentecostal — not in doctrine but in practice? How do you create space for the Spirit without manufacturing emotion? How do you disciple a student through a genuine encounter with God? How do you handle the planning/spontaneity tension?",
-       ph:"Spirit-empowered ministry in my context looks like... I create space by...",
-       ai:`After writing your draft:
+      {id:"teach_plan",title:"Biblical Truth — Teaching Plan",
+       trigger:"After Section 4 — Curriculum Design and Annual Planning (NXT-001)",
+       desc:"Draft your annual teaching plan. Map the year's teaching calendar: series titles or themes by month/quarter, how series connect to the annual vision, what curriculum resources you'll use, and how you balance topical teaching with biblical exposition. Reference your Teaching Philosophy from Doc 1/Doc 2. Include how teaching is evaluated.",
+       ph:"Q1 Series: [Title] | [Months] | [Primary Scripture] | [Vision connection]\nQ2 Series: ...\nQ3 Series: ...\nQ4 Series: ...\n\nCurriculum resources: ...\nExpository vs. topical balance: ...\nHow teaching is evaluated: ...",
+       ai:`After drafting:
 
-"In Section 5 I studied the Pentecostal emphasis on the Holy Spirit in NextGen ministry — including how to develop an atmosphere for revival, how to lead students into the baptism of the Holy Spirit without manufacturing pressure, and how to equip volunteers to facilitate Spirit-empowered moments rather than performing them solo. Here is my Pentecostal distinctives section: [PASTE YOURS]
+"This document draws on Section 4 — Curriculum Design and Annual Planning (NXT-001) and Section 1 — Developing Yourself as a Leader (NXT-003). In those sections I studied how to build a teaching calendar that serves a formation arc rather than just filling weeks, how to align series to a year vision, and how to evaluate whether teaching is producing the outcomes it was designed to produce. Here is my annual teaching plan: [PASTE YOURS]
 
-(1) Section 5 covered developing an atmosphere for revival — not engineering emotion, but creating genuine expectation. Does my distinctives section describe an atmosphere I intentionally cultivate, or does it restate the doctrine of Spirit baptism without describing what I actually do on a Wednesday night to create space for it? (2) The section specifically addressed how to lead students into Spirit baptism — does my philosophy show pastoral wisdom about removing pressure while still leaving genuine room for the Spirit to move? (3) The material pushed leaders to train volunteers to facilitate Spirit-led moments — is my team equipped to create and sustain these environments without me being present, or does the Spirit-emphasis depend entirely on me? What would a non-Pentecostal pastor NOT be able to write in this section?"`,
-       guide:{
-         what:"AG identity in practice — not what you believe, but how it shapes what happens.",
-         qs:["How do you protect space for the Spirit?","How do you handle Spirit baptism without pressure?"],
-         strong:"I protect space — don't script every minute. Worship team sensitive to the Spirit, not just finishing the set list. I never pressure tongues — that's the Spirit's work.",
-         sNote:"\"Protecting space\" — pastoral instinct. Maturity.",
-         weak:"I believe in Spirit baptism with evidence of tongues. I incorporate worship.",
-         wNote:"Doctrine restated, not practiced."
-       },wt:150},
-      {id:"family",title:"Family Partnership Philosophy",
-       trigger:"After Section 7 — Family Discipleship and Parent Partnership",
-       desc:"What is the family's role in spiritual formation vs. your role? Where does the church's responsibility begin and end? How do you partner with engaged parents? How do you serve students whose parents are absent or disengaged? Avoid clichés — say what you actually mean.",
-       ph:"The family's role is... My role is... For engaged parents I... For absent/disengaged parents I...",
-       ai:`After writing your draft:
-
-"In Section 7 I studied family discipleship and parent partnership — the biblical case that parents are the primary disciplers of their children, not the church, and the practical strategies for equipping both engaged parents and students from absent or fractured homes. Here is my family partnership philosophy: [PASTE YOURS]
-
-(1) Section 7 made the case that the church comes alongside the family rather than replacing it — does my philosophy reflect that hierarchy, or does it position me as the primary spiritual formation agent with parents as supporters of my program? (2) The section covered specific equipping strategies: parent workshops, home discipleship resources, and regular communication channels. Does my philosophy name any specific equipping tools, or does it stay at the level of 'we partner with parents'? (3) Section 7 directly addressed students whose families are absent or disengaged — not as an edge case, but as a ministry reality. What is my actual plan for the student whose family is not a partner? Have I drawn a clear line between where the church's responsibility begins and where it cannot go?"`,
-       guide:{
-         what:"Parents as partners + the reality of unchurched and fractured families.",
-         qs:["How do you equip parents?","What happens when the family is the problem, not the partner?"],
-         strong:"Communication, equipping nights, available content. For unsupported students: mentors, host homes, open-door policy. Where family is absent, church becomes family.",
-         sNote:"Idealism + realism. Specific strategies.",
-         weak:"I believe in partnering with parents. Communication is key.",
-         wNote:"Logistics, not philosophy."
-       },wt:150},
-      {id:"scope",title:"Scope of Ministry",
-       trigger:"After Section 7 — Family Discipleship and Parent Partnership (closing reflection)",
-       desc:"Define the boundaries of your role. What is your lane? What is not? Write 3–5 sentences that draw a clear line between what you will own and what you will refer, delegate, or decline. This protects your calling, your family, and your longevity.",
-       ph:"My lane is... What is not my lane: ... This boundary protects...",
-       ai:`After writing your draft:
-
-"I have now completed Course 1 — working through ministry vitals, biblical literacy, developmental theory, curriculum design, Pentecostal distinctives, spiritual disciplines, and family partnership. Here is my scope of ministry: [PASTE YOURS]
-
-(1) My calling statement (from Section 1) named a specific burden. Does my scope of ministry protect that burden — does it draw boundaries that make space for the work I said mattered most, or have I already let scope creep in without naming it? (2) Is this specific enough that my senior pastor could read it and know without ambiguity what I will own, what I will refer, and what I will decline — or does it still require a conversation to clarify? (3) The hardest boundary for most NextGen leaders is the one that costs relational capital to hold. Have I named that specific boundary honestly, and written what I will actually say when someone asks me to cross it?"`,
-       guide:{
-         what:"The lane you'll stay in — and what you'll say no to. Prevents burnout.",
-         qs:["What are you willing to say no to?","Does this protect what your calling statement said matters most?"],
-         strong:"6th–12th grade. I own the spiritual formation of the students in my care — not nursery, not adult small groups, not event coordination for the whole church. I refer mental health crises to licensed counselors and communicate with parents.",
-         sNote:"Honest, self-aware, confident.",
-         weak:"My ministry is for youth 12–18. I hope to reach as many as possible.",
-         wNote:"No actual scope defined."
-       },wt:100}
+(1) Section 4 in NXT-001 taught that a series should have a clear purpose — not just a topic but a formation intention. For each series in my plan, can I state in one sentence what this series is designed to produce in a student who engages with it? If I can only name the subject, not the intended change, the purpose isn't clear enough yet. (2) The curriculum design material covered topical and expository teaching as complementary — topical addresses felt needs, expository builds biblical literacy. Does my year include both? If it's all topical, what biblical navigation capacity am I not developing? If all expository, which pressing questions in students' lives go unaddressed? (3) NXT-003 Section 1 on leadership development included evaluation as a leadership discipline. What is my actual evaluation mechanism for teaching — how will I know six months into the year whether my teaching plan is working, and what will I do if it isn't?"`,
+       guide:{what:"Teaching calendar aligned to annual vision and Doc 1 teaching philosophy.",qs:["Does every series connect to the year vision?","Is there a teaching evaluation mechanism?"]},wt:200}
     ]},
-    {id:"d2",num:"Doc 2",title:"Ministry Map",desc:"How You Will Lead & Execute",
-     format:"Structured outline / calendar / table",
+    {id:"d2",num:"Doc 2",title:"Ministry Practice",desc:"How You Will Lead & Execute",
+     format:"Structured outline / calendar / table • 2–3 pages",
      secs:[
       {id:"pathway",title:"Formation Pathway Overlay",
        trigger:"After Section 1 — Vitals of NextGen Ministry",
@@ -480,6 +432,50 @@ const COURSES = {
 
 (1) Section 4 taught that each teaching series should have a clear message focus and purpose — not just a topic. For each series on my calendar, can I state in one sentence what this series is supposed to accomplish in a student? Or is each one just a subject? (2) The section covered the topical vs. expository tension — does my year include both, or does it default entirely to one approach? If all topical, what does a student miss? If all expository, what felt needs go unaddressed? (3) Section 4 tied curriculum design to the developmental stages from Section 3 — does my calendar show awareness of what my specific age group can handle, or would this calendar work for any audience regardless of age?"`,
        guide:{what:"Series mapped to quarters with formation pathway alignment.",qs:["Does each series have a Scripture anchor?","Does the calendar align with your formation pathway?"]},wt:150},
+      {id:"pentecostal",title:"Pentecostal Distinctives",
+       trigger:"After Section 5 — Pentecostal Emphasis on the Holy Spirit",
+       desc:"What makes your ministry distinctly Pentecostal — not in doctrine but in practice? How do you create space for the Spirit without manufacturing emotion? How do you disciple a student through a genuine encounter with God? How do you handle the planning/spontaneity tension?",
+       ph:"Spirit-empowered ministry in my context looks like... I create space by...",
+       ai:`After writing your draft:
+
+"In Section 5 I studied the Pentecostal emphasis on the Holy Spirit in NextGen ministry — including how to develop an atmosphere for revival, how to lead students into the baptism of the Holy Spirit without manufacturing pressure, and how to equip volunteers to facilitate Spirit-empowered moments rather than performing them solo. Here is my Pentecostal distinctives section: [PASTE YOURS]
+
+(1) Section 5 covered developing an atmosphere for revival — not engineering emotion, but creating genuine expectation. Does my distinctives section describe an atmosphere I intentionally cultivate, or does it restate the doctrine of Spirit baptism without describing what I actually do on a Wednesday night to create space for it? (2) The section specifically addressed how to lead students into Spirit baptism — does my philosophy show pastoral wisdom about removing pressure while still leaving genuine room for the Spirit to move? (3) The material pushed leaders to train volunteers to facilitate Spirit-led moments — is my team equipped to create and sustain these environments without me being present, or does the Spirit-emphasis depend entirely on me? What would a non-Pentecostal pastor NOT be able to write in this section?"`,
+       guide:{
+         what:"AG identity in practice — not what you believe, but how it shapes what happens.",
+         qs:["How do you protect space for the Spirit?","How do you handle Spirit baptism without pressure?"],
+         strong:"I protect space — don't script every minute. Worship team sensitive to the Spirit, not just finishing the set list. I never pressure tongues — that's the Spirit's work.",
+         sNote:"\"Protecting space\" — pastoral instinct. Maturity.",
+         weak:"I believe in Spirit baptism with evidence of tongues. I incorporate worship.",
+         wNote:"Doctrine restated, not practiced."
+       },wt:150},
+      {id:"encounter",title:"Spiritual Transformation — Encounter Strategy",
+       trigger:"After Section 5 — Pentecostal Emphasis on the Holy Spirit (NXT-001) + Section 6 — Spiritual Disciplines and Mentoring (NXT-001)",
+       desc:"Draft your spiritual transformation strategy. How does your ministry create space for encounters with God? Cover: altar/response time philosophy, prayer culture (when, how, who leads), Spirit-emphasis integration in weekly programming (not just special services), and how you disciple students through spiritual experiences rather than treating them as isolated events.",
+       ph:"Altar/response philosophy: we create space by...\nPrayer culture: ...\nSpirit-emphasis in weekly programming: ...\nHow we disciple through (not just celebrate) spiritual experiences: ...",
+       ai:`After drafting:
+
+"This document draws on Section 5 — Pentecostal Emphasis on the Holy Spirit and Section 6 — Spiritual Disciplines and Mentoring (both NXT-001). Section 5 covered how to create environments where genuine Spirit encounters happen, not manufactured emotion. Section 6 covered how to disciple students through spiritual experiences — not just celebrate the moment but build on it through structured practice. Here is my encounter strategy: [PASTE YOURS]
+
+(1) Section 5 showed that Spirit-emphasis requires intentional weekly environment design, not just the presence of a worship band. Looking at a typical Wednesday in my ministry: what specific elements create space for a genuine response to God — and are these present every week, or only when the calendar is cleared for a 'special service'? (2) Section 6 on spiritual disciplines showed that a spiritual experience without follow-up discipleship produces emotional peaks, not lasting formation. For each type of encounter in my strategy (altar response, prayer for healing, Spirit baptism, salvation), what is the specific next step for that student in the following 72 hours — and who is responsible for making it happen? (3) Does my encounter strategy connect explicitly to my Pentecostal Distinctives from Doc 1, or are these two documents describing the same conviction in different language without referencing each other?"`,
+       guide:{what:"Weekly Spirit-emphasis, altar philosophy, and discipleship THROUGH (not just after) encounters.",qs:["Is this weekly, not just for special services?","Is there follow-up after spiritual experiences?"]},wt:150},
+      {id:"discipleship",title:"Discipleship Philosophy",
+       trigger:"After Section 6 — Spiritual Disciplines and Mentoring",
+       desc:"What does a mature (not perfect) student look like? What are the markers? How does your ministry intentionally produce those markers rather than hoping they happen? Describe your philosophy of discipleship — not your programs, but the conviction underneath them.",
+       ph:"What does a formed student look like, and how does your ministry produce that formation?",
+       ai:`After writing your own draft:
+
+"Section 6 was the most extensive section in Course 1 — covering spiritual disciplines, mentoring relationships, teaching students to pray for others, rites of passage, and how structured practice produces faith development over time. Here is my discipleship philosophy: [PASTE YOURS]
+
+(1) Section 6 showed that discipleship requires both structured spiritual practices AND relational mentoring — does my philosophy rely on one at the expense of the other, or does it intentionally hold both together? (2) The section covered rites of passage as intentional formation milestones — does my philosophy include specific markers that a student moves through, or is it purely relational with no defined progression? (3) Teaching students to pray for others — not just to be prayed for — was a major theme. Is intercessory practice part of my discipleship framework, or is it something I hope happens naturally? Ask me questions that push toward specificity."`,
+       guide:{
+         what:"The conviction underneath your programs. Showing up → owning faith.",
+         qs:["What's your named framework?","What does the first-visit-to-student-leader journey look like?"],
+         strong:"Three postures: belong, believe, become. Groups of 6–8, trained adults committed one year. Some students spend two years in 'belong' — that's okay.",
+         sNote:"Named framework, details, patience.",
+         weak:"I believe in relational discipleship and walking alongside students.",
+         wNote:"No structure."
+       },wt:150},
       {id:"milestones",title:"Spiritual Milestones",
        trigger:"After Section 5 — Pentecostal Emphasis on the Holy Spirit",
        desc:"Identify the spiritual milestones your ministry will intentionally cultivate and celebrate: salvation, water baptism, baptism in the Holy Spirit, first time serving, first time leading, first time sharing faith. For each: when in the year it's most likely to happen and how you create space for it.",
@@ -490,16 +486,6 @@ const COURSES = {
 
 (1) Section 5 showed that Spirit encounters require an intentional environment, not just a spontaneous moment. For each milestone on my list — where on the calendar does my ministry intentionally create the conditions for this milestone to happen? If it's not on the calendar, when does it occur? (2) The section raised the question of what happens after a student has a significant spiritual experience — not just celebration, but discipleship through the moment. For each milestone, do I have a specific follow-up plan for the 72 hours after it happens, or does the student's experience evaporate without integration? (3) Is Spirit baptism on my milestone list treated as something I lead students toward through invitation and teaching, or as something that just happens if the environment is good enough? Does my plan reflect what I learned about leading students into this experience?"`,
        guide:{what:"Milestones your ministry cultivates — placed on the calendar, not just listed.",qs:["Are milestones calendar-anchored?","What's the follow-up system after each?"]},wt:120},
-      {id:"agelevel",title:"Age-Level Strategy",
-       trigger:"After Section 3 — Age-Appropriate Hermeneutics",
-       desc:"Translate your Doc 1 developmental strategy into an operational format. For each age level (kids, middle, high school): environment design, communication approach, and key activities. This is the operational layer underneath your teaching calendar.",
-       ph:"Kids: Environment: ... Communication: ... Activities: ...\nMiddle: ...\nHigh School: ...",
-       ai:`After drafting:
-
-"In Section 3 I studied age-appropriate hermeneutics — how to interpret and present Scripture through the lens of developmental stage. I worked through Piaget's cognitive stages (concrete vs. abstract), Erikson's psychosocial stages (trust, autonomy, initiative, identity), and Bronfenbrenner's ecological model (the student in family, school, peer, and cultural systems). Here is my age-level strategy: [PASTE YOURS]
-
-(1) Piaget tells us kids operate in concrete thinking while teens can handle abstraction — looking at my kids environment design vs. my high school environment, do the physical space and activities reflect this difference, or do they just use smaller chairs? (2) Erikson's identity stage (ages 12–18) means my middle and high school students are actively constructing who they are — does my communication approach for those ages leave room for question, doubt, and exploration, or does it assume students just need correct information delivered clearly? (3) Could a brand-new volunteer with no youth ministry background read my age-level strategy and walk into a 4th grade class or a 10th grade small group and know concretely how to communicate differently in each setting?"`,
-       guide:{what:"The operational translation of your developmental strategy.",qs:["Does each level genuinely differ?","Could a substitute implement this?"]},wt:150},
       {id:"discipleship_sys",title:"Discipleship Systems",
        trigger:"After Section 6 — Spiritual Disciplines and Mentoring",
        desc:"Draft the systems that make discipleship happen: small group structure (who, when, how), mentoring pairings (how matched and guided?), spiritual disciplines introduction (what practices, at what age?), and follow-up systems (what happens after camp, altar call, salvation?).",
@@ -510,6 +496,23 @@ const COURSES = {
 
 (1) Section 6 showed that spiritual disciplines require triggers — specific moments that activate them. For each system I've drafted (small groups, mentoring, disciplines, follow-up), what is the specific event or calendar moment that activates it? If a student shows up for the first time on a random Wednesday, which systems engage immediately and which require them to be invited in? (2) The section on teaching students to pray for others showed that intercession is a learned skill, not a natural habit — is prayer practice embedded in my small group structure and mentoring relationships with a specific format, or is it assumed to happen without structure? (3) Is my follow-up system after a significant moment (camp, altar call, first time here) specific enough that a volunteer could execute it without me? Walk me through what happens between the moment and the following Sunday — who does what, in what order?"`,
        guide:{what:"The pipes underneath the calendar. Systems that have triggers and owners.",qs:["Does each system have a trigger?","Could it run without you?"]},wt:150},
+      {id:"family",title:"Family Partnership Philosophy",
+       trigger:"After Section 7 — Family Discipleship and Parent Partnership",
+       desc:"What is the family's role in spiritual formation vs. your role? Where does the church's responsibility begin and end? How do you partner with engaged parents? How do you serve students whose parents are absent or disengaged? Avoid clichés — say what you actually mean.",
+       ph:"The family's role is... My role is... For engaged parents I... For absent/disengaged parents I...",
+       ai:`After writing your draft:
+
+"In Section 7 I studied family discipleship and parent partnership — the biblical case that parents are the primary disciplers of their children, not the church, and the practical strategies for equipping both engaged parents and students from absent or fractured homes. Here is my family partnership philosophy: [PASTE YOURS]
+
+(1) Section 7 made the case that the church comes alongside the family rather than replacing it — does my philosophy reflect that hierarchy, or does it position me as the primary spiritual formation agent with parents as supporters of my program? (2) The section covered specific equipping strategies: parent workshops, home discipleship resources, and regular communication channels. Does my philosophy name any specific equipping tools, or does it stay at the level of 'we partner with parents'? (3) Section 7 directly addressed students whose families are absent or disengaged — not as an edge case, but as a ministry reality. What is my actual plan for the student whose family is not a partner? Have I drawn a clear line between where the church's responsibility begins and where it cannot go?"`,
+       guide:{
+         what:"Parents as partners + the reality of unchurched and fractured families.",
+         qs:["How do you equip parents?","What happens when the family is the problem, not the partner?"],
+         strong:"Communication, equipping nights, available content. For unsupported students: mentors, host homes, open-door policy. Where family is absent, church becomes family.",
+         sNote:"Idealism + realism. Specific strategies.",
+         weak:"I believe in partnering with parents. Communication is key.",
+         wNote:"Logistics, not philosophy."
+       },wt:150},
       {id:"parent_rhythm",title:"Parent Engagement Rhythm",
        trigger:"After Section 7 — Family Discipleship and Parent Partnership",
        desc:"Draft your parent engagement rhythm. What communication do parents receive and when (weekly updates, monthly newsletters, quarterly meetings)? What events include families? When do you equip parents with resources for home discipleship? Be specific — 'monthly parent email' beats 'regular communication.'",
@@ -519,7 +522,24 @@ const COURSES = {
 "In Section 7 I studied family discipleship and parent partnership — including the principle that parents are the primary disciplers of their children, and the church's role is to equip and reinforce, not to replace. The section covered practical equipping strategies: workshops, home discipleship resources, communication systems, and how to engage both highly involved parents and absent or disengaged ones. Here is my parent engagement rhythm: [PASTE YOURS]
 
 (1) Section 7 drew a clear line between informing parents (telling them what we did) and equipping parents (giving them tools to continue the work at home). Looking at each communication cadence in my rhythm — is it informing, equipping, or both? Flag any item that is only informing. (2) The section addressed parents who are disengaged or absent — does my engagement rhythm have a specific pathway for the student whose parents never open the weekly email and never attend a family event, or does my rhythm assume parental engagement as a baseline? (3) Does this rhythm appear on my teaching calendar, or is it a separate document that will be disconnected from the actual ministry year? Name which calendar months include which parent touchpoints."`,
-       guide:{what:"Specific communication cadence, family events, parent equipping touchpoints on calendar.",qs:["Are touchpoints calendar-anchored?","Is there equipping, not just informing?"]},wt:120}
+       guide:{what:"Specific communication cadence, family events, parent equipping touchpoints on calendar.",qs:["Are touchpoints calendar-anchored?","Is there equipping, not just informing?"]},wt:120},
+      {id:"scope",title:"Scope of Ministry",
+       trigger:"After Section 7 — Family Discipleship and Parent Partnership (closing reflection)",
+       desc:"Define the boundaries of your role. What is your lane? What is not? Write 3–5 sentences that draw a clear line between what you will own and what you will refer, delegate, or decline. This protects your calling, your family, and your longevity.",
+       ph:"My lane is... What is not my lane: ... This boundary protects...",
+       ai:`After writing your draft:
+
+"I have now completed Course 1 — working through ministry vitals, biblical literacy, developmental theory, curriculum design, Pentecostal distinctives, spiritual disciplines, and family partnership. Here is my scope of ministry: [PASTE YOURS]
+
+(1) My calling statement (from Section 1) named a specific burden. Does my scope of ministry protect that burden — does it draw boundaries that make space for the work I said mattered most, or have I already let scope creep in without naming it? (2) Is this specific enough that my senior pastor could read it and know without ambiguity what I will own, what I will refer, and what I will decline — or does it still require a conversation to clarify? (3) The hardest boundary for most NextGen leaders is the one that costs relational capital to hold. Have I named that specific boundary honestly, and written what I will actually say when someone asks me to cross it?"`,
+       guide:{
+         what:"The lane you'll stay in — and what you'll say no to. Prevents burnout.",
+         qs:["What are you willing to say no to?","Does this protect what your calling statement said matters most?"],
+         strong:"6th–12th grade. I own the spiritual formation of the students in my care — not nursery, not adult small groups, not event coordination for the whole church. I refer mental health crises to licensed counselors and communicate with parents.",
+         sNote:"Honest, self-aware, confident.",
+         weak:"My ministry is for youth 12–18. I hope to reach as many as possible.",
+         wNote:"No actual scope defined."
+       },wt:100}
     ]},
     {id:"dx",num:"Reflection",title:"AI Interaction Reflection",desc:"Required with submission",
      format:"½ page • Honest engagement required",
@@ -538,9 +558,8 @@ const COURSES = {
   tagline:"Culture, Mission & the World Beyond Your Walls",
   key:"c2",
   docs:[
-    {id:"d3",num:"Doc 3",title:"Protection + Culture Covenant",desc:"Child & Youth Protection Policy + Ministry Culture",
-     format:"2 pages • District interview required",
-     interviewReq:true,
+    {id:"d3",num:"Doc 3",title:"Culture, Community & Digital Safety",desc:"Ministry Culture, Conflict Resolution & Digital Policy",
+     format:"2 pages",
      secs:[
       {id:"culture_values",title:"Ministry Culture Values + Small Group Philosophy",
        trigger:"After Sections 1–2 — Culture & Small Groups",
@@ -571,37 +590,10 @@ const COURSES = {
 "In Section 4 I studied digital and online guidelines for ministry — including the Rule of Three (all digital communication with a minor must include at least three parties), platform-specific guidelines, documentation requirements, and the distinction between digital safety policy and digital discipleship philosophy. Here is my digital communication policy: [PASTE YOURS]
 
 (1) The Rule of Three from Section 4 is non-negotiable — does it apply without exception to every platform I have listed, including DMs on platforms I use personally? Name any platform in my policy where a volunteer could have a one-on-one private text exchange with a student without technically violating my written policy. (2) Section 4 pushed leaders to think about gray areas — the edge cases that a policy didn't anticipate. Read my policy as a volunteer who wants to bend it without breaking it. What's the easiest workaround? Have I closed that gap? (3) The section distinguished between digital safety rules and a digital discipleship philosophy — the conviction about how online spaces can be intentional formation environments, not just liability risks. Does my policy include a discipleship philosophy section, or is it entirely prohibitive? What do I actually believe about online ministry as a formation tool?"`,
-       guide:{what:"Both protection (safety rules) AND discipleship (how you use digital spaces intentionally).",qs:["Does Rule of Three cover every platform?","Is there a discipleship philosophy, not just restrictions?"]},wt:200},
-      {id:"protection",title:"Child Protection Policy + Volunteer Covenant",
-       trigger:"After Section 4 + District Official Interview",
-       interviewReq:true,
-       desc:"Using your interview notes, draft the full child protection section: (1) Policy preamble and theological foundation, (2) Screening and background checks (AG-aligned), (3) Two-person rule with enforcement strategies, (4) Appropriate touch standards, (5) Mandatory reporting protocol with state-specific requirements, (6) Incident response procedure (first 24 hours), (7) Volunteer covenant — signable, with signature lines.",
-       ph:"Preamble: This ministry commits to protecting every child in our care because...\n\nBackground Checks: We use [provider]. Renewal: every [X] years.\n\nTwo-Person Rule: No adult will be alone with a child under any circumstances except...\n\nMandatory Reporting: In [state], all ministry workers are mandated reporters. If abuse is suspected: Step 1...\n\nVolunteer Covenant:\nI, [name], commit to...\nSignature: _______________ Date: ______",
-       ai:`After drafting your protection policy:
-
-"In Section 4 I studied child and youth protection policies — including the theological foundation for protecting the vulnerable, AG-aligned background check requirements, the two-person rule and enforcement strategies, mandatory reporting obligations, incident response protocols, and volunteer covenant design. I also completed a real interview with a district official. Here is my child protection policy draft: [PASTE YOURS]
-
-(1) Section 4 required seven specific elements — preamble and theological foundation, background checks, two-person rule with enforcement, appropriate touch standards, mandatory reporting (state-specific), incident response (first 24 hours), and volunteer covenant with signature lines. Are all seven present and substantive, or are any of them a single sentence that names the requirement without describing what I will actually do? (2) The mandatory reporting protocol must name my specific state's law — not 'in our state' but the actual statute name and reporting timeline. Does it, or is it generic enough to apply to any state? (3) The district official interview was the most important part of this section — the gaps they identified, the enforcement strategies they've seen work, the common mistakes they see in local churches. Have those specific insights from my interview shaped this document throughout, or are the interview notes sitting in a separate section without being integrated?"`,
-       guide:{
-         what:"The most legally critical document in the certificate. Every element must be present.",
-         qs:["Is mandatory reporting state-specific?","Could a new volunteer execute this without you?","Did your interview inform this?"],
-         strong:"Uses interview insights throughout. State-specific reporting law named. Two-person rule has specific enforcement strategy. Volunteer covenant has actual signature lines.",
-         sNote:"Interview integrated, not appended. Specific, not generic.",
-         weak:"We believe children are a gift from God. All volunteers must pass a background check.",
-         wNote:"Preamble without substance. No specifics."
-       },wt:400},
-      {id:"interview_notes",title:"District Official Interview Notes",
-       trigger:"Complete before Section 4 capstone work — schedule early",
-       interviewReq:true,
-       desc:"Record your interview with a district official (Secretary, District Youth Director, or Sectional Presbyter). Minimum 15–20 minutes. Include: name, title, date, and detailed notes from each question. These notes are submitted with your final capstone.\n\nSuggested questions:\n1. Most common gaps in local church child protection policies?\n2. What happens when a report reaches the district?\n3. Recommended background check provider and renewal cycle?\n4. Enforcement strategies for two-person rule in smaller churches?\n5. First 24-hour response after a report?\n6. Digital communication expectations for credentialed ministers?\n7. What do you wish every new youth pastor knew?",
-       ph:"Interviewee: [Name], [Title]\nDate: [Date]\nChurch/District: [Name]\n\nQ1: Most common gaps?\nA: ...\n\nQ2: What happens when a report reaches the district?\nA: ...\n\nQ3: Background check provider / renewal?\nA: ...\n\nQ4: Two-person rule enforcement?\nA: ...\n\nQ5: First 24-hour response?\nA: ...\n\nQ6: Digital communication expectations?\nA: ...\n\nQ7: What do you wish every new youth pastor knew?\nA: ...",
-       ai:`This section is your interview notes — it must come entirely from your real conversation.
-
-No AI prompt for this section. If you haven't scheduled the interview yet, do it now — this conversation itself is a formational experience.`,
-       guide:{what:"A real conversation with a real district official. Not research, not AI — a relationship.",qs:["Have you scheduled the interview?","Do you have name, title, and date recorded?"]},wt:300,noAI:true}
+       guide:{what:"Both protection (safety rules) AND discipleship (how you use digital spaces intentionally).",qs:["Does Rule of Three cover every platform?","Is there a discipleship philosophy, not just restrictions?"]},wt:200}
     ]},
-    {id:"d4",num:"Doc 4",title:"Outreach & Missions Strategy",desc:"Local, Global & Cultural Engagement",
-     format:"2 pages",
+    {id:"d4",num:"Doc 4",title:"Outreach, Missions & Sending",desc:"Local, Global, Cultural Engagement & Sending Identity",
+     format:"3 pages",
      secs:[
       {id:"cultural",title:"Cultural Landscape Analysis",
        trigger:"After Sections 5–6 — Gen Z/Alpha & Social Justice",
@@ -618,26 +610,6 @@ No AI prompt for this section. If you haven't scheduled the interview yet, do it
          weak:"Gen Z is diverse and technologically driven. They value authenticity and social justice.",
          wNote:"Could describe any Gen Z population anywhere."
        },wt:200},
-      {id:"evangelism",title:"Evangelism & Apologetics Approach",
-       trigger:"After Sections 6 & 9 — Social Justice & Kids Evangelism",
-       desc:"How does your ministry share the gospel with young people who may never have been in a church? Address: the friendship model, how you contextualize without diluting, how you equip students to defend their faith among peers, age-level adaptation (gospel with an 8-year-old looks different than with a 16-year-old). Name specific objections your students encounter and how you prepare them.",
-       ph:"Friendship model: ...\nContextualization approach: ...\nApologetics equipping for students: ...\nFor 8-year-olds: ... For 16-year-olds: ...\nTop objections we prepare for: 1)... 2)... 3)...",
-       ai:`After drafting:
-
-"In Sections 6 and 9 I studied the intersection of social justice and evangelism — how the gospel speaks to the justice concerns that young people carry, and the practical dimension of students sharing faith with peers at school. Section 9 specifically focused on equipping students to defend and articulate their faith in everyday settings, not just in church. Here is my evangelism and apologetics approach: [PASTE YOURS]
-
-(1) Section 9 was clear that the student is the missionary — not just the audience for my evangelism. Does my approach actually equip students to share their faith, or am I still the primary person who does the evangelizing while students observe? What specifically am I doing to develop students as evangelists? (2) The section covered apologetics — the skill of engaging specific objections to faith. Have I named the actual objections my students hear at their school — not 'why does God allow suffering' generically, but the specific challenges that come up in my community's schools and social settings? (3) Sharing the gospel with an 8-year-old is categorically different from sharing with a 16-year-old — cognitively, emotionally, and relationally. Does my approach actually differ by age, or is it essentially the same message delivered with different vocabulary?"`,
-       guide:{what:"Friendship-based, age-adapted, apologetically informed. Students are the missionaries.",qs:["Are objections specific to your community?","Are students the evangelists or just the audience?"]},wt:200},
-      {id:"local_outreach",title:"Local Outreach Strategy",
-       trigger:"After Section 8 — Local & Global Missions",
-       desc:"How does your ministry engage the community beyond church walls? Cover: regular local service rhythms (embedded practices, not one-off events), partnerships with schools and community organizations, how outreach is discipleship (not an add-on but a formation tool), and how students are missionaries, not just participants. Be specific to your community: what needs exist within a 5-mile radius?",
-       ph:"Regular rhythms (not just events): ...\nSchool/community partnerships: ...\nNeeds within 5 miles of our church: ...\nHow outreach forms students: ...\nHow students lead (not just attend): ...",
-       ai:`After drafting:
-
-"In Section 8 I studied local and global missions — with a strong emphasis that outreach is not an add-on to discipleship but is itself a formation tool. The section showed that students who serve become different kinds of disciples than students who only receive, and that local outreach works best when embedded in ministry rhythms rather than organized as occasional events. Here is my local outreach strategy: [PASTE YOURS]
-
-(1) Section 8 distinguished between embedded rhythms (outreach built into regular ministry life) and annual events (a service project once a year). Looking at each item in my strategy: is it a rhythm that happens regardless of calendar pressure, or is it an event that depends on someone having the capacity to organize it? Be specific — what makes each one a rhythm rather than an event? (2) The section argued that students are the missionaries, not just participants in the leader's outreach vision. In my strategy, who is doing the work — am I leading service projects that students participate in, or am I developing students who initiate and own outreach themselves? (3) What specific need within a 5-mile radius of my church have I named — not 'serving the community' but a real, identifiable gap that real people in my neighborhood experience? If I removed the address from my strategy, could it describe any church anywhere?"`,
-       guide:{what:"Regular rhythms tied to real community needs. Students as missionaries, outreach as discipleship.",qs:["Are these rhythms or events?","What's the specific need in your 5-mile radius?"]},wt:200},
       {id:"global_missions",title:"Global Missions Integration",
        trigger:"After Sections 7–8 — Sending & Missions",
        desc:"How does your ministry connect young people to what God is doing beyond their neighborhood? Cover: AG missions resources (BGMC, Speed the Light, AGWM partnerships), how you build global awareness into regular programming (not just a missions Sunday), short-term mission trip philosophy and progression (local → domestic → international), and how global missions shapes identity formation.",
@@ -647,11 +619,7 @@ No AI prompt for this section. If you haven't scheduled the interview yet, do it
 "In Sections 7 and 8 I studied sending and global missions — including the AG missions ecosystem (BGMC, Speed the Light, AGWM partnerships, Youth Alive, Chi Alpha), the local-to-domestic-to-international progression for mission trips, and how global missions shapes student identity formation rather than just providing service experiences. Here is my global missions integration plan: [PASTE YOURS]
 
 (1) The section covered specific AG resources — BGMC, Speed the Light, AGWM, Youth Alive, Chi Alpha. For each resource I've listed, do I name a specific integration point — a calendar month, a programming moment, a giving goal — or have I just listed the resource as something I'll 'use'? Listing without integration is not a plan. (2) Section 7's 'Sending Sons and Daughters' framing argued that missions shapes identity when it's a rhythm, not a once-a-year trip. Looking at my plan: how many months of the year include some form of global missions engagement? If the answer is one or two, it's an event. (3) The mission trip progression (local → domestic → international) was a specific framework from the section — does my plan show a clear progression where students grow in their missions engagement over multiple years, or is every trip essentially the same experience for whoever signs up?"`,
-       guide:{what:"AG resources engaged specifically. Missions as rhythm, not event. Identity-shaping, not just trip-taking.",qs:["Are AG resources named with integration points?","Is missions on the calendar year-round?"]},wt:200}
-    ]},
-    {id:"d5",num:"Doc 5",title:"Raising Sons & Daughters",desc:"A Vision for Sending Missionaries",
-     format:"1 page",
-     secs:[
+       guide:{what:"AG resources engaged specifically. Missions as rhythm, not event. Identity-shaping, not just trip-taking.",qs:["Are AG resources named with integration points?","Is missions on the calendar year-round?"]},wt:200},
       {id:"sending",title:"Sending Identity + Missionary Development Pipeline",
        trigger:"After Section 7 — Sending Sons & Daughters",
        desc:"(1) Write a sending identity statement: one paragraph declaring that your ministry exists not only to form young people, but to launch them. The local church is a greenhouse, not a museum. (2) Draft a missionary development pipeline: How do you identify students with a missions calling? What's the progression from 'interested' to 'sent'? Include mentoring, exposure experiences, mission trip progression, and connection to AG structures (AGWM, Chi Alpha, AG institutions).",
@@ -671,7 +639,27 @@ No AI prompt for this section. If you haven't scheduled the interview yet, do it
 "In Sections 8 and 9 I studied how to build missions into the annual rhythm of ministry — not as special events but as habits. I learned the specific AG missions resources (BGMC, Speed the Light, AGWM, Youth Alive, Fine Arts, NYC/AGYC, Chi Alpha) and studied how each one has a natural calendar integration point rather than requiring a special ministry season to activate it. Here is my annual missions rhythm and AG resource map: [PASTE YOURS]
 
 (1) The section made the case that missions becomes a habit when it appears in most months — not clustered in one missions Sunday or one annual trip. Looking at my rhythm month by month: how many months have no missional activity at all? If it's more than two, what would need to change to embed something — even small — in those gaps? (2) For each AG resource I've listed, do I name a specific integration point (e.g., 'BGMC: November emphasis with a giving thermometer in the room every Wednesday') or have I just mapped which resources exist? Listing is not integration. (3) Does my missions rhythm in this document align with and expand on my outreach strategy from Doc 4 — or are these two documents describing parallel tracks that never intersect? Name one specific place where they connect."`,
-       guide:{what:"Month-by-month missions rhythm with specific AG resource integration points.",qs:["Is it calendar-embedded or add-on?","Are integration points specific?"]},wt:200}
+       guide:{what:"Month-by-month missions rhythm with specific AG resource integration points.",qs:["Is it calendar-embedded or add-on?","Are integration points specific?"]},wt:200},
+      {id:"local_outreach",title:"Local Outreach Strategy",
+       trigger:"After Section 8 — Local & Global Missions",
+       desc:"How does your ministry engage the community beyond church walls? Cover: regular local service rhythms (embedded practices, not one-off events), partnerships with schools and community organizations, how outreach is discipleship (not an add-on but a formation tool), and how students are missionaries, not just participants. Be specific to your community: what needs exist within a 5-mile radius?",
+       ph:"Regular rhythms (not just events): ...\nSchool/community partnerships: ...\nNeeds within 5 miles of our church: ...\nHow outreach forms students: ...\nHow students lead (not just attend): ...",
+       ai:`After drafting:
+
+"In Section 8 I studied local and global missions — with a strong emphasis that outreach is not an add-on to discipleship but is itself a formation tool. The section showed that students who serve become different kinds of disciples than students who only receive, and that local outreach works best when embedded in ministry rhythms rather than organized as occasional events. Here is my local outreach strategy: [PASTE YOURS]
+
+(1) Section 8 distinguished between embedded rhythms (outreach built into regular ministry life) and annual events (a service project once a year). Looking at each item in my strategy: is it a rhythm that happens regardless of calendar pressure, or is it an event that depends on someone having the capacity to organize it? Be specific — what makes each one a rhythm rather than an event? (2) The section argued that students are the missionaries, not just participants in the leader's outreach vision. In my strategy, who is doing the work — am I leading service projects that students participate in, or am I developing students who initiate and own outreach themselves? (3) What specific need within a 5-mile radius of my church have I named — not 'serving the community' but a real, identifiable gap that real people in my neighborhood experience? If I removed the address from my strategy, could it describe any church anywhere?"`,
+       guide:{what:"Regular rhythms tied to real community needs. Students as missionaries, outreach as discipleship.",qs:["Are these rhythms or events?","What's the specific need in your 5-mile radius?"]},wt:200},
+      {id:"evangelism",title:"Evangelism & Apologetics Approach",
+       trigger:"After Sections 6 & 9 — Social Justice & Kids Evangelism",
+       desc:"How does your ministry share the gospel with young people who may never have been in a church? Address: the friendship model, how you contextualize without diluting, how you equip students to defend their faith among peers, age-level adaptation (gospel with an 8-year-old looks different than with a 16-year-old). Name specific objections your students encounter and how you prepare them.",
+       ph:"Friendship model: ...\nContextualization approach: ...\nApologetics equipping for students: ...\nFor 8-year-olds: ... For 16-year-olds: ...\nTop objections we prepare for: 1)... 2)... 3)...",
+       ai:`After drafting:
+
+"In Sections 6 and 9 I studied the intersection of social justice and evangelism — how the gospel speaks to the justice concerns that young people carry, and the practical dimension of students sharing faith with peers at school. Section 9 specifically focused on equipping students to defend and articulate their faith in everyday settings, not just in church. Here is my evangelism and apologetics approach: [PASTE YOURS]
+
+(1) Section 9 was clear that the student is the missionary — not just the audience for my evangelism. Does my approach actually equip students to share their faith, or am I still the primary person who does the evangelizing while students observe? What specifically am I doing to develop students as evangelists? (2) The section covered apologetics — the skill of engaging specific objections to faith. Have I named the actual objections my students hear at their school — not 'why does God allow suffering' generically, but the specific challenges that come up in my community's schools and social settings? (3) Sharing the gospel with an 8-year-old is categorically different from sharing with a 16-year-old — cognitively, emotionally, and relationally. Does my approach actually differ by age, or is it essentially the same message delivered with different vocabulary?"`,
+       guide:{what:"Friendship-based, age-adapted, apologetically informed. Students are the missionaries.",qs:["Are objections specific to your community?","Are students the evangelists or just the audience?"]},wt:200}
     ]},
     {id:"dx2",num:"Disclosure",title:"AI Disclosure Statement",desc:"Required with every document",
      format:"3–5 sentences",
@@ -690,9 +678,111 @@ No AI prompt for this section. If you haven't scheduled the interview yet, do it
   tagline:"The 12-Month Ministry Operations Plan",
   key:"c3",
   docs:[
-    {id:"d6",num:"Doc 6",title:"Volunteer System",desc:"Recruitment, Training & Retention",
-     format:"2 pages narrative + appended templates",
+    {id:"d5",num:"Doc 5",title:"Personal Leadership Development",desc:"Leading Yourself Before You Lead Others",
+     format:"1–2 pages",
      secs:[
+      {id:"personal_dev",title:"Personal Leadership Development Plan",
+       trigger:"After Section 1 — Developing Yourself as a Leader (NXT-003)",
+       desc:"Before you build a ministry, you build yourself. Draft your personal leadership development plan: (1) Your learning rhythm — how you grow intentionally (books, podcasts, cohorts, mentors). (2) Your growth edges — 2–3 specific areas where you know you're underdeveloped as a leader. (3) Your mentoring relationships — who is investing in you, and how often do you meet? (4) Your self-assessment practice — how do you evaluate your own leadership health?",
+       ph:"Learning rhythm: I grow through...\n\nGrowth edges (be specific, not general):\n1. ...\n2. ...\n3. ...\n\nMentor/Coach: [Name] — we meet [frequency] and focus on...\n\nSelf-assessment practice: ...",
+       ai:`After writing your plan:
+
+"In Section 1 — Developing Yourself as a Leader (NXT-003) I studied the inner disciplines of a leader who grows intentionally — including how to identify your own growth edges without waiting for a crisis to reveal them, how to build a learning rhythm that fits your life, and the non-negotiable of having a mentor who speaks into you. Here is my personal leadership development plan: [PASTE YOURS]
+
+(1) Section 1 made the case that the leader's growth is the ministry's growth — that what you are becoming is more significant than what you are doing. Does my plan reflect someone who is genuinely growing, or does it describe growth practices I aspire to but haven't started? The test is specificity: a plan I'll actually keep has specific days, specific titles, specific names. (2) My growth edges should be things I have resisted knowing or admitting — not 'I want to grow in leadership' but 'I struggle with delegation because I don't trust people to do it right, and that's a control issue I need to name.' Does my self-assessment go that deep? (3) Who is the specific person — a name — who is investing in me? 'A mentor' is not a plan. Section 1 was clear that the leader without a pastor is the most dangerous person in the room. Have I named mine?"`,
+       guide:{
+         what:"An honest, specific plan — learning rhythm, growth edges, a named mentor, and a self-assessment practice.",
+         qs:["Are growth edges honest and specific?","Is there a named person investing in you?","Is there a real self-assessment practice?"],
+         strong:"Books: 1/month, currently reading 'The Ruthless Elimination of Hurry'. Growth edge: I avoid conflict and let problems fester — working on this with Pastor James (meet monthly). Self-assessment: review ministry vitals with my wife every Sunday night.",
+         sNote:"Specific titles, specific person, specific rhythm, honest self-knowledge.",
+         weak:"I plan to grow in my leadership by reading books and meeting with a mentor regularly.",
+         wNote:"No names, no schedule, no honest self-knowledge."
+       },wt:200}
+    ]},
+    {id:"d6",num:"Doc 6",title:"Budget & Stewardship",desc:"Budget Planning & Stewardship Communication",
+     format:"Working .xlsx spreadsheet + 1-page narrative",
+     spreadsheetNote:true,
+     secs:[
+      {id:"budget_cats",title:"Annual Budget Categories",
+       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
+       desc:"Draft your annual budget with line-item categories and realistic dollar amounts for your church context. Required categories: curriculum/resources, weekly programming, special events, volunteer appreciation, missions giving (BGMC/STL), equipment & supplies, food/hospitality, training & conferences, contingency fund. Note: the working .xlsx spreadsheet with formulas is a separate deliverable — use these notes to populate it.",
+       ph:"Curriculum/Resources: $...\nWeekly Programming: $...\nSpecial Events (list): $...\nVolunteer Appreciation: $...\nMissions Giving (BGMC/STL): $...\nEquipment & Supplies: $...\nFood/Hospitality: $...\nTraining & Conferences: $...\nContingency (5–10%): $...\nTOTAL: $...\n\nContext: church of [size], current budget allocation: ...",
+       ai:`After drafting your budget:
+
+"In Section 2 I studied budgeting, communication, and serving the vision — including how to build a budget that reflects ministry priorities rather than just line items inherited from whoever had the role before, how to have budget conversations with a senior pastor, and how to communicate the story of resource stewardship to leadership. Here are my budget categories and amounts: [PASTE YOURS]
+
+Note: do NOT ask AI to generate the actual numbers for you. Your numbers must come from real research into your church context.
+
+(1) Section 2 taught that a budget is a theological document — it reflects what the ministry actually values, not what it says it values. Looking at where the largest line items fall in my budget: do they reflect my stated ministry priorities from Doc 8, or do they reflect habit and inertia from what was budgeted before? (2) The section emphasized that every budget category should be justifiable in terms of ministry outcome, not just ministry activity. Can I articulate in one sentence what each line item produces in the life of a student or volunteer? If a line item exists because 'we've always done it,' that's the one to examine first. (3) Are my numbers from real research — actual vendor quotes, real curriculum costs, real camp fees — or have I rounded to the nearest hundred and hoped it's close enough? Section 2 was clear: a budget built on guesses is not a stewardship tool."`,
+       guide:{what:"Real numbers from your real church context. Formulas in spreadsheet, narrative in this tool.",qs:["Are numbers from real research?","Does budget reflect ministry priorities?"]},wt:250},
+      {id:"event_cost",title:"Per-Event Cost Tracking",
+       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
+       desc:"Build a per-event cost template. Choose two events from your ministry calendar (one weekly program night, one annual event like camp or retreat) and break down every cost: venue, food, supplies, speaker/guest, transportation, promotional materials, insurance, miscellaneous. Show unit costs and totals. This template should be reusable for any event.",
+       ph:"Event 1: Weekly Program Night\nVenue: $... Food: $... Supplies: $... AV/Tech: $...\nTotal per event: $... Annual total (52x): $...\n\nEvent 2: Annual Camp/Retreat\nVenue/lodging: $... Food: $... Transportation: $... Speaker: $... Supplies: $... Insurance: $...\nTotal: $...\nCost per student: $...",
+       ai:`After drafting your cost breakdown:
+
+"In Section 2 I studied budgeting and resource stewardship — including how to think about events as budget commitments with real cost structures, not just as ministry moments. The section covered the difference between knowing what an event costs and actually tracking what it costs, and why the per-student cost of major events is a critical stewardship metric. Here is my per-event cost template: [PASTE YOURS]
+
+(1) Section 2 showed that the most common budget mistakes come from hidden cost categories — the ones nobody tracks because they seem small. Looking at my weekly program night breakdown: have I included AV/tech supplies replacement, printed handouts, and leader communication (group text apps, planning tools)? What about setup and teardown time for paid staff? For the annual event: have I included insurance, transportation fuel, and the cost of promotional materials? (2) Does my weekly program cost — multiplied by 52 — fall within a reasonable percentage of my total annual budget? If that math doesn't work, something in the annual budget needs to adjust. (3) Cost-per-student for the annual event is the number that makes a board member's eyes open — it makes abstract spending concrete. Is there a cost-per-student figure in my template, and is it a number I'm prepared to defend as a good investment?"`,
+       guide:{what:"A reusable template showing every cost. Annualizable for budget planning.",qs:["Is every cost category included?","Is there a cost-per-student calculation?"]},wt:200},
+      {id:"stewardship_comm",title:"Stewardship Communication Template",
+       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
+       desc:"Draft a one-page stewardship report template for quarterly presentation to your senior pastor and church board. Include: budget vs. actual spending, key investments and their ministry impact, upcoming financial needs, and any budget adjustments you're requesting. This is a narrative — it tells the story of how resources became ministry.",
+       ph:"QUARTERLY MINISTRY STEWARDSHIP REPORT\nPeriod: [Q1/Q2/Q3/Q4] [Year]\n\nBudget Summary:\n- Allocated: $... | Spent: $... | Remaining: $...\n\nKey Investments This Quarter:\n- [Line item]: $... → Impact: ...\n\nUpcoming Needs:\n- ...\n\nAdjustments Requested:\n- ...",
+       ai:`After drafting your template:
+
+"In Section 2 I studied budgeting, communication, and serving the vision — including how to speak the language of a church board, how to make ministry investment legible to people who think in terms of stewardship and organizational health, and how to use financial reporting as a trust-building tool rather than just a compliance requirement. Here is my stewardship report template: [PASTE YOURS]
+
+(1) Section 2 taught that a board member's primary question is not 'what did you spend?' but 'what did it produce?' Does my report template answer that second question for every significant line item, or does it present spending without connecting it to outcome? (2) The section on serving the vision of the senior pastor showed that financial reporting is a form of communication — it either builds confidence or raises questions. Would a board member who has never attended a youth event read this report and understand what the ministry is doing and why it's worth investing in? Or would they need a translation? (3) Is there a section in my template for upcoming needs — not requests, but forward-looking stewardship communication that helps leadership make decisions before a crisis, not after?"`,
+       guide:{what:"A narrative that tells the story of how dollars became ministry. Not just numbers.",qs:["Does it tell a story, not just list numbers?","Would a non-ministry board member understand it?"]},wt:200}
+    ]},
+    {id:"d7",num:"Doc 7",title:"Church Vision & Team",desc:"Senior Pastor Alignment, Year Vision, Team Building & Volunteer System",
+     format:"3–4 pages narrative + appended templates",
+     secs:[
+      {id:"pastor_vision",title:"Serving Your Senior Pastor's Vision",
+       trigger:"After Section 2 — Working With Your Senior Pastor (NXT-003)",
+       desc:"Your NextGen ministry does not exist independently — it exists inside a local church led by a senior pastor with a specific vision. Before you build your own plan, articulate theirs. (1) In 2–3 sentences, state your senior pastor's vision for the church — not a generic mission statement, but the specific emphasis and direction they're leading toward. (2) Describe 2–3 specific ways your NextGen ministry directly serves and advances that vision. (3) Name one area where you need to subordinate your own preferences to serve the senior pastor's priorities.",
+       ph:"Senior Pastor: [Name]\nTheir vision for the church: ...\n\nHow NextGen serves that vision:\n1. ...\n2. ...\n3. ...\n\nWhere I need to subordinate my preferences: ...",
+       ai:`After writing your response:
+
+"In Section 2 — Working With Your Senior Pastor (NXT-003) I studied the theology and practice of serving within a church's leadership structure — including why a NextGen pastor who operates independently undermines the ministry they're trying to build, how to read the senior pastor's priorities and align to them, and what it looks like to be a trustworthy team member before you become an influential voice. Here is my response: [PASTE YOURS]
+
+(1) Section 2 covered the difference between knowing what your pastor says their vision is and actually understanding what they're building. Have I articulated a specific, directional vision — something that would make my pastor nod and say 'yes, that's it' — or have I restated their church's mission statement? The test: could I tell my pastor's vision back to them in a sentence and have them feel fully understood? (2) The section showed that alignment is demonstrated through action, not agreement. For each way I've listed that NextGen serves the senior pastor's vision — is there a concrete, observable ministry activity behind it, or is it alignment in principle without a specific practice? (3) Section 2 was honest that subordination is sometimes costly — the program you would cut if your pastor asked you to, the preference you'd set aside. Have I named the real thing, or have I written a generic answer?"`,
+       guide:{
+         what:"Understanding the senior pastor's vision — and naming how NextGen serves it, not runs parallel to it.",
+         qs:["Is the pastor's vision specific, not generic?","Have you named what subordination looks like for you?"],
+         strong:"Pastor Martinez is building a church known in the city for welcoming the broken. NextGen serves this by being the most welcoming environment in the building — especially for the unchurched kid whose parents were recently referred to our recovery ministry.",
+         sNote:"Specific pastor, specific vision, specific connection — not generic alignment.",
+         weak:"Our pastor's vision is to reach our community for Christ. NextGen helps by reaching young people.",
+         wNote:"Could describe any church. No real alignment."
+       },wt:200},
+      {id:"vision_yr",title:"Vision Statement for the Year",
+       trigger:"After Section 2 — Working With Your Senior Pastor (NXT-003)",
+       desc:"Write a vision statement for your ministry's upcoming year — but start with the church before you start with the ministry. (1) In 1–2 sentences, name the senior pastor's stated vision or emphasis for the church this year. (2) Write your NextGen year vision in 1–2 paragraphs you could read to your team on the first night of the year — making clear how the NextGen vision serves and advances the church's vision.",
+       ph:"The church this year: [Senior pastor's vision/emphasis for the year]\n\nThis year, the NextGen ministry at [church] is called to...\n\nWe will know we've stepped toward this vision when...\n\nThis year's anchor: ...",
+       ai:`After writing your vision statement:
+
+"In Section 2 — Working With Your Senior Pastor (NXT-003) I studied how a NextGen ministry's vision must operate underneath the senior pastor's vision rather than parallel to it — and how a year vision is most effective when it visibly serves what the lead pastor is building. Here is my year vision statement: [PASTE YOURS]
+
+(1) Section 2 was clear that NextGen vision must serve church vision, not run alongside it. Reading my statement: does my NextGen vision visibly advance my pastor's stated vision for the year, or are these two visions on parallel tracks that don't intersect? (2) The section made the distinction between a permanent mission and a year-specific vision. Is my statement genuinely year-specific — could it only describe the next 12 months of this particular ministry in this particular season — or is it timeless enough to apply to any year? (3) Would a 15-year-old student hear this read on the first night of the year and understand what's going to be different — what they'll experience or be invited into that they haven't experienced before? Or is it internal leadership language that doesn't translate to the people being served?"`,
+       guide:{what:"Pastor's vision named first. Year-specific NextGen vision aligned to it. Distinct from permanent mission.",qs:["Is the pastor's vision named first?","Does the NextGen vision serve it, not run parallel?","Would a student know what's different this year?"]},wt:200},
+      {id:"build_team",title:"Building Your Leadership Team",
+       trigger:"After Section 3 — Building Your Leadership Team (NXT-003)",
+       desc:"Before recruiting individual volunteers, you need a picture of the team you're building. (1) Describe the leadership team culture you want — 3–5 culture values specific to your team (not the whole ministry). What does your team feel like to be on? (2) Map your team structure — who reports to whom, how decisions are made, what communication looks like. (3) Describe your team meeting rhythm — frequency, format, content. (4) Name 1–2 specific people (by first name or description) you want to recruit first, and why.",
+       ph:"Team culture values:\n1. ...\n2. ...\n3. ...\n\nTeam structure: [sketch or describe — who reports to whom?]\n\nMeeting rhythm: [frequency, format, typical content]\n\nFirst recruits:\n1. [Name/description] — because...\n2. ...",
+       ai:`After drafting:
+
+"In Section 3 — Building Your Leadership Team (NXT-003) I studied how to build a ministry team that is itself a healthy culture — not just a group of people filling roles. The section covered team culture design, the difference between a team and a committee, how to structure leadership so decisions get made without everything routing through the lead pastor, and how to identify the first people to build with. Here is my team vision: [PASTE YOURS]
+
+(1) Section 3 showed that team culture must be designed before it is described — you can't have values you haven't decided on. For each of my team culture values: is this a value I've chosen because it reflects what I believe a healthy team looks like, or is it a value I copied from a leadership book because it sounds right? The test: could I give a specific example from a team I've been on where this value was either present or missing? (2) The section covered decision-making structures as a core part of team health — who has authority to do what without checking first. Does my team structure answer that question, or is 'who decides?' still unclear? (3) The first recruits are the most important decision in team building — the culture of your first two people becomes the culture of your twentieth. Why these specific people — not just because they're available, but because of what they represent and bring?"`,
+       guide:{
+         what:"Team culture you've designed, structure you've mapped, and a specific vision of who you're building with.",
+         qs:["Are team values distinct from ministry values?","Have you named who you're building with first?"],
+         strong:"Team value: we finish hard conversations the same day we start them — no unresolved tension carries into the weekend. First recruit: Marcus (current parent volunteer, gifted with high schoolers, zero ego) and Rachel (former student, now 25, credibility with the current seniors).",
+         sNote:"Specific value with behavioral description. Specific people with specific reasons.",
+         weak:"I want to build a team that is unified and committed to the vision.",
+         wNote:"Every leader wants this. No specifics."
+       },wt:200},
       {id:"vol_roles",title:"Volunteer Role Descriptions",
        trigger:"After Section 3 — Team Development",
        desc:"Draft role descriptions for at least four volunteer positions (e.g., small group leader, greeter, worship team, tech/AV, check-in). For each: title, purpose, time commitment, key responsibilities, who they report to, and qualifications/spiritual requirements.",
@@ -713,6 +803,24 @@ No AI prompt for this section. If you haven't scheduled the interview yet, do it
 
 (1) Section 4 emphasized that the single most common reason people don't volunteer is that they were never asked specifically — not 'we need volunteers' from the stage, but 'I thought of you for this role because of what I've observed in you.' Does my pipeline include a specific, personalized ask, or is it still a broadcast appeal? (2) The section covered both proactive (I identify and approach them) and responsive (they raise their hand) pathways — do I have a clear process for each, or does my pipeline only handle one scenario? (3) The cold-start problem was a major theme: how do you recruit when you have no credibility, no existing team, and no track record in a new church? Does my pipeline have a specific first-30-days strategy for this, or does it assume I already have a foundation to build from?"`,
        guide:{what:"Proactive + responsive pathways with a specific ask and cold-start strategy.",qs:["Is the ask scripted?","What's the cold-start strategy?"]},wt:200},
+      {id:"protection",title:"Child Protection Policy + Volunteer Covenant",
+       trigger:"After Section 4 + District Official Interview",
+       interviewReq:true,
+       desc:"Using your interview notes, draft the full child protection section: (1) Policy preamble and theological foundation, (2) Screening and background checks (AG-aligned), (3) Two-person rule with enforcement strategies, (4) Appropriate touch standards, (5) Mandatory reporting protocol with state-specific requirements, (6) Incident response procedure (first 24 hours), (7) Volunteer covenant — signable, with signature lines.",
+       ph:"Preamble: This ministry commits to protecting every child in our care because...\n\nBackground Checks: We use [provider]. Renewal: every [X] years.\n\nTwo-Person Rule: No adult will be alone with a child under any circumstances except...\n\nMandatory Reporting: In [state], all ministry workers are mandated reporters. If abuse is suspected: Step 1...\n\nVolunteer Covenant:\nI, [name], commit to...\nSignature: _______________ Date: ______",
+       ai:`After drafting your protection policy:
+
+"In Section 4 I studied child and youth protection policies — including the theological foundation for protecting the vulnerable, AG-aligned background check requirements, the two-person rule and enforcement strategies, mandatory reporting obligations, incident response protocols, and volunteer covenant design. I also completed a real interview with a district official. Here is my child protection policy draft: [PASTE YOURS]
+
+(1) Section 4 required seven specific elements — preamble and theological foundation, background checks, two-person rule with enforcement, appropriate touch standards, mandatory reporting (state-specific), incident response (first 24 hours), and volunteer covenant with signature lines. Are all seven present and substantive, or are any of them a single sentence that names the requirement without describing what I will actually do? (2) The mandatory reporting protocol must name my specific state's law — not 'in our state' but the actual statute name and reporting timeline. Does it, or is it generic enough to apply to any state? (3) The district official interview was the most important part of this section — the gaps they identified, the enforcement strategies they've seen work, the common mistakes they see in local churches. Have those specific insights from my interview shaped this document throughout, or are the interview notes sitting in a separate section without being integrated?"`,
+       guide:{
+         what:"The most legally critical document in the certificate. Every element must be present.",
+         qs:["Is mandatory reporting state-specific?","Could a new volunteer execute this without you?","Did your interview inform this?"],
+         strong:"Uses interview insights throughout. State-specific reporting law named. Two-person rule has specific enforcement strategy. Volunteer covenant has actual signature lines.",
+         sNote:"Interview integrated, not appended. Specific, not generic.",
+         weak:"We believe children are a gift from God. All volunteers must pass a background check.",
+         wNote:"Preamble without substance. No specifics."
+       },wt:400},
       {id:"vol_onboard",title:"Onboarding Process",
        trigger:"After Section 4 — Volunteer Management and Mobilization",
        desc:"Draft your onboarding process as a step-by-step checklist. From the moment someone says yes to their first day serving: application, background check, reference check, orientation meeting, training schedule, pairing with a mentor volunteer, and first-serve shadow period. Should be usable by a church administrator.",
@@ -752,105 +860,29 @@ No AI prompt for this section. If you haven't scheduled the interview yet, do it
 "In Section 4 I studied volunteer management and mobilization — including the reality that exits are inevitable and that how a volunteer leaves often determines whether they return, whether they speak well of the ministry, and whether they bring others in. The section covered both graceful voluntary exits and the harder performance-based exits that every leader will eventually face. Here is my exit and offboarding procedure: [PASTE YOURS]
 
 (1) Section 4 was clear that voluntary exits and performance exits require completely different processes — the conversation, the tone, the next steps. Does my procedure distinguish between these two types with different language and steps for each, or is it one generic process that doesn't account for the difference? (2) Access removal was a specific item in the section — removing someone from planning apps, group chats, and child protection databases when they step down. Is there a specific list of access points to remove, or is this still vague? Who executes it and in what timeframe? (3) Exit interview questions are only valuable if they surface real feedback rather than polite farewell comments. Do my questions actually probe the volunteer experience — what made staying hard, what would have changed the outcome — or do they ask questions that will only produce positive responses?"`,
-       guide:{what:"Graceful endings — voluntary and performance exits — with relational continuity.",qs:["Is there a performance exit process?","Is there an exit interview?"]},wt:150}
-    ]},
-    {id:"d7",num:"Doc 7",title:"Ministry Budget & Resources",desc:"Budget Planning & Stewardship Communication",
-     format:"Working .xlsx spreadsheet + 1-page narrative",
-     spreadsheetNote:true,
-     secs:[
-      {id:"budget_cats",title:"Annual Budget Categories",
-       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
-       desc:"Draft your annual budget with line-item categories and realistic dollar amounts for your church context. Required categories: curriculum/resources, weekly programming, special events, volunteer appreciation, missions giving (BGMC/STL), equipment & supplies, food/hospitality, training & conferences, contingency fund. Note: the working .xlsx spreadsheet with formulas is a separate deliverable — use these notes to populate it.",
-       ph:"Curriculum/Resources: $...\nWeekly Programming: $...\nSpecial Events (list): $...\nVolunteer Appreciation: $...\nMissions Giving (BGMC/STL): $...\nEquipment & Supplies: $...\nFood/Hospitality: $...\nTraining & Conferences: $...\nContingency (5–10%): $...\nTOTAL: $...\n\nContext: church of [size], current budget allocation: ...",
-       ai:`After drafting your budget:
-
-"In Section 2 I studied budgeting, communication, and serving the vision — including how to build a budget that reflects ministry priorities rather than just line items inherited from whoever had the role before, how to have budget conversations with a senior pastor, and how to communicate the story of resource stewardship to leadership. Here are my budget categories and amounts: [PASTE YOURS]
-
-Note: do NOT ask AI to generate the actual numbers for you. Your numbers must come from real research into your church context.
-
-(1) Section 2 taught that a budget is a theological document — it reflects what the ministry actually values, not what it says it values. Looking at where the largest line items fall in my budget: do they reflect my stated ministry priorities from Doc 8, or do they reflect habit and inertia from what was budgeted before? (2) The section emphasized that every budget category should be justifiable in terms of ministry outcome, not just ministry activity. Can I articulate in one sentence what each line item produces in the life of a student or volunteer? If a line item exists because 'we've always done it,' that's the one to examine first. (3) Are my numbers from real research — actual vendor quotes, real curriculum costs, real camp fees — or have I rounded to the nearest hundred and hoped it's close enough? Section 2 was clear: a budget built on guesses is not a stewardship tool."`,
-       guide:{what:"Real numbers from your real church context. Formulas in spreadsheet, narrative in this tool.",qs:["Are numbers from real research?","Does budget reflect ministry priorities?"]},wt:250},
-      {id:"event_cost",title:"Per-Event Cost Tracking",
-       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
-       desc:"Build a per-event cost template. Choose two events from your ministry calendar (one weekly program night, one annual event like camp or retreat) and break down every cost: venue, food, supplies, speaker/guest, transportation, promotional materials, insurance, miscellaneous. Show unit costs and totals. This template should be reusable for any event.",
-       ph:"Event 1: Weekly Program Night\nVenue: $... Food: $... Supplies: $... AV/Tech: $...\nTotal per event: $... Annual total (52x): $...\n\nEvent 2: Annual Camp/Retreat\nVenue/lodging: $... Food: $... Transportation: $... Speaker: $... Supplies: $... Insurance: $...\nTotal: $...\nCost per student: $...",
-       ai:`After drafting your cost breakdown:
-
-"In Section 2 I studied budgeting and resource stewardship — including how to think about events as budget commitments with real cost structures, not just as ministry moments. The section covered the difference between knowing what an event costs and actually tracking what it costs, and why the per-student cost of major events is a critical stewardship metric. Here is my per-event cost template: [PASTE YOURS]
-
-(1) Section 2 showed that the most common budget mistakes come from hidden cost categories — the ones nobody tracks because they seem small. Looking at my weekly program night breakdown: have I included AV/tech supplies replacement, printed handouts, and leader communication (group text apps, planning tools)? What about setup and teardown time for paid staff? For the annual event: have I included insurance, transportation fuel, and the cost of promotional materials? (2) Does my weekly program cost — multiplied by 52 — fall within a reasonable percentage of my total annual budget? If that math doesn't work, something in the annual budget needs to adjust. (3) Cost-per-student for the annual event is the number that makes a board member's eyes open — it makes abstract spending concrete. Is there a cost-per-student figure in my template, and is it a number I'm prepared to defend as a good investment?"`,
-       guide:{what:"A reusable template showing every cost. Annualizable for budget planning.",qs:["Is every cost category included?","Is there a cost-per-student calculation?"]},wt:200},
-      {id:"fundraising",title:"Fundraising Policy",
-       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
-       desc:"Draft your fundraising policy and procedures. Cover: what types of fundraising are permitted (and what is not), approval process (who authorizes a fundraiser?), financial handling and accounting procedures, transparency requirements, and how funds are designated and tracked. Distinguish between church-budgeted funds and student-raised funds (e.g., Speed the Light, mission trips).",
-       ph:"Permitted fundraising types: ...\nNot permitted: ...\nApproval process: ...\nFinancial handling: cash is never handled by one person...\nTransparency requirements: ...\nSTL/Mission Trip funds designation: ...",
+       guide:{what:"Graceful endings — voluntary and performance exits — with relational continuity.",qs:["Is there a performance exit process?","Is there an exit interview?"]},wt:150},
+      {id:"safety_risk",title:"Safety Principles & Risk Management",
+       trigger:"After Section 4 — Safety Principles and Risk Management (NXT-003)",
+       desc:"Every event and environment carries risk. Build your risk management framework. Cover: (1) Physical safety protocols for your primary environments (youth room, van/transportation, off-site events). (2) Event risk assessment — what process do you use before an event to identify and mitigate risk? (3) Incident documentation — what gets written down and who sees it? (4) Liability and insurance basics — does your church's general liability policy cover your ministry activities, and what does it not cover?",
+       ph:"Physical safety protocols:\nYouth room: ...\nTransportation: ...\nOff-site events: ...\n\nPre-event risk assessment process:\n...\n\nIncident documentation:\nWhat gets documented: ...\nWho sees it: ...\nWhere it's stored: ...\n\nInsurance:\nCoverage: ...\nGaps I need to address: ...",
        ai:`After drafting:
 
-"In Section 2 I studied budgeting, communication, and serving the vision — including the financial ethics required for ministry leaders: approval chains, two-person cash handling, designated fund management, and the transparency that protects both the ministry and the leader. Here is my fundraising policy: [PASTE YOURS]
+"In Section 4 — Safety Principles and Risk Management (NXT-003) I studied how to build a risk management framework for NextGen ministry — including physical safety protocols, pre-event risk assessment, incident documentation, and the basics of ministry liability coverage. Here is my risk management framework: [PASTE YOURS]
 
-(1) Section 2 covered the approval chain as a protection mechanism — not bureaucracy, but accountability that keeps a leader from being accused of financial mismanagement. Does my policy state explicitly who must approve a fundraiser before it is announced, and what happens if a fundraiser happens without approval? (2) The two-person financial handling principle from the section was non-negotiable — cash should never be counted, transported, or deposited by a single person. Does my policy state this explicitly for every cash-handling scenario, including small fundraisers and weekly giving? (3) Speed the Light and mission trip funds are designated funds — they belong to a specific purpose and cannot be redirected. Does my policy make the designated nature of these funds explicit, including what happens to leftover mission trip funds if a student doesn't go?"`,
-       guide:{what:"Clear procedures, approval chain, and transparency. Two-person financial handling.",qs:["Is there an approval chain?","Are designated funds (STL, missions) handled separately?"]},wt:200},
-      {id:"stewardship_comm",title:"Stewardship Communication Template",
-       trigger:"After Section 2 — Budgeting, Communication, and Serving the Vision",
-       desc:"Draft a one-page stewardship report template for quarterly presentation to your senior pastor and church board. Include: budget vs. actual spending, key investments and their ministry impact, upcoming financial needs, and any budget adjustments you're requesting. This is a narrative — it tells the story of how resources became ministry.",
-       ph:"QUARTERLY MINISTRY STEWARDSHIP REPORT\nPeriod: [Q1/Q2/Q3/Q4] [Year]\n\nBudget Summary:\n- Allocated: $... | Spent: $... | Remaining: $...\n\nKey Investments This Quarter:\n- [Line item]: $... → Impact: ...\n\nUpcoming Needs:\n- ...\n\nAdjustments Requested:\n- ...",
-       ai:`After drafting your template:
-
-"In Section 2 I studied budgeting, communication, and serving the vision — including how to speak the language of a church board, how to make ministry investment legible to people who think in terms of stewardship and organizational health, and how to use financial reporting as a trust-building tool rather than just a compliance requirement. Here is my stewardship report template: [PASTE YOURS]
-
-(1) Section 2 taught that a board member's primary question is not 'what did you spend?' but 'what did it produce?' Does my report template answer that second question for every significant line item, or does it present spending without connecting it to outcome? (2) The section on serving the vision of the senior pastor showed that financial reporting is a form of communication — it either builds confidence or raises questions. Would a board member who has never attended a youth event read this report and understand what the ministry is doing and why it's worth investing in? Or would they need a translation? (3) Is there a section in my template for upcoming needs — not requests, but forward-looking stewardship communication that helps leadership make decisions before a crisis, not after?"`,
-       guide:{what:"A narrative that tells the story of how dollars became ministry. Not just numbers.",qs:["Does it tell a story, not just list numbers?","Would a non-ministry board member understand it?"]},wt:200},
-      {id:"budget_case",title:"The Budget Case",
-       trigger:"After Section 1 — Developing Yourself as a Leader",
-       desc:"Draft a persuasive 1–2 paragraph argument for why your church should invest in NextGen ministry at the level you're proposing. Connect budget lines to ministry outcomes. A board member reading this should understand what the money buys and why it matters. This is the document you pull out when someone asks 'Why does youth group need that much?'",
-       ph:"Every dollar invested in NextGen ministry at [church name] accomplishes...\n\nSpecifically, [line item] produces [outcome]. [Line item] enables [outcome]...\n\nThe return on investment is not measured in..., but in...",
-       ai:`After writing your budget case:
-
-"In Section 1 I studied developing yourself as a leader — including how to cast vision for a ministry in a way that enlists others rather than just informing them, and how to advocate for the NextGen ministry within the larger church ecosystem. Here is my budget case: [PASTE YOURS]
-
-(1) Section 1 covered vision-casting as a leadership skill — the ability to describe a preferred future in terms that move people to invest. Does my budget case describe a preferred future (what students and families will experience because of this investment) or does it defend a current allocation (why we spent what we spent)? Vision versus justification — which is this? (2) The section on leading within a church ecosystem taught that senior pastors and boards are moved by specifics, not generalities. Does my case include at least one specific line item mapped to a specific, describable outcome — not 'curriculum produces growth' but '$X for curriculum produces [specific outcome] in [specific number] of students'? (3) Read my budget case as a board member who has doubts about whether youth ministry is worth the investment. Am I persuaded? What's the weakest sentence — the one most likely to prompt a skeptical question — and have I addressed it?"`,
+(1) Section 4 showed that risk is not primarily managed by checklists but by culture — whether leaders on your team automatically ask 'what could go wrong?' before every event. Does my framework describe a culture practice or a compliance checklist? Would a new volunteer on your team learn to think about risk, or just learn to sign a form? (2) Incident documentation was a specific emphasis — something bad happening is less damaging to a ministry than something bad happening with no record. Does my documentation process name who takes the report, in what format, and who has access — or is 'we document incidents' still vague enough to not happen? (3) Ministry insurance is the most neglected area in NextGen safety — most leaders assume church general liability covers everything, but van transportation and off-site events are common gaps. Have you actually confirmed your coverage with your church's insurance carrier, or are you assuming?"`,
        guide:{
-         what:"A persuasive argument connecting dollars to outcomes. Vision, not justification.",
-         qs:["Does it connect specific lines to outcomes?","Does it inspire or just defend?"],
-         strong:"Every dollar invested in NextGen at Valley Assembly produces the next generation of disciples, leaders, and missionaries. The $800 small group training budget develops 8 volunteers who collectively invest 4,000 hours into 60 students per year.",
-         sNote:"Specific line → specific outcome → compelling math.",
-         weak:"Youth ministry is important and we need funding to run a good program.",
-         wNote:"No connection to outcomes. No specifics."
-       },wt:150}
+         what:"A real framework, not a checklist — culture of risk awareness plus specific protocols.",
+         qs:["Is this a culture practice or just compliance?","Is documentation specific enough to execute?","Have you confirmed insurance coverage?"],
+         strong:"Before any off-site event, I complete a one-page risk form covering transportation, venue contacts, emergency plan, and insurance confirmation. After any incident, I file a written report with date/time/names within 24 hours, sent to senior pastor and kept on file for 7 years.",
+         sNote:"Specific process, specific timeframe, specific accountability.",
+         weak:"We follow all safety guidelines and ensure our events are safe.",
+         wNote:"No process, no accountability, no specifics."
+       },wt:200}
     ]},
-    {id:"d8",num:"Doc 8",title:"12-Month Ministry Plan",desc:"The Vitals-Based Integrating Capstone",
+    {id:"d8",num:"Doc 8",title:"Ministry Strategy",desc:"The Vitals-Based Integrating Capstone",
      format:"3 pages • Integrating capstone of the full certificate",
+     interviewReq:true,
      secs:[
-      {id:"vision_yr",title:"Vision Statement for the Year",
-       trigger:"After Section 1 — Developing Yourself as a Leader",
-       desc:"Write a vision statement for your ministry's upcoming year. Not a mission statement (that's permanent) — a year-specific vision: What is God calling this ministry to focus on, grow into, or step toward in the next 12 months? Write 1–2 paragraphs you could read to your team on the first night of the year.",
-       ph:"This year, God is calling [ministry name] to...\n\nWe will know we've stepped toward this vision when...\n\nThis year's anchor: ...",
-       ai:`After writing your vision statement:
-
-"In Section 1 of Course 3 I studied developing myself as a leader — including how to set a vision that is specific enough to lead toward rather than manage around, how vision differs from mission (mission is permanent, vision is seasonal), and how a NextGen leader casts vision within a larger church ecosystem rather than in isolation. Here is my year vision statement: [PASTE YOURS]
-
-(1) Section 1 made the distinction between a mission statement (permanent, directional) and a year vision (specific, time-bound, different from last year). Is my statement genuinely year-specific — could it only describe the next 12 months of this particular ministry in this particular season — or is it timeless enough to apply to any year? (2) The section covered how vision functions as a rallying point — it gives a team something to aim toward together. Does my statement include enough concrete specificity that a volunteer reading it would know what to prioritize differently this year than last year? (3) Would a 15-year-old student hear this statement read on the first night of the year and understand what's going to be different — what they'll experience or be invited into that they haven't experienced before? Or is it internal leadership language that doesn't translate to the people being served?"`,
-       guide:{what:"Year-specific, team-rallying, distinct from your permanent mission statement.",qs:["Is it this-year specific?","Would a student know what's different?"]},wt:150},
-      {id:"teach_plan",title:"Biblical Truth — Teaching Plan",
-       trigger:"After Section 4 — Curriculum Design and Annual Planning (NXT-001) + Section 1 — Developing Yourself as a Leader (NXT-003)",
-       desc:"Draft your annual teaching plan. Map the year's teaching calendar: series titles or themes by month/quarter, how series connect to the annual vision, what curriculum resources you'll use, and how you balance topical teaching with biblical exposition. Reference your Teaching Philosophy from Doc 1/Doc 2. Include how teaching is evaluated.",
-       ph:"Q1 Series: [Title] | [Months] | [Primary Scripture] | [Vision connection]\nQ2 Series: ...\nQ3 Series: ...\nQ4 Series: ...\n\nCurriculum resources: ...\nExpository vs. topical balance: ...\nHow teaching is evaluated: ...",
-       ai:`After drafting:
-
-"This document draws on Section 4 — Curriculum Design and Annual Planning (NXT-001) and Section 1 — Developing Yourself as a Leader (NXT-003). In those sections I studied how to build a teaching calendar that serves a formation arc rather than just filling weeks, how to align series to a year vision, and how to evaluate whether teaching is producing the outcomes it was designed to produce. Here is my annual teaching plan: [PASTE YOURS]
-
-(1) Section 4 in NXT-001 taught that a series should have a clear purpose — not just a topic but a formation intention. For each series in my plan, can I state in one sentence what this series is designed to produce in a student who engages with it? If I can only name the subject, not the intended change, the purpose isn't clear enough yet. (2) The curriculum design material covered topical and expository teaching as complementary — topical addresses felt needs, expository builds biblical literacy. Does my year include both? If it's all topical, what biblical navigation capacity am I not developing? If all expository, which pressing questions in students' lives go unaddressed? (3) NXT-003 Section 1 on leadership development included evaluation as a leadership discipline. What is my actual evaluation mechanism for teaching — how will I know six months into the year whether my teaching plan is working, and what will I do if it isn't?"`,
-       guide:{what:"Teaching calendar aligned to annual vision and Doc 1 teaching philosophy.",qs:["Does every series connect to the year vision?","Is there a teaching evaluation mechanism?"]},wt:200},
-      {id:"encounter",title:"Spiritual Transformation — Encounter Strategy",
-       trigger:"After Section 5 — Pentecostal Emphasis on the Holy Spirit (NXT-001) + Section 6 — Spiritual Disciplines and Mentoring (NXT-001)",
-       desc:"Draft your spiritual transformation strategy. How does your ministry create space for encounters with God? Cover: altar/response time philosophy, prayer culture (when, how, who leads), Spirit-emphasis integration in weekly programming (not just special services), and how you disciple students through spiritual experiences rather than treating them as isolated events.",
-       ph:"Altar/response philosophy: we create space by...\nPrayer culture: ...\nSpirit-emphasis in weekly programming: ...\nHow we disciple through (not just celebrate) spiritual experiences: ...",
-       ai:`After drafting:
-
-"This document draws on Section 5 — Pentecostal Emphasis on the Holy Spirit and Section 6 — Spiritual Disciplines and Mentoring (both NXT-001). Section 5 covered how to create environments where genuine Spirit encounters happen, not manufactured emotion. Section 6 covered how to disciple students through spiritual experiences — not just celebrate the moment but build on it through structured practice. Here is my encounter strategy: [PASTE YOURS]
-
-(1) Section 5 showed that Spirit-emphasis requires intentional weekly environment design, not just the presence of a worship band. Looking at a typical Wednesday in my ministry: what specific elements create space for a genuine response to God — and are these present every week, or only when the calendar is cleared for a 'special service'? (2) Section 6 on spiritual disciplines showed that a spiritual experience without follow-up discipleship produces emotional peaks, not lasting formation. For each type of encounter in my strategy (altar response, prayer for healing, Spirit baptism, salvation), what is the specific next step for that student in the following 72 hours — and who is responsible for making it happen? (3) Does my encounter strategy connect explicitly to my Pentecostal Distinctives from Doc 1, or are these two documents describing the same conviction in different language without referencing each other?"`,
-       guide:{what:"Weekly Spirit-emphasis, altar philosophy, and discipleship THROUGH (not just after) encounters.",qs:["Is this weekly, not just for special services?","Is there follow-up after spiritual experiences?"]},wt:150},
       {id:"small_grp_plan",title:"Healthy Community — Small Group Plan",
        trigger:"After Section 2 — Small Groups and Discipleship Environments (NXT-002)",
        desc:"Draft your healthy community plan. How are small groups structured (age, gender, interest, neighborhood)? How often do they meet? Who leads them and how are they trained? How does your Community Covenant (from Doc 3/Doc 4) get implemented in practice — not just read aloud but lived? Include your conflict resolution protocols by reference.",
@@ -862,15 +894,15 @@ Note: do NOT ask AI to generate the actual numbers for you. Your numbers must co
 (1) Section 2 showed that community covenants only work when they're referenced in moments of tension, not just read at the beginning of the year. Does my plan describe how the Community Covenant from Doc 3 is actually invoked — in a conflict, in a hard conversation, in a moment when a student breaks the community norm? Or does it get signed and filed? (2) The section covered small group leader training as the single highest-leverage investment in group health — a well-trained leader produces a well-formed group, regardless of the curriculum. Does my leader training pathway in this plan have a specific format, frequency, and content — or is 'trained leaders' still an aspiration without a system? (3) Trace a direct line from my small group plan to my discipleship system in Doc 1/2. Where specifically does small group participation move a student along the discipleship progression I described? If I can't trace that line, the two documents are parallel tracks, not an integrated system."`,
        guide:{what:"Small groups that implement the Community Covenant, with trained leaders and conflict protocols.",qs:["Is the covenant lived, not just recited?","Do leaders have a training pathway?"]},wt:150},
       {id:"missions_cal",title:"Missional Living — Engagement Calendar",
-       trigger:"After Section 8 — Local and Global Missions (NXT-002) + Doc 5 complete",
-       desc:"Draft your missional engagement calendar. Pull from your Raising Sons & Daughters vision (Doc 5) and expand it month by month: which months feature which missional activities? How do local service projects, BGMC, Speed the Light, Youth Alive, and mission trip preparation fit into the year? Show how missions is a rhythm, not a once-a-year trip.",
+       trigger:"After Section 8 — Local and Global Missions (NXT-002) + Doc 4 complete",
+       desc:"Draft your missional engagement calendar. Pull from your Sending vision and missions rhythm (Doc 4) and expand it month by month: which months feature which missional activities? How do local service projects, BGMC, Speed the Light, Youth Alive, and mission trip preparation fit into the year? Show how missions is a rhythm, not a once-a-year trip.",
        ph:"September: ... October: ... November: BGMC push...\nDecember: STL campaign... January: local service...\nFebruary: ... March: mission trip prep...\nApril: ... May: ... June: mission trip...\nJuly: ... August: ...\n\nMissions is a rhythm because: ...",
        ai:`After drafting:
 
-"This document integrates my work from Section 8 — Local and Global Missions (NXT-002) and the full Doc 5 — Raising Sons and Daughters. Section 8 taught that missions becomes a ministry identity marker when it's embedded monthly rather than scheduled annually. Doc 5 asked me to articulate a pipeline from interested to sent. Here is my missional engagement calendar: [PASTE YOURS]
+"This document integrates my work from Section 8 — Local and Global Missions (NXT-002) and the full Doc 4 — Outreach, Missions & Sending. Section 8 taught that missions becomes a ministry identity marker when it's embedded monthly rather than scheduled annually. Doc 4 asked me to articulate a pipeline from interested to sent. Here is my missional engagement calendar: [PASTE YOURS]
 
-(1) Count the months in my calendar that have no missional activity — local or global. If the number is more than two, something is wrong. Section 8 showed that an annual missions trip is not a missions culture — it's a missions event. What would need to change to embed something (even small: a BGMC moment, a local service hour, a missionary video) in the months that are currently empty? (2) Does this calendar directly expand on the AG resource map from Doc 5 — can I draw a line from each AG resource I named there to a specific calendar month here? Or did Doc 5 describe the resources while this document describes something different? (3) Local service should appear year-round as a formation rhythm, not just on a 'service Sunday.' Looking at my calendar: how many local service touchpoints appear, and are they connected to real community relationships or are they one-off events?"`,
-       guide:{what:"Month-by-month missions rhythm that makes missions a habit, not an event.",qs:["Is missions present in most months?","Does this expand Doc 5's vision?"]},wt:200},
+(1) Count the months in my calendar that have no missional activity — local or global. If the number is more than two, something is wrong. Section 8 showed that an annual missions trip is not a missions culture — it's a missions event. What would need to change to embed something (even small: a BGMC moment, a local service hour, a missionary video) in the months that are currently empty? (2) Does this calendar directly expand on the AG resource map from Doc 4 — can I draw a line from each AG resource I named there to a specific calendar month here? Or did Doc 4 describe the resources while this document describes something different? (3) Local service should appear year-round as a formation rhythm, not just on a 'service Sunday.' Looking at my calendar: how many local service touchpoints appear, and are they connected to real community relationships or are they one-off events?"`,
+       guide:{what:"Month-by-month missions rhythm that makes missions a habit, not an event.",qs:["Is missions present in most months?","Does this expand Doc 4's vision?"]},wt:200},
       {id:"leadership_dev",title:"Leadership Development Plan",
        trigger:"After Section 5 — NextGen Leadership Pipeline Development (NXT-003)",
        desc:"Draft your student leadership development plan. When are student leaders identified? What training do they receive and when? What's the progression (attender → participant → student leader → intern)? Add leadership touchpoints to your calendar: training nights, retreats, commissioning.",
@@ -883,14 +915,14 @@ Note: do NOT ask AI to generate the actual numbers for you. Your numbers must co
        guide:{what:"A concrete progression from attender to intern — observable markers, trained mentors, calendar dates.",qs:["Are stage transitions defined by observable markers?","Are dates on the calendar?"]},wt:150},
       {id:"leadership_pipe",title:"Leadership Development — Student & Volunteer Pipeline",
        trigger:"After Section 5 — NextGen Leadership Pipeline Development (NXT-003)",
-       desc:"Draft a student leadership pipeline. How do you identify emerging student leaders? What's the progression (attender → participant → student leader → intern → sent)? What training do student leaders receive? How does this pipeline connect to your volunteer development plan in Doc 6? Include a volunteer development summary that cross-references Doc 6.",
-       ph:"Student Pipeline:\nAttender → identified by: ...\nParticipant → how moved: ...\nStudent Leader → training: ...\nIntern → role: ...\nSent → into: ...\n\nVolunteer pipeline cross-reference: see Doc 6 for [recruitment / onboarding / development]",
+       desc:"Draft a student leadership pipeline. How do you identify emerging student leaders? What's the progression (attender → participant → student leader → intern → sent)? What training do student leaders receive? How does this pipeline connect to your volunteer development plan in Doc 7? Include a volunteer development summary that cross-references Doc 7.",
+       ph:"Student Pipeline:\nAttender → identified by: ...\nParticipant → how moved: ...\nStudent Leader → training: ...\nIntern → role: ...\nSent → into: ...\n\nVolunteer pipeline cross-reference: see Doc 7 for [recruitment / onboarding / development]",
        ai:`After drafting:
 
 "In Section 5 — NextGen Leadership Pipeline Development (NXT-003) I studied the full arc of developing student leaders — from identifying early potential to establishing a progression where students move from participation to ownership to deployment. The section covered what marks readiness at each stage, how to structure leadership training, and how a student pipeline connects to the volunteer system that sustains a ministry long-term. Here is my leadership development pipeline: [PASTE YOURS]
 
-(1) Section 5 was clear that the most common pipeline failure is undefined transitions — students stay at a stage indefinitely because no one has said what readiness for the next stage looks like. For each transition in my pipeline (attender → participant → student leader → intern), what are the specific, observable markers that signal readiness? Not time served, not 'we sense it' — what can be observed and named? (2) The section connected the student pipeline to the volunteer pipeline as a natural progression — your best student leaders become your best volunteers and eventually your referrals for ministry roles. Does my pipeline explicitly name the handoff point where a student leader could become a volunteer leader, and is that connection visible in Doc 6? (3) Is there at least one calendar date in this pipeline — a specific leadership training night, retreat, or commissioning moment — or is this pipeline entirely aspirational with no calendar anchor?"`,
-       guide:{what:"Clear progression from attender to sent, with calendar touchpoints and Doc 6 cross-reference.",qs:["Are stage transitions defined?","Does it cross-reference Doc 6?"]},wt:200},
+(1) Section 5 was clear that the most common pipeline failure is undefined transitions — students stay at a stage indefinitely because no one has said what readiness for the next stage looks like. For each transition in my pipeline (attender → participant → student leader → intern), what are the specific, observable markers that signal readiness? Not time served, not 'we sense it' — what can be observed and named? (2) The section connected the student pipeline to the volunteer pipeline as a natural progression — your best student leaders become your best volunteers and eventually your referrals for ministry roles. Does my pipeline explicitly name the handoff point where a student leader could become a volunteer leader, and is that connection visible in Doc 7? (3) Is there at least one calendar date in this pipeline — a specific leadership training night, retreat, or commissioning moment — or is this pipeline entirely aspirational with no calendar anchor?"`,
+       guide:{what:"Clear progression from attender to sent, with calendar touchpoints and Doc 7 cross-reference.",qs:["Are stage transitions defined?","Does it cross-reference Doc 7?"]},wt:200},
       {id:"family_integ",title:"Family Integration Touchpoints",
        trigger:"After Section 7 — Family Discipleship and Parent Partnership (NXT-001)",
        desc:"Draft your family integration touchpoints. How and when does the ministry communicate with parents? What events include families? How do you equip parents to disciple their own children at home? Address: regular parent communication rhythms, family events in the calendar, parent resource provision, and how you handle the parent who is disengaged vs. the one who is over-involved.",
@@ -927,17 +959,40 @@ Note: do NOT ask AI to generate the actual numbers for you. Your numbers must co
          sNote:"Specific day, specific protection, specific name, specific warning sign.",
          weak:"I believe in self-care and maintaining work-life balance. I will take time to rest.",
          wNote:"No specifics. Could be anyone. Won't be used."
-       },wt:200}
+       },wt:200},
+      {id:"interview_notes",title:"Lead Pastor + District Interview Notes",
+       trigger:"Complete before final submission — schedule both interviews early",
+       interviewReq:true,
+       desc:"Record your interviews with two leaders. Both are required.\n\n(1) LEAD/SENIOR PASTOR — minimum 15 minutes. Cover: their vision for the church this year, where they see NextGen serving that vision, what they wish you knew about the church's history, what would make you a trustworthy team member in their eyes, what would cost them trust.\n\n(2) DISTRICT NEXTGEN PASTOR or DYD — minimum 15 minutes. Cover: most common gaps in local NextGen ministry plans, what district resources exist that local leaders underuse, common 'first three years' mistakes, what they wish every new NextGen leader knew, child protection enforcement insights from the field.",
+       ph:"INTERVIEW 1: Lead/Senior Pastor\nName: ... | Title: Lead Pastor | Date: ...\nChurch: ...\n\nQ1 — Vision for the church this year: ...\nQ2 — Where NextGen serves that vision: ...\nQ3 — What you wish I knew about the church's history: ...\nQ4 — What makes me a trustworthy team member: ...\nQ5 — What would cost trust: ...\n\n─────────────────────────────────\n\nINTERVIEW 2: District NextGen Pastor / DYD\nName: ... | Title: ... | Date: ...\nDistrict: ...\n\nQ1 — Common gaps in local NextGen plans: ...\nQ2 — Underused district resources: ...\nQ3 — Common first-three-years mistakes: ...\nQ4 — What you wish every new NextGen leader knew: ...\nQ5 — Child protection enforcement insights: ...",
+       ai:`This section is your interview notes — it must come entirely from your real conversations.
+
+No AI prompt for this section. If you haven't scheduled either interview yet, do it now — these conversations are themselves formational experiences.`,
+       guide:{what:"Two real conversations with two real leaders. Not research, not AI — relationships.",qs:["Have both interviews been scheduled?","Do you have name, title, and date recorded for each?"]},wt:300,noAI:true}
     ]},
-    {id:"dx3",num:"Disclosure",title:"AI Disclosure Statement",desc:"Required with every document",
-     format:"3–5 sentences per document",
+    {id:"dx3",num:"Disclosure",title:"AI Disclosure + Final Submission",desc:"Required with every document + final reflection",
+     format:"3–5 sentences per document + capstone reflection",
      secs:[
       {id:"ai_disclosure3",title:"AI Disclosure Statement",
        trigger:"Complete before final submission",
-       desc:"Required with every submitted document. For each document (Doc 6, Doc 7, Doc 8), answer in 3–5 sentences: (1) What AI tools did you use? (2) How did you use them? (3) What remained uniquely yours — especially your real budget numbers, your actual church context, and your personal sustainability plan.",
-       ph:"Doc 6 AI use: ...\nDoc 7 AI use: ... (Note: budget numbers came from real church data, not AI averages)\nDoc 8 AI use: ...\nWhat remained uniquely mine: my knowledge of [church/community], my actual budget from [source], my personal sustainability plan including...",
+       desc:"Required with every submitted document. For each document (Doc 5, Doc 6, Doc 7, Doc 8), answer in 3–5 sentences: (1) What AI tools did you use? (2) How did you use them? (3) What remained uniquely yours — especially your real budget numbers, your actual church context, your senior pastor's actual vision, and your personal sustainability plan.",
+       ph:"Doc 5 (Personal Leadership) AI use: ...\nDoc 6 (Budget) AI use: ... (Note: budget numbers came from real church data, not AI averages)\nDoc 7 (Vision & Team) AI use: ...\nDoc 8 (Ministry Strategy) AI use: ...\nWhat remained uniquely mine: my knowledge of [church/community], my actual budget from [source], my senior pastor's stated vision, my personal sustainability plan including...",
        ai:`This section is about your honest reflection on AI use. It must come entirely from you.`,
-       guide:{what:"Honest disclosure — especially note where real church data was used vs. AI estimates.",qs:["Did budget numbers come from real research?","Is context specific to your church?"]},wt:150,noAI:true}
+       guide:{what:"Honest disclosure across all four Course 3 documents — especially noting where real church/pastor data was used vs. AI estimates.",qs:["Did budget numbers come from real research?","Is the pastor's vision drawn from real conversation, not AI guess?","Is your sustainability plan genuinely yours?"]},wt:150,noAI:true},
+      {id:"capstone_final",title:"Final Capstone Reflection & Submission",
+       trigger:"After completing all sections across all three courses",
+       noAI:true,
+       desc:"You have built a complete ministry framework across three courses. Before you submit, complete this final integrating reflection: (1) In 2–3 sentences, state the central conviction that runs through everything you've written. (2) Name the section that pushed you hardest — what it revealed about you, and what you're still working on. (3) Write your first 30-day action — one specific, observable thing you will do in your first month based on what you've built here. (4) Download your completed documents and submit them in TalentLMS.",
+       ph:"Central conviction across everything I wrote: ...\n\nThe section that pushed me hardest was... because it revealed...\nI am still working on: ...\n\nIn my first 30 days I will specifically:\n[Action + date]\n\nI am ready to submit:\n☐ Doc 1 — Ministry Blueprint\n☐ Doc 2 — Ministry Practice\n☐ Doc 3 — Culture, Community & Digital Safety\n☐ Doc 4 — Outreach, Missions & Sending\n☐ Doc 5 — Personal Leadership Development\n☐ Doc 6 — Budget & Stewardship\n☐ Doc 7 — Church Vision & Team\n☐ Doc 8 — Ministry Strategy\n☐ AI Reflections / Disclosures (all three courses)",
+       ai:`This section comes entirely from you. No AI prompt — this is the integrating capstone of your whole journey.`,
+       guide:{
+         what:"The integrating capstone — your central conviction, your hardest moment, your first action, and your readiness to submit.",
+         qs:["Is your central conviction specific to you, or could anyone have written it?","Is the 30-day action observable and dated?"],
+         strong:"Central conviction: students don't stay in faith because of programs — they stay because they were known. The hardest section was sustainability, because I had to admit I don't actually have a Sabbath practice yet. First 30 days: I will block every Friday as Sabbath and tell my wife she's allowed to enforce it.",
+         sNote:"Honest about the gap. Specific about the action. Real commitment.",
+         weak:"I learned a lot through this process and feel prepared for ministry.",
+         wNote:"Says nothing. Generic ending to a specific journey."
+       },wt:200}
     ]}
   ]
 }
@@ -1259,7 +1314,7 @@ function renderBuild(){
     html+=`<div class="interview-req"><strong>⚠️ Interview Required</strong> — Before completing this section, you must interview a district official (Secretary, DYD, or Sectional Presbyter). Minimum 15–20 minutes. Schedule early in the course.</div>`;
   }
   if(doc.spreadsheetNote){
-    html+=`<div class="spreadsheet-note"><strong>📊 Spreadsheet Note</strong> — Doc 7 includes a working .xlsx spreadsheet as a separate deliverable. Use this tool to draft your narrative content. The spreadsheet with formulas and real dollar amounts is submitted alongside these notes.</div>`;
+    html+=`<div class="spreadsheet-note"><strong>📊 Spreadsheet Note</strong> — Doc 6 includes a working .xlsx spreadsheet as a separate deliverable. Use this tool to draft your narrative content. The spreadsheet with formulas and real dollar amounts is submitted alongside these notes.</div>`;
   }
   html+=`<div class="sec-badge">${doc.num} › Section ${secIdx+1}</div>
   <div class="sec-title">${sec.title}</div>
@@ -1384,7 +1439,7 @@ function renderDownload(){
       <li><strong>Open in Word or Google Docs</strong> — your draft is a starting point, not a finished paper.</li>
       <li><strong>Rewrite into polished paragraphs</strong> — turn raw notes into connected, flowing prose that sounds like you.</li>
       <li><strong>Voice check:</strong> read every paragraph aloud. If it doesn't sound like how you actually talk, rewrite it.</li>
-      <li><strong>Check format:</strong> ${c.id===1?'Doc 1: paragraph form, 1–2 pages, double-spaced, 12pt TNR. Doc 2: structured outline/table.':c.id===2?'Doc 3: 2 pages with district interview notes attached. Doc 4: 2 pages. Doc 5: 1 page.':'Doc 6: 2 pages + appended templates. Doc 7: narrative + .xlsx spreadsheet. Doc 8: 3 pages.'}</li>
+      <li><strong>Check format:</strong> ${c.id===1?'Doc 1: paragraph form, 2–3 pages, double-spaced, 12pt TNR. Doc 2: structured outline/calendar/table, 2–3 pages.':c.id===2?'Doc 3: 2 pages. Doc 4: 3 pages.':'Doc 5: 1–2 pages. Doc 6: working .xlsx spreadsheet + 1-page narrative. Doc 7: 3–4 pages narrative + appended templates. Doc 8: 3 pages with two interviews attached.'}</li>
       <li><strong>Complete peer/pastor review</strong> as required by your instructor.</li>
       <li><strong>Submit in Talent LMS</strong> using the upload button in your course — NOT back to this tool.</li>
     </ol>

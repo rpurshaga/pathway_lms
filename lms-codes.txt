@@ -1,0 +1,605 @@
+==============================================================================
+PATHWAY CAPSTONE ASSISTANT — LMS EMBED CODES
+==============================================================================
+
+HOW TO USE:
+  1. In TalentLMS, create a unit and choose 'Web Content'.
+  2. Paste just the URL (the line starting with https://) into the URL field.
+  3. OR if you need an HTML iframe (e.g. inside a Content unit's HTML editor),
+     copy the IFRAME line instead.
+
+Each section below shows BOTH options. Use whichever your unit type expects.
+
+Total sections: 53
+==============================================================================
+
+
+##############################################################################
+#  COURSE 1 — Theology, Identity & Formation
+##############################################################################
+
+------------------------------------------------------------------------------
+  Doc 1 — Ministry Blueprint
+------------------------------------------------------------------------------
+
+[01] Personal Calling Statement
+     Section ID: calling
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=calling
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=calling" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[02] Ministry Win Definition
+     Section ID: win
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=win
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=win" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[03] Core Theological Convictions
+     Section ID: theology
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=theology
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=theology" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[04] Developmental Strategy
+     Section ID: development
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=development
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=development" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[05] Age-Level Strategy
+     Section ID: agelevel
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=agelevel
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=agelevel" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[06] Teaching Philosophy
+     Section ID: teaching
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=teaching
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=teaching" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[07] Biblical Truth — Teaching Plan
+     Section ID: teach_plan
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=teach_plan
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=teach_plan" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Doc 2 — Ministry Practice
+------------------------------------------------------------------------------
+
+[08] Formation Pathway Overlay
+     Section ID: pathway
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=pathway
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=pathway" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[09] Annual Teaching Calendar v1
+     Section ID: calendar
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=calendar
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=calendar" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[10] Pentecostal Distinctives
+     Section ID: pentecostal
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=pentecostal
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=pentecostal" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[11] Spiritual Transformation — Encounter Strategy
+     Section ID: encounter
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=encounter
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=encounter" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[12] Discipleship Philosophy
+     Section ID: discipleship
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=discipleship
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=discipleship" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[13] Spiritual Milestones
+     Section ID: milestones
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=milestones
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=milestones" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[14] Discipleship Systems
+     Section ID: discipleship_sys
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=discipleship_sys
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=discipleship_sys" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[15] Family Partnership Philosophy
+     Section ID: family
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=family
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=family" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[16] Parent Engagement Rhythm
+     Section ID: parent_rhythm
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=parent_rhythm
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=parent_rhythm" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[17] Scope of Ministry
+     Section ID: scope
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=scope
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=scope" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Reflection
+------------------------------------------------------------------------------
+
+[18] AI Interaction Reflection
+     Section ID: ai_reflect
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=ai_reflect
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=1&secs=ai_reflect" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+##############################################################################
+#  COURSE 2 — Community, Safety & Sending
+##############################################################################
+
+------------------------------------------------------------------------------
+  Doc 3 — Culture, Community & Digital Safety
+------------------------------------------------------------------------------
+
+[19] Ministry Culture Values + Small Group Philosophy
+     Section ID: culture_values
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=culture_values
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=culture_values" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[20] Conflict Resolution Process
+     Section ID: conflict
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=conflict
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=conflict" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[21] Digital Communication Policy + Social Media Guidelines
+     Section ID: digital
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=digital
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=digital" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Doc 4 — Outreach, Missions & Sending
+------------------------------------------------------------------------------
+
+[22] Cultural Landscape Analysis
+     Section ID: cultural
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=cultural
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=cultural" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[23] Global Missions Integration
+     Section ID: global_missions
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=global_missions
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=global_missions" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[24] Sending Identity + Missionary Development Pipeline
+     Section ID: sending
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=sending
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=sending" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[25] Annual Missions Rhythm + AG Resource Map
+     Section ID: missions_rhythm
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=missions_rhythm
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=missions_rhythm" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[26] Local Outreach Strategy
+     Section ID: local_outreach
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=local_outreach
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=local_outreach" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[27] Evangelism & Apologetics Approach
+     Section ID: evangelism
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=evangelism
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=evangelism" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Disclosure
+------------------------------------------------------------------------------
+
+[28] AI Disclosure Statement (Course 2)
+     Section ID: ai_disclosure2
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=ai_disclosure2
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=2&secs=ai_disclosure2" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+##############################################################################
+#  COURSE 3 — Leadership & Ministry Practicum
+##############################################################################
+
+------------------------------------------------------------------------------
+  Doc 5 — Personal Leadership Development
+------------------------------------------------------------------------------
+
+[29] Personal Leadership Development Plan
+     Section ID: personal_dev
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=personal_dev
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=personal_dev" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Doc 6 — Budget & Stewardship
+------------------------------------------------------------------------------
+
+[30] Annual Budget Categories
+     Section ID: budget_cats
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=budget_cats
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=budget_cats" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[31] Per-Event Cost Tracking
+     Section ID: event_cost
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=event_cost
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=event_cost" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[32] Stewardship Communication Template
+     Section ID: stewardship_comm
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=stewardship_comm
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=stewardship_comm" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Doc 7 — Church Vision & Team
+------------------------------------------------------------------------------
+
+[33] Serving Your Senior Pastor's Vision
+     Section ID: pastor_vision
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=pastor_vision
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=pastor_vision" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[34] Vision Statement for the Year
+     Section ID: vision_yr
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vision_yr
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vision_yr" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[35] Building Your Leadership Team
+     Section ID: build_team
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=build_team
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=build_team" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[36] Volunteer Role Descriptions
+     Section ID: vol_roles
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_roles
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_roles" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[37] Recruitment Pipeline
+     Section ID: vol_recruit
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_recruit
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_recruit" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[38] Child Protection Policy + Volunteer Covenant
+     Section ID: protection
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=protection
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=protection" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[39] Onboarding Process
+     Section ID: vol_onboard
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_onboard
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_onboard" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[40] Ongoing Development
+     Section ID: vol_develop
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_develop
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_develop" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[41] Appreciation & Retention Rhythms
+     Section ID: vol_retain
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_retain
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_retain" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[42] Exit / Offboarding Procedure
+     Section ID: vol_exit
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_exit
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=vol_exit" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[43] Safety Principles & Risk Management
+     Section ID: safety_risk
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=safety_risk
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=safety_risk" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Doc 8 — Ministry Strategy
+------------------------------------------------------------------------------
+
+[44] Healthy Community — Small Group Plan
+     Section ID: small_grp_plan
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=small_grp_plan
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=small_grp_plan" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[45] Missional Living — Engagement Calendar
+     Section ID: missions_cal
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=missions_cal
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=missions_cal" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[46] Leadership Development Plan
+     Section ID: leadership_dev
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=leadership_dev
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=leadership_dev" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[47] Leadership Development — Student & Volunteer Pipeline
+     Section ID: leadership_pipe
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=leadership_pipe
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=leadership_pipe" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[48] Family Integration Touchpoints
+     Section ID: family_integ
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=family_integ
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=family_integ" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[49] Metrics & Evaluation
+     Section ID: metrics
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=metrics
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=metrics" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[50] Personal Sustainability Plan
+     Section ID: sustainability
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=sustainability
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=sustainability" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[51] Lead Pastor + District Interview Notes
+     Section ID: interview_notes
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=interview_notes
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=interview_notes" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+------------------------------------------------------------------------------
+  Disclosure
+------------------------------------------------------------------------------
+
+[52] AI Disclosure Statement (Course 3)
+     Section ID: ai_disclosure3
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=ai_disclosure3
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=ai_disclosure3" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+[53] Final Capstone Reflection & Submission
+     Section ID: capstone_final
+
+URL (for Web Content units):
+https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=capstone_final
+
+IFRAME (for HTML/Content units):
+<iframe src="https://rpurshaga.github.io/pathway_lms/capstone-assistant.html?course=3&secs=capstone_final" style="width:100%;min-height:720px;border:0" loading="lazy"></iframe>
+
+
+==============================================================================
+END — 53 sections total
+==============================================================================
